@@ -239,18 +239,18 @@ public class KarEventListener implements Listener {
             }
             int i = nbtItem.getInteger("lfs");
             switch (i){
-                case 1 -> {
+                case 1:
                     victim.setFireTicks(10*20);
-                }
-                case 2 -> {
+                    break;
+                case 2:
                     victim.setFireTicks(20*20);
-                }
-                case 3 -> {
+                    break;
+                case 3:
                     victim.setFireTicks(30*20);
-                }
-                case 4 -> {
+                    break;
+                case 4:
                     victim.setFireTicks(40*20);
-                }
+                    break;
             }
         }
     }

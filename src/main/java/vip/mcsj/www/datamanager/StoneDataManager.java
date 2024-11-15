@@ -79,7 +79,7 @@ public class StoneDataManager {
             ConfigurationSection cs = file.getConfigurationSection(s+".Chance");
             List<Double> probability = new ArrayList<>();
             Set<String> chanceKeys = cs.getKeys(false);
-            List<String> chanceList = chanceKeys.stream().map(Double::parseDouble).sorted().map(String::valueOf).toList();
+            List<String> chanceList = chanceKeys.stream().map(Double::parseDouble).sorted().map(String::valueOf).collect(Collectors.toList());
             for (int i = 0; i < chanceList.size(); i++) {
                 probability.add(file.getDouble(s+".Chance."+(i+1)));
             }

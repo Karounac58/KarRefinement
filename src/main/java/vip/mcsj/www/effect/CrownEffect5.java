@@ -8,6 +8,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import vip.mcsj.www.datamanager.EffectDataManager;
 import vip.mcsj.www.main.KarRefinement;
+import vip.mcsj.www.utils.KarUtils;
 
 import java.util.Random;
 
@@ -93,9 +94,8 @@ public class CrownEffect5 extends BukkitRunnable {
         locc2.add(locc2.getDirection().multiply(1));
         locc3.setYaw(-135.0F);
         locc3.add(locc3.getDirection().multiply(1));
-        Random rand = new Random();
         for (int i = 0; i < 5; i++) {
-            float shit = rand.nextFloat(359);
+            float shit = KarUtils.nextFloat(359);
             int rgb = java.awt.Color.HSBtoRGB(shit, 1.0f, 1.0f);
             Color color = Color.fromRGB((rgb >> 16) & 0xFF, (rgb >> 8) & 0xFF, rgb & 0xFF);
             Particle.DustOptions options = new Particle.DustOptions(color,1.0F);

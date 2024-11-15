@@ -19,7 +19,7 @@ public class LevelDataManager {
         }
         YamlConfiguration customFileYaml = FileUtil.getCustomFileYaml("refinement.yml");
         Set<String> keys = customFileYaml.getKeys(false);
-        List<String> collect = keys.stream().map(Integer::parseInt).sorted().map(String::valueOf).toList();
+        List<String> collect = keys.stream().map(Integer::parseInt).sorted().map(String::valueOf).collect(Collectors.toList());
         for (String s : collect) {
             Level level = new Level();
             level.setRefinementLevel(Integer.parseInt(s));

@@ -85,47 +85,47 @@ public class EffectDataManager {
 
         int i = judgeRightLevelEquipment(p);
         switch (i){
-            case 0 -> {
+            case 0:
                 if(taskMap.get(p.getName()) != null) {
                     CrownEffect effect = new CrownEffect(p);
                     effect.stopEffect();
                 }
-            }
-            case 1 -> {
+                break;
+            case 1:
                 if(taskMap.get(p.getName()) == null) {
                     p.sendMessage(ChatColor.GREEN + "激活六星套装效果！");
                     CrownEffect effect = new CrownEffect(p);
                     effect.startEffect();
                 }
-            }
-            case 2 -> {
+                break;
+            case 2:
                 if(taskMap.get(p.getName()) == null) {
                     p.sendMessage(ChatColor.GREEN + "激活九星套装效果！");
                     CrownEffect2 effect2 = new CrownEffect2(p);
                     effect2.startEffect();
                 }
-            }
-            case 3 -> {
+                break;
+            case 3:
                 if(taskMap.get(p.getName()) == null) {
                     p.sendMessage(ChatColor.GREEN + "激活十二星套装效果！");
                     CrownEffect3 effect3 = new CrownEffect3(p);
                     effect3.startEffect();
                 }
-            }
-            case 4 -> {
+                break;
+            case 4:
                 if(taskMap.get(p.getName()) == null) {
                     p.sendMessage(ChatColor.GREEN + "激活十五星套装效果！");
                     CrownEffect4 effect4 = new CrownEffect4(p);
                     effect4.startEffect();
                 }
-            }
-            case 5 -> {
+                break;
+            case 5:
                 if(taskMap.get(p.getName()) == null) {
                     p.sendMessage(ChatColor.GREEN + "激活十八星套装效果！");
                     CrownEffect5 effect5 = new CrownEffect5(p);
                     effect5.startEffect();
                 }
-            }
+                break;
         }
     }
 

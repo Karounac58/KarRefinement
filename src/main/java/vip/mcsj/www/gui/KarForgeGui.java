@@ -86,11 +86,10 @@ public class KarForgeGui {
     }
 
     public static void KarForgeMethod(ItemStack itemEquipment1, ItemStack itemEquipment2, Player p) {
-        Random rand = new Random();
         if(judgeInventoryClickMethod(itemEquipment1,itemEquipment2,p)){
             EquipmentDataManager manager1 = new EquipmentDataManager(itemEquipment1,p);
             double success = EquipmentDataManager.forgeSuccessList.get(manager1.carifyEquipmentLevel()+1);
-            BigDecimal decimal = BigDecimal.valueOf(rand.nextDouble(100)).setScale(2, RoundingMode.HALF_UP);
+            BigDecimal decimal = BigDecimal.valueOf(KarUtils.nextDouble(100)).setScale(2, RoundingMode.HALF_UP);
             //锻造成功
             if((99-success) < decimal.doubleValue()){
                 manager1.injuryUpStar();

@@ -122,4 +122,16 @@ public class KarUtils {
         int blue = (int) (start.getBlue() + ratio * (end.getBlue() - start.getBlue()));
         return new Color(red, green, blue);
     }
+
+    public static float nextFloat(int bound){
+        Random rand = new Random();
+        float shit = rand.nextFloat();
+        return shit * bound;
+    }
+
+    public static double nextDouble(int bound){
+        Random rand = new Random();
+        double shit = rand.nextDouble();
+        return shit * bound;
+    }
 }

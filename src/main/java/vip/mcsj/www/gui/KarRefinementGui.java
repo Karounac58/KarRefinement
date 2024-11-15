@@ -199,7 +199,7 @@ public class KarRefinementGui {
             return;
         }
         double success = stone.getProbability().get(refinementLevel);
-        BigDecimal decimal = BigDecimal.valueOf(rand.nextDouble(100)).setScale(2, RoundingMode.HALF_UP);
+        BigDecimal decimal = BigDecimal.valueOf(KarUtils.nextDouble(100)).setScale(2, RoundingMode.HALF_UP);
             //成功
         if((99-success) < decimal.doubleValue()){
             if(equipmentManager.injuryUpStar()){
