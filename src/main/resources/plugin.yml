@@ -1,0 +1,13 @@
+name: KarRefinement
+main: vip.mcsj.www.main.KarRefinement
+version: 1.0
+author: Karounac58
+api-version: 1.13
+commands:
+  karrefinement:
+    usage: "/karrefinement give <player-name> <item>"
+    description: ""
+    permission: "karrefinement.use"
+    permission-message: "You don't have the permission to do that"
+depend:
+  - NBTAPI
