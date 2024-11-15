@@ -6,7 +6,7 @@
 
     <groupId>vip.mcsj.www</groupId>
     <artifactId>KarRefinement</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0-beta</version>
 
     <properties>
         <maven.compiler.source>11</maven.compiler.source>

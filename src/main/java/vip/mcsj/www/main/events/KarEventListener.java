@@ -450,4 +450,16 @@ public class KarEventListener implements Listener {
             judgeInvForgeOrNot.put(p,0);
         }
     }
+
+    /**
+     * @param e
+     */
+    @EventHandler
+    public void onPlayerChangeHeldItem(PlayerItemHeldEvent e){
+        if(EffectDataManager.getTask(e.getPlayer().getName()) != null) {
+            String name = e.getPlayer().getName();
+            EffectDataManager.getTask(name).cancel();
+            EffectDataManager.removeTaskFromMap(name);
+        }
+    }
 }
