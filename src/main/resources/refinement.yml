@@ -61,8 +61,6 @@
     Attribute:
     PotionEffect:
       - "SPEED 1"
-    Script:
-      - "default.js"
 5:
   Lore:
     - "§a§l✡✯✯五星淬炼"
@@ -81,8 +79,6 @@
     Attribute:
     PotionEffect:
       - "SPEED 1"
-    Script:
-      - "default.js"
 6:
   Lore:
     - "§3§l❂六星淬炼"
