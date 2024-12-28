@@ -5,9 +5,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import vip.mcsj.www.datamanager.*;
-import vip.mcsj.www.main.events.DirectUpgradePaperEvent;
-import vip.mcsj.www.main.events.KarEventListener;
-import vip.mcsj.www.main.events.PreventOffHand;
+import vip.mcsj.www.main.listener.DirectUpgradePaperEvent;
+import vip.mcsj.www.main.listener.KarEventListener;
+import vip.mcsj.www.main.listener.PreventOffHand;
 import vip.mcsj.www.utils.FileUtil;
 
 import java.util.logging.Logger;

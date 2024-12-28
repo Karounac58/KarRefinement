@@ -8,7 +8,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 import vip.mcsj.www.datamanager.EquipmentDataManager;
-import vip.mcsj.www.main.events.KarEventListener;
+import vip.mcsj.www.main.listener.KarEventListener;
 import vip.mcsj.www.main.KarRefinement;
 import vip.mcsj.www.utils.KarUtils;
 
@@ -16,7 +16,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.*;
 
-import static vip.mcsj.www.main.events.KarEventListener.*;
+import static vip.mcsj.www.main.listener.KarEventListener.*;
 
 public class KarForgeGui {
     public static void initInv(Inventory inv) {

@@ -1,13 +1,11 @@
-package vip.mcsj.www.main.events;
+package vip.mcsj.www.main.listener;
 
 import org.bukkit.Material;
-import org.bukkit.entity.Item;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.*;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.PlayerInventory;
 import vip.mcsj.www.datamanager.EquipmentDataManager;
 
 public class PreventOffHand implements Listener {

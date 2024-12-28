@@ -1,50 +1,32 @@
-package vip.mcsj.www.main.events;
+package vip.mcsj.www.main.listener;
 
-import de.tr7zw.nbtapi.NBT;
 import de.tr7zw.nbtapi.NBTItem;
-import de.tr7zw.nbtapi.iface.ReadWriteNBT;
-import jdk.swing.interop.SwingInterOpUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
-import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.*;
 import org.bukkit.event.player.PlayerItemDamageEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
-import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
 import vip.mcsj.www.datamanager.*;
-import vip.mcsj.www.effect.CrownEffect;
-import vip.mcsj.www.effect.CrownEffect2;
-import vip.mcsj.www.effect.CrownEffect3;
-import vip.mcsj.www.effect.CrownEffect4;
 import vip.mcsj.www.gui.KarForgeGui;
 import vip.mcsj.www.gui.KarForgeInvHolder;
 import vip.mcsj.www.gui.KarRefinementGui;
 import vip.mcsj.www.gui.KarRefinementInvHolder;
 import vip.mcsj.www.main.KarRefinement;
-import vip.mcsj.www.object.InfiniteSoul;
 import vip.mcsj.www.object.SpeStone;
 import vip.mcsj.www.utils.KarUtils;
 import static vip.mcsj.www.datamanager.EquipmentDataManager.*;
-import static vip.mcsj.www.utils.KarUtils.*;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -221,6 +203,7 @@ public class KarEventListener implements Listener {
         }
     }
 
+
     @EventHandler
     public void onPlayerDamageOtherEvent(EntityDamageByEntityEvent e){
         if (e.getDamager() instanceof Player && e.getEntity() instanceof Player) {
@@ -233,10 +216,12 @@ public class KarEventListener implements Listener {
             if(!canRefinementEquipment.get("Hand").contains(itemInUse.getType().name().toUpperCase())){
                 return;
             }
+            System.out.println("落凤石：淬炼物品");
             NBTItem nbtItem = new NBTItem(itemInUse);
             if(!nbtItem.hasTag("lfs")){
                 return;
             }
+            attacker.sendMessage("落凤石：nbt");
             int i = nbtItem.getInteger("lfs");
             switch (i){
                 case 1:
@@ -251,6 +236,8 @@ public class KarEventListener implements Listener {
                 case 4:
                     victim.setFireTicks(40*20);
                     break;
+                case 5:
+                    victim.setFireTicks(50*20);
             }
         }
     }

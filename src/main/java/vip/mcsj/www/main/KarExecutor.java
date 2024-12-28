@@ -27,86 +27,101 @@ import vip.mcsj.www.utils.KarUtils;
 import java.awt.*;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
-import java.util.Arrays;
-import java.util.HashMap;
+import java.util.*;
 import java.util.List;
-import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class KarExecutor implements CommandExecutor, TabCompleter {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
         if (args.length == 0) {
-            return false;
+            return true;
         }
-
-        if (args[0].equals("givestone")) {
+        //只有一个子命令
+        if(args.length == 1){
+            Player p = (Player) sender;
+            switch (args[0]){
+                case "adminup":
+                    ItemStack itemInMainHand = p.getInventory().getItemInMainHand();
+                    if (EquipmentDataManager.isEquipmentLegal(itemInMainHand)) {
+                        EquipmentDataManager manager = new EquipmentDataManager(itemInMainHand,p);
+                        manager.injuryUpStar();
+                        p.playSound(p.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
+                        return true;
+                    }
+                    break;
+                case "reload":
+                    reloadConfig();
+                    p.sendMessage("§a§l配置文件重载成功");
+                    break;
+                case "getnbt":
+                    ItemStack invItem = p.getInventory().getItemInMainHand();
+                    int a = new NBTItem(invItem).getInteger(args[1]);
+                    p.sendMessage(String.valueOf(a));
+                    break;
+                case "clearlore":
+                    ItemStack invItem1 = p.getInventory().getItemInMainHand();
+                    ItemMeta itemMeta = invItem1.getItemMeta();
+                    List<String> lores = itemMeta.getLore();
+                    lores.clear();
+                    itemMeta.setLore(lores);
+                    invItem1.setItemMeta(itemMeta);
+                    return true;
+            }
+        }
+        //有多个子命令
+        if(args.length >= 2){
             Player p = Bukkit.getPlayer(args[1]);
             if (p == null) {
-                return false;
-            }
-            StoneDataManager manager = new StoneDataManager(args[2]);
-            ItemStack stone = manager.createStone();
-            if (stone == null) {
-                p.sendMessage(ChatColor.RED + "没有这个淬炼石");
+                sender.sendMessage("§c找不到这个玩家");
                 return true;
             }
-            int i = Integer.parseInt(args[3]);
-            for (int j = 0; j < i; j++) {
-                p.getInventory().addItem(manager.createStone());
+            switch(args[0].toLowerCase()){
+                case "givestone":
+                    StoneDataManager stoneManager = new StoneDataManager(args[2]);
+                    ItemStack stone = stoneManager.createStone();
+                    if (stone == null) {
+                        p.sendMessage(ChatColor.RED + "没有这个淬炼石");
+                        return true;
+                    }
+                    int i = Integer.parseInt(args[3]);
+                    for (int j = 0; j < i; j++) {
+                        p.getInventory().addItem(stoneManager.createStone());
+                    }
+                    break;
+                case "givepaper":
+                    PaperDataManager paperDataManager = new PaperDataManager(args[2]);
+                    p.getInventory().addItem(paperDataManager.createProtectedPaper());
+                    break;
+                case "givedupaper":
+                    p.getInventory().addItem(DUPaperDataManager.createDUPaper(args[2]));
+                    break;
+                case "givespestone":
+                    SpecialStoneDataManager speStoneManager = new SpecialStoneDataManager(args[2]);
+                    p.getInventory().addItem(speStoneManager.createSpeStone());
+                    break;
+                case "givesoul":
+                    InfiniteSoulManager soulManager = new InfiniteSoulManager(args[2]);
+                    p.getInventory().addItem(soulManager.createInfiniteSoul());
+                    break;
+                case "setnbt":
+                    ItemStack invItem = p.getInventory().getItemInMainHand();
+                    NBT.modify(invItem, nbt -> {
+                        nbt.setInteger(args[1], Integer.parseInt(args[2]));
+                    });
+                    break;
+                case "opengui":
+                    Inventory inv = Bukkit.createInventory(new KarRefinementInvHolder(), 54, "§c淬炼界面");
+                    KarRefinementGui.setInvInitial(inv);
+                    p.openInventory(inv);
+                    break;
+                case "openforgegui":
+                    Inventory inv1 = Bukkit.createInventory(new KarForgeInvHolder(),45,"§c§l锻造界面");
+                    KarForgeGui.initInv(inv1);
+                    p.openInventory(inv1);
             }
-            return true;
-        }
-        if (args[0].equals("givepaper")) {
-            Player p = Bukkit.getPlayer(args[1]);
-            if (p == null) {
-                return false;
-            }
-            PaperDataManager paperDataManager = new PaperDataManager(args[2]);
-            p.getInventory().addItem(paperDataManager.createProtectedPaper());
-            return true;
-        }
-        if(args[0].equals("givedupaper")){
-            Player p = Bukkit.getPlayer(args[1]);
-            if(p == null){
-                return false;
-            }
-            p.getInventory().addItem(DUPaperDataManager.createDUPaper(args[2]));
-            return true;
-        }
-        if (args[0].equals("givespestone")) {
-            Player p = Bukkit.getPlayer(args[1]);
-            if (p == null) {
-                return false;
-            }
-            SpecialStoneDataManager speStoneManager = new SpecialStoneDataManager(args[2]);
-            p.getInventory().addItem(speStoneManager.createSpeStone());
-            return true;
-        }
-        if(args[0].equals("givesoul")){
-            Player p = Bukkit.getPlayer(args[1]);
-            if (p == null) {
-                return false;
-            }
-            InfiniteSoulManager soulManager = new InfiniteSoulManager(args[2]);
-            p.getInventory().addItem(soulManager.createInfiniteSoul());
-            return true;
-        }
-        if (args[0].equals("adminup")) {
-            Player p = (Player) sender;
-            ItemStack itemInMainHand = p.getInventory().getItemInMainHand();
-            if (EquipmentDataManager.isEquipmentLegal(itemInMainHand)) {
-                EquipmentDataManager manager = new EquipmentDataManager(itemInMainHand,p);
-                manager.injuryUpStar();
-                p.playSound(p.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
-                return true;
-            }
-        }
-        if(args[0].equals("reload")){
-            Player p = (Player) sender;
-            reloadConfig();
-            p.sendMessage("§a§l配置文件重载成功");
         }
 //        if(args[0].equals("admindown")){
 //            Player p = (Player)sender;
@@ -123,54 +138,6 @@ public class KarExecutor implements CommandExecutor, TabCompleter {
 //                return true;
 //            }
 //        }
-        if (args[0].equals("getnbt")) {
-            Player p = (Player) sender;
-            ItemStack invItem = p.getInventory().getItemInMainHand();
-//            int a = NBT.get(invItem, nbt -> nbt.getInteger(args[1]));
-            int a = new NBTItem(invItem).getInteger(args[1]);
-            p.sendMessage(String.valueOf(a));
-            return true;
-        }
-
-        if (args[0].equals("clearlore")) {
-            Player p = (Player) sender;
-            ItemStack invItem = p.getInventory().getItemInMainHand();
-            ItemMeta itemMeta = invItem.getItemMeta();
-            List<String> lores = itemMeta.getLore();
-            lores.clear();
-            itemMeta.setLore(lores);
-            invItem.setItemMeta(itemMeta);
-            return true;
-        }
-        if (args[0].equals("setnbt")) {
-            Player p = (Player) sender;
-            ItemStack invItem = p.getInventory().getItemInMainHand();
-            NBT.modify(invItem, nbt -> {
-                nbt.setInteger(args[1], Integer.parseInt(args[2]));
-            });
-            return true;
-        }
-
-        if (args[0].equals("opengui")) {
-            Player p = Bukkit.getPlayer(args[1]);
-            if (p == null) {
-                return false;
-            }
-            Inventory inv = Bukkit.createInventory(new KarRefinementInvHolder(), 54, "§c淬炼界面");
-            KarRefinementGui.setInvInitial(inv);
-            p.openInventory(inv);
-            return true;
-        }
-
-        if(args[0].equals("openforgegui")){
-            Player p = Bukkit.getPlayer(args[1]);
-            if (p == null) {
-                return false;
-            }
-            Inventory inv = Bukkit.createInventory(new KarForgeInvHolder(),45,"§c§l锻造界面");
-            KarForgeGui.initInv(inv);
-            p.openInventory(inv);
-        }
 
 
 //        if (args[0].equals("test")) {
@@ -192,7 +159,46 @@ public class KarExecutor implements CommandExecutor, TabCompleter {
     @Nullable
     @Override
     public List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] strings) {
-        return null;
+        List<String> completions = new ArrayList<>();
+        if(strings.length == 1){
+            completions.add("help");
+            completions.add("givestone");
+            completions.add("givepaper");
+            completions.add("givedupaper");
+            completions.add("givespestone");
+            completions.add("givesoul");
+            completions.add("setnbt");
+            completions.add("opengui");
+            completions.add("openforgegui");
+            completions.add("adminup");
+            completions.add("reload");
+            completions.add("getnbt");
+            completions.add("clearlore");
+        }else if(strings.length == 2){
+            completions.addAll(Bukkit.getOnlinePlayers().stream().map(Player::getName).collect(Collectors.toList()));
+        }else if(strings.length == 3){
+            switch (strings[0].toLowerCase()){
+                case "givestone":
+                    completions.add("<淬炼石名> <数量>");
+                    break;
+                case "givepaper":
+                    completions.add("<保护符名>");
+                    break;
+                case "givedupaper":
+                    completions.add("<直升符名>");
+                    break;
+                case "givespestone":
+                    completions.add("<宝石名>");
+                    break;
+                case "givesoul":
+                    completions.add("<精魂名>");
+                    break;
+                case "setnbt":
+                    completions.add("<nbt键名> <nbt值>");
+                    break;
+            }
+        }
+        return completions;
     }
     public void reloadConfig(){
         StoneDataManager.init();

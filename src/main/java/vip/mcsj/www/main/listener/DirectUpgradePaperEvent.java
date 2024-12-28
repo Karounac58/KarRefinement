@@ -1,4 +1,4 @@
-package vip.mcsj.www.main.events;
+package vip.mcsj.www.main.listener;
 
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -8,7 +8,6 @@ import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import vip.mcsj.www.datamanager.DUPaperDataManager;
-import vip.mcsj.www.datamanager.EffectDataManager;
 import vip.mcsj.www.datamanager.EquipmentDataManager;
 import vip.mcsj.www.utils.KarUtils;
 
