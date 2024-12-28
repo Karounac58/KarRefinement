@@ -6,6 +6,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import vip.mcsj.www.datamanager.*;
 import vip.mcsj.www.main.listener.DirectUpgradePaperEvent;
+import vip.mcsj.www.main.listener.FurnaceListener;
 import vip.mcsj.www.main.listener.KarEventListener;
 import vip.mcsj.www.main.listener.PreventOffHand;
 import vip.mcsj.www.utils.FileUtil;
@@ -23,6 +24,7 @@ public class KarRefinement extends JavaPlugin{
         Bukkit.getPluginManager().registerEvents(new KarEventListener(),this);
         Bukkit.getPluginManager().registerEvents(new PreventOffHand(),this);
         Bukkit.getPluginManager().registerEvents(new DirectUpgradePaperEvent(),this);
+        Bukkit.getPluginManager().registerEvents(new FurnaceListener(),this);
         Bukkit.getPluginCommand("karrefinement").setExecutor(new KarExecutor());
         FileUtil.initCustomFile("stone.yml");
         FileUtil.initCustomFile("spestone.yml");
