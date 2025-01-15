@@ -1,6 +1,7 @@
 package vip.mcsj.www.main;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -10,13 +11,18 @@ import vip.mcsj.www.main.listener.FurnaceListener;
 import vip.mcsj.www.main.listener.KarEventListener;
 import vip.mcsj.www.main.listener.PreventOffHand;
 import vip.mcsj.www.utils.FileUtil;
+import vip.mcsj.www.utils.KarUtils;
+import vip.mcsj.www.utils.ReflectionUtils;
 
+import java.util.Arrays;
 import java.util.logging.Logger;
 
 public class KarRefinement extends JavaPlugin{
     private static final Logger log = Logger.getLogger("Minecraft");
     public static JavaPlugin instance;
 
+    //12星淬炼特效
+    public static Particle[] particles = new Particle[3];
     @Override
     public void onEnable(){
         instance = this;
@@ -54,6 +60,9 @@ public class KarRefinement extends JavaPlugin{
         DUPaperDataManager.init();
         initThread();
 
+
+        getParticle();
+
         log.info(String.format("[%s] - 插件启动成功...",getDescription().getName()));
 
     }
@@ -69,4 +78,10 @@ public class KarRefinement extends JavaPlugin{
         }.runTaskTimer(this,0,80);
     }
 
+    public void getParticle(){
+        int[] spigotVersion = ReflectionUtils.getSpigotVersion();
+        particles[0] = KarUtils.autoTwelveParticle(spigotVersion);
+        particles[1] = KarUtils.autoFifteenParticle(spigotVersion);
+        particles[2] = KarUtils.autoEighteenParticle(spigotVersion);
+    }
 }

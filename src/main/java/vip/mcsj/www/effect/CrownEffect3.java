@@ -68,7 +68,7 @@ public class CrownEffect3 extends BukkitRunnable {
 
         //十二星特效:degree1 degree2 degree3
         Location playerEffectLocation3 = playerLocation.clone().add(1.5*x2,y1,1.5*z2);
-        playerEffectLocation3.getWorld().spawnParticle(Particle.VILLAGER_ANGRY,playerEffectLocation3,3,0.0D,0.0D,0.0D,0.0D);
+        playerEffectLocation3.getWorld().spawnParticle(KarRefinement.particles[0],playerEffectLocation3,3,0.0D,0.0D,0.0D,0.0D);
         if (degree >= 360) {
             degree = 0;
         } else {

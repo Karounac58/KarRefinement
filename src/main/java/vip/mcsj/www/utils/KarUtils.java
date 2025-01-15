@@ -1,6 +1,7 @@
 package vip.mcsj.www.utils;
 
 import net.md_5.bungee.api.ChatColor;
+import org.bukkit.Particle;
 import org.bukkit.inventory.ItemStack;
 
 import java.awt.*;
@@ -128,5 +129,29 @@ public class KarUtils {
         Random rand = new Random();
         double shit = rand.nextDouble();
         return shit * bound;
+    }
+
+    public static Particle autoTwelveParticle(int[] versions){
+        if(versions[1] <= 20){
+            return Particle.valueOf("VILLAGER_ANGRY");
+        }else{
+            return Particle.valueOf("ANGRY_VILLAGER");
+        }
+    }
+
+    public static Particle autoFifteenParticle(int[] versions){
+        if(versions[1] <= 20){
+            return Particle.valueOf("REDSTONE");
+        }else{
+            return Particle.valueOf("DUST");
+        }
+    }
+
+    public static Particle autoEighteenParticle(int[] versions){
+        if(versions[1] <= 20){
+            return Particle.valueOf("SMOKE_NORMAL");
+        }else{
+            return Particle.valueOf("SMOKE");
+        }
     }
 }

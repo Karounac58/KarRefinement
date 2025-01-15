@@ -79,7 +79,7 @@ public class CrownEffect5 extends BukkitRunnable {
         playEffectLocation2.getWorld().spawnParticle(Particle.SOUL_FIRE_FLAME,playEffectLocation2,1,0.0D,0.0D,0.0D,0.0D);
         //12星特效:degree2 degree3
         Location playerEffectLocation3 = playerLocation.clone().add(1.5*x2,y1,1.5*z2);
-        playerEffectLocation3.getWorld().spawnParticle(Particle.VILLAGER_ANGRY,playerEffectLocation3,3,0.0D,0.0D,0.0D,0.0D);
+        playerEffectLocation3.getWorld().spawnParticle(KarRefinement.particles[0],playerEffectLocation3,3,0.0D,0.0D,0.0D,0.0D);
 
         //15星特效
         loc2.setPitch(0.0F);
@@ -99,17 +99,17 @@ public class CrownEffect5 extends BukkitRunnable {
             int rgb = java.awt.Color.HSBtoRGB(shit, 1.0f, 1.0f);
             Color color = Color.fromRGB((rgb >> 16) & 0xFF, (rgb >> 8) & 0xFF, rgb & 0xFF);
             Particle.DustOptions options = new Particle.DustOptions(color,1.0F);
-            loc2.getWorld().spawnParticle(Particle.REDSTONE,loc2,1,0.3,0,0.3,options);
-            locc1.getWorld().spawnParticle(Particle.REDSTONE,locc1,1,0.3,0,0.3,options);
-            locc2.getWorld().spawnParticle(Particle.REDSTONE,locc2,1,0.3,0,0.3,options);
-            locc3.getWorld().spawnParticle(Particle.REDSTONE,locc3,1,0.3,0,0.3,options);
+            loc2.getWorld().spawnParticle(KarRefinement.particles[1],loc2,1,0.3,0,0.3,options);
+            locc1.getWorld().spawnParticle(KarRefinement.particles[1],locc1,1,0.3,0,0.3,options);
+            locc2.getWorld().spawnParticle(KarRefinement.particles[1],locc2,1,0.3,0,0.3,options);
+            locc3.getWorld().spawnParticle(KarRefinement.particles[1],locc3,1,0.3,0,0.3,options);
         }
         Location pLoc = player.getLocation();
         //18星特效
         for (int i = a.length - 1; i >= 0; i--) {
             for (int j = a[i].length - 1; j >= 0; j--) {
                 if(a[i][j] != 0){
-                    draw(pLoc,pLoc.clone().add(-a[i].length * 1.0 / 10 + j * 1.0 / 5 + 0.1, 0.2, 0),1.8 - i * 1.0 / 5 + 0.2,Particle.SMOKE_NORMAL,20);
+                    draw(pLoc,pLoc.clone().add(-a[i].length * 1.0 / 10 + j * 1.0 / 5 + 0.1, 0.2, 0),1.8 - i * 1.0 / 5 + 0.2,KarRefinement.particles[2], 20);
                 }
             }
         }

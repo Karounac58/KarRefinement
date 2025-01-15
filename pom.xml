@@ -6,7 +6,7 @@
 
     <groupId>vip.mcsj.www</groupId>
     <artifactId>KarRefinement</artifactId>
-    <version>1.0-beta4</version>
+    <version>1.0-beta5</version>
 
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
@@ -62,6 +62,7 @@
     </dependencies>
 
     <build>
+        <outputDirectory>D:\laojian\服务器\1.20.1\plugins</outputDirectory>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -99,7 +100,35 @@
 <!--                    <target>17</target>-->
 <!--                </configuration>-->
 <!--            </plugin>-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>3.3.0</version>
+                <executions>
+                    <execution>
+                        <id>copy-jar</id>
+                        <phase>package</phase> <!-- 在打包阶段执行 -->
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>${project.groupId}</groupId>
+                                    <artifactId>${project.artifactId}</artifactId>
+                                    <version>${project.version}</version>
+                                    <type>jar</type>
+                                    <outputDirectory>D:\laojian\服务器\服务器\测试服\1.20.1世纪单端测试服\plugins</outputDirectory>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
+
+
+
 
         <pluginManagement>
             <plugins>
