@@ -9,8 +9,9 @@
     <version>1.0-beta5</version>
 
     <properties>
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
     </properties>
     <repositories>
         <repository>
@@ -62,7 +63,6 @@
     </dependencies>
 
     <build>
-        <outputDirectory>D:\laojian\服务器\1.20.1\plugins</outputDirectory>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -118,7 +118,7 @@
                                     <artifactId>${project.artifactId}</artifactId>
                                     <version>${project.version}</version>
                                     <type>jar</type>
-                                    <outputDirectory>D:\laojian\服务器\服务器\测试服\1.20.1世纪单端测试服\plugins</outputDirectory>
+                                    <outputDirectory>C:\Users\21329\Desktop\MC服务器\服务器\1.20.1CenturyCraft\plugins</outputDirectory>
                                 </artifactItem>
                             </artifactItems>
                         </configuration>
@@ -126,9 +126,6 @@
                 </executions>
             </plugin>
         </plugins>
-
-
-
 
         <pluginManagement>
             <plugins>

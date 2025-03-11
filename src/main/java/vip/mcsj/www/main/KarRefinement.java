@@ -3,34 +3,45 @@ package vip.mcsj.www.main;
 import org.bukkit.Bukkit;
 import org.bukkit.Particle;
 import org.bukkit.entity.Player;
+import org.bukkit.event.HandlerList;
+import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.checkerframework.checker.units.qual.A;
 import vip.mcsj.www.datamanager.*;
+import vip.mcsj.www.gui.KarCompoundStoneGui;
 import vip.mcsj.www.main.listener.DirectUpgradePaperEvent;
 import vip.mcsj.www.main.listener.FurnaceListener;
+import vip.mcsj.www.main.listener.KarCompoundGUIListener;
 import vip.mcsj.www.main.listener.KarEventListener;
-import vip.mcsj.www.main.listener.PreventOffHand;
+import vip.mcsj.www.object.KarHandler;
 import vip.mcsj.www.utils.FileUtil;
 import vip.mcsj.www.utils.KarUtils;
 import vip.mcsj.www.utils.ReflectionUtils;
 
-import java.util.Arrays;
+import java.net.http.WebSocket;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 
 public class KarRefinement extends JavaPlugin{
     private static final Logger log = Logger.getLogger("Minecraft");
     public static JavaPlugin instance;
-
     //12星淬炼特效
     public static Particle[] particles = new Particle[3];
+
     @Override
     public void onEnable(){
         instance = this;
         log.info(String.format("[%s] - 插件启动中...",getDescription().getName()));
         Bukkit.getPluginManager().registerEvents(new KarEventListener(),this);
-        Bukkit.getPluginManager().registerEvents(new PreventOffHand(),this);
         Bukkit.getPluginManager().registerEvents(new DirectUpgradePaperEvent(),this);
         Bukkit.getPluginManager().registerEvents(new FurnaceListener(),this);
+        Bukkit.getPluginManager().registerEvents(new KarCompoundGUIListener(),this);
+
         Bukkit.getPluginCommand("karrefinement").setExecutor(new KarExecutor());
         FileUtil.initCustomFile("stone.yml");
         FileUtil.initCustomFile("spestone.yml");
@@ -58,6 +69,7 @@ public class KarRefinement extends JavaPlugin{
         SpecialStoneDataManager.init();
         InfiniteSoulManager.init();
         DUPaperDataManager.init();
+        KarCompoundStoneGui.initCompoundData();
         initThread();
 
 

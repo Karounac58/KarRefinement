@@ -1,0 +1,12 @@
+putong:
+  id: 1
+  compound: zhongdeng
+  chance: 100
+zhongdeng:
+  id: 2
+  compound: gaodeng
+  chance: 90
+gaodeng:
+  id: 3
+  compound: wanmei
+  chance: 50

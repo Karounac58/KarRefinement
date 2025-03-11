@@ -61,7 +61,7 @@ public class FileUtil {
         }else{
             try{
                 FileConfiguration dataConfig = YamlConfiguration.loadConfiguration(dataFile);
-                dataConfig.save(dataFile);
+                instance.saveResource(fileName,false);
             }catch (Exception e){
                 e.printStackTrace();
             }

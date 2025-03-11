@@ -18,10 +18,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import vip.mcsj.www.datamanager.*;
-import vip.mcsj.www.gui.KarForgeGui;
-import vip.mcsj.www.gui.KarForgeInvHolder;
-import vip.mcsj.www.gui.KarRefinementGui;
-import vip.mcsj.www.gui.KarRefinementInvHolder;
+import vip.mcsj.www.gui.*;
 import vip.mcsj.www.utils.KarUtils;
 
 import java.awt.*;
@@ -121,6 +118,12 @@ public class KarExecutor implements CommandExecutor, TabCompleter {
                     Inventory inv1 = Bukkit.createInventory(new KarForgeInvHolder(),45,"§c§l锻造界面");
                     KarForgeGui.initInv(inv1);
                     p.openInventory(inv1);
+                    break;
+                case "opencompoundgui":
+                    Inventory inv2 = Bukkit.createInventory(new KarCompoundStoneInvHolder(),54,"§c§l宝石合成界面");
+                    KarCompoundStoneGui.initial(inv2);
+                    KarCompoundStoneGui.openGuiForPlayer(inv2,p);
+                    break;
             }
         }
 //        if(args[0].equals("admindown")){
@@ -209,5 +212,6 @@ public class KarExecutor implements CommandExecutor, TabCompleter {
         SpecialStoneDataManager.init();
         InfiniteSoulManager.init();
         DUPaperDataManager.init();
+        KarCompoundStoneGui.initCompoundData();
     }
 }

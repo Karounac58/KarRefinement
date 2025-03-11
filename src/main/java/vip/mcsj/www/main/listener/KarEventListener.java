@@ -53,6 +53,7 @@ public class KarEventListener implements Listener {
     //淬炼菜单关闭后
     public static ConcurrentHashMap<Player,ItemStack[]> closeItems = new ConcurrentHashMap<>();
 
+
     /**
      * 保护符事件
      * @param e
