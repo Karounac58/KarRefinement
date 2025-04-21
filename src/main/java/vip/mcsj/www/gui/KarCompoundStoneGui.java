@@ -19,7 +19,6 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.checkerframework.checker.units.qual.A;
 import vip.mcsj.www.datamanager.StoneDataManager;
 import vip.mcsj.www.main.KarRefinement;
 import vip.mcsj.www.main.listener.KarEventListener;
@@ -30,7 +29,10 @@ import vip.mcsj.www.utils.FileUtil;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
+import static vip.mcsj.www.main.KarRefinement.cm;
+import static vip.mcsj.www.main.KarRefinement.cs;
 import static vip.mcsj.www.main.listener.KarEventListener.judgeForgeInvCloseOrNot;
 import static vip.mcsj.www.main.listener.KarEventListener.judgeInvForgeOrNot;
 
@@ -57,7 +59,7 @@ public class KarCompoundStoneGui implements Listener {
             Compound compound = new Compound(id,key,higherStoneKey,chance);
             compoundMap.put(key,compound);
         }
-        compounds = compoundMap.values().stream().sorted(Comparator.comparingInt(Compound::getId)).toList();
+        compounds = compoundMap.values().stream().sorted(Comparator.comparingInt(Compound::getId)).collect(Collectors.toList());
     }
 
     public static void initial(Inventory inv) {
@@ -68,11 +70,11 @@ public class KarCompoundStoneGui implements Listener {
                 continue;
             }
             if (redIndexs.contains(i)) {
-                inv.setItem(i, new ItemStack(Material.RED_STAINED_GLASS_PANE));
+                inv.setItem(i, cm.getItems().get(0));
             } else if(greenIndexs.contains(i)){
-                inv.setItem(i, new ItemStack(Material.GREEN_STAINED_GLASS_PANE));
+                inv.setItem(i, cm.getItems().get(1));
             }else{
-                inv.setItem(i,new ItemStack(Material.GRAY_STAINED_GLASS_PANE));
+                inv.setItem(i,cm.getItems().get(3));
             }
         }
     }
@@ -148,8 +150,8 @@ public class KarCompoundStoneGui implements Listener {
             @Override
             public void run() {
                 for (int i = 0; i < indexs.size(); i++) {
-                    inv.setItem(indexs.get(i), new ItemStack(Material.RED_STAINED_GLASS_PANE));
-                    p.playSound(p.getLocation(), Sound.ENTITY_FIREWORK_ROCKET_BLAST, 1, 1);
+                    inv.setItem(indexs.get(i), cm.getItems().get(1));
+                    p.playSound(p.getLocation(), cs.getSounds().get(0), 1, 1);
                     p.updateInventory();
                     try {
                         Thread.sleep(500);
@@ -168,7 +170,7 @@ public class KarCompoundStoneGui implements Listener {
         }
         Double chance = compoundMap.get(key).getChance();
         Random rand = new Random();
-        if(rand.nextDouble(100) < chance){
+        if(rand.nextDouble()*100 < chance){
             Compound com = new Compound();
             for (Compound compound : compounds) {
                 if(compound.getStoneKey().equals(key)){
@@ -177,7 +179,7 @@ public class KarCompoundStoneGui implements Listener {
             }
             if(com.getHigherStoneKey() != null) {
                 StoneDataManager sdm = new StoneDataManager(com.getHigherStoneKey());
-                p.playSound(p.getLocation(), Sound.ENTITY_FIREWORK_ROCKET_BLAST, 1, 1);
+                p.playSound(p.getLocation(), cs.getSounds().get(0), 1, 1);
                 inv.setItem(16,subtractItemAmount(inv.getItem(16)));
                 inv.setItem(34,subtractItemAmount(inv.getItem(34)));
                 inv.setItem(19,sdm.createStone());

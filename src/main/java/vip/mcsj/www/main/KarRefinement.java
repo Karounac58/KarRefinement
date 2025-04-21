@@ -3,28 +3,25 @@ package vip.mcsj.www.main;
 import org.bukkit.Bukkit;
 import org.bukkit.Particle;
 import org.bukkit.entity.Player;
-import org.bukkit.event.HandlerList;
-import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.checkerframework.checker.units.qual.A;
 import vip.mcsj.www.datamanager.*;
+import vip.mcsj.www.effect.ParticleResource;
+import vip.mcsj.www.gui.GuiResource;
 import vip.mcsj.www.gui.KarCompoundStoneGui;
 import vip.mcsj.www.main.listener.DirectUpgradePaperEvent;
 import vip.mcsj.www.main.listener.FurnaceListener;
 import vip.mcsj.www.main.listener.KarCompoundGUIListener;
 import vip.mcsj.www.main.listener.KarEventListener;
-import vip.mcsj.www.object.KarHandler;
+import vip.mcsj.www.object.MCVersions;
+import vip.mcsj.www.papi.SuitLevel;
 import vip.mcsj.www.utils.FileUtil;
 import vip.mcsj.www.utils.KarUtils;
 import vip.mcsj.www.utils.ReflectionUtils;
+import vip.mcsj.www.version.CustomMaterial;
+import vip.mcsj.www.version.CustomParticle;
+import vip.mcsj.www.version.CustomSounds;
 
-import java.net.http.WebSocket;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 
 public class KarRefinement extends JavaPlugin{
@@ -33,6 +30,13 @@ public class KarRefinement extends JavaPlugin{
     //12星淬炼特效
     public static Particle[] particles = new Particle[3];
 
+    public static CustomMaterial cm = new GuiResource().getMaterial();
+
+    public static CustomSounds cs = new GuiResource().getSound();
+
+    public static CustomParticle cp = new ParticleResource().get();
+
+    public static MCVersions mcVersions = ReflectionUtils.judgeVersion();
     @Override
     public void onEnable(){
         instance = this;
@@ -72,8 +76,9 @@ public class KarRefinement extends JavaPlugin{
         KarCompoundStoneGui.initCompoundData();
         initThread();
 
-
-        getParticle();
+        if(Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")){
+            new SuitLevel(this).register();
+        }
 
         log.info(String.format("[%s] - 插件启动成功...",getDescription().getName()));
 
@@ -90,10 +95,7 @@ public class KarRefinement extends JavaPlugin{
         }.runTaskTimer(this,0,80);
     }
 
-    public void getParticle(){
-        int[] spigotVersion = ReflectionUtils.getSpigotVersion();
-        particles[0] = KarUtils.autoTwelveParticle(spigotVersion);
-        particles[1] = KarUtils.autoFifteenParticle(spigotVersion);
-        particles[2] = KarUtils.autoEighteenParticle(spigotVersion);
+    public void check(){
+
     }
 }

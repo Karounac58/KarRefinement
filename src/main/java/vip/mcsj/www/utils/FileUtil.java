@@ -57,7 +57,6 @@ public class FileUtil {
     public static void FileInitialize(String fileName){
         File dataFile = new File(instance.getDataFolder(),fileName);
         if(dataFile.exists()){
-            return;
         }else{
             try{
                 FileConfiguration dataConfig = YamlConfiguration.loadConfiguration(dataFile);

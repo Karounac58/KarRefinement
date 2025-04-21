@@ -19,6 +19,8 @@ import vip.mcsj.www.main.KarRefinement;
 import vip.mcsj.www.object.Stone;
 import vip.mcsj.www.utils.KarUtils;
 
+import static vip.mcsj.www.main.KarRefinement.cm;
+import static vip.mcsj.www.main.KarRefinement.cs;
 import static vip.mcsj.www.main.listener.KarEventListener.*;
 
 import java.math.BigDecimal;
@@ -63,9 +65,9 @@ public class KarRefinementGui {
                 glowstone.setItemMeta(itemMeta);
                 inv.setItem(49, glowstone);
             } else if (indexs.contains(i)) {
-                inv.setItem(i, new ItemStack(Material.RED_STAINED_GLASS_PANE));
+                inv.setItem(i, new ItemStack(cm.getItems().get(2)));
             } else {
-                inv.setItem(i, new ItemStack(Material.GRAY_STAINED_GLASS_PANE));
+                inv.setItem(i, new ItemStack(cm.getItems().get(3)));
             }
         }
     }
@@ -108,7 +110,7 @@ public class KarRefinementGui {
                 judgeInvRefinementOrNot.put(p, 1);
                 for (int i = 0; i < size; i++) {
                     //标识已关闭菜单,关闭即停止动画
-                    if (Objects.requireNonNullElse(judgeInvCloseOrNot.get(p), 0) == 0) {
+                    if (judgeInvCloseOrNot.get(p) == null || judgeInvCloseOrNot.get(p) == 0) {
                         return;
                     }
                     Random random = new Random();
@@ -120,12 +122,12 @@ public class KarRefinementGui {
                     while (!lists.contains(Integer.valueOf(h)) || removeIndex.contains(Integer.valueOf(h))) {
                         h = random.nextInt(54);
                     }
-                    inv.setItem(h, new ItemStack(Material.WHITE_STAINED_GLASS_PANE));
+                    inv.setItem(h, cm.getItems().get(0));
                     p.updateInventory();
                     lists.remove(Integer.valueOf(h));
                     KarEventListener.invs.put(p, inv);
                     try {
-                        p.playSound(p.getLocation(), Sound.ENTITY_FIREWORK_ROCKET_BLAST, 1, 1);
+                        p.playSound(p.getLocation(), cs.getSounds().get(0), 1, 1);
                         Thread.sleep(100);
                     } catch (InterruptedException e) {
                         e.printStackTrace();

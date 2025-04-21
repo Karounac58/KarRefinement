@@ -2,24 +2,17 @@ package vip.mcsj.www.datamanager;
 
 import de.tr7zw.nbtapi.NBT;
 import de.tr7zw.nbtapi.NBTItem;
-import jdk.swing.interop.SwingInterOpUtils;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 import vip.mcsj.www.object.Level;
 import vip.mcsj.www.object.Stone;
 import vip.mcsj.www.utils.FileUtil;
 import vip.mcsj.www.utils.KarUtils;
 
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 
 /**
@@ -83,6 +76,7 @@ public class EquipmentDataManager {
 //        int refinementLevel = NBT.get(this.equipmentItem,nbt -> nbt.getInteger("refinement"));
         return new NBTItem(this.equipmentItem).getInteger("refinement");
     }
+
 
     /**
      * 剑上星方法
@@ -151,9 +145,9 @@ public class EquipmentDataManager {
             lores = new ArrayList<>();
         }
 
-        lores.add(KarUtils.applyTextFormatting(KarUtils.createColorGradientMessage("00FFFF", "FFFF00", "-----------"))
+        lores.add(KarUtils.applyTextFormatting(KarUtils.createColorGradientMessage(true))
                 + "§e§l装备淬炼"
-                + KarUtils.applyTextFormatting(KarUtils.createColorGradientMessage("FFFF00", "00FFFF", "-----------")));
+                + KarUtils.applyTextFormatting(KarUtils.createColorGradientMessage(false)));
         lores.addAll(mainLore);
         lores.addAll(extractLore);
         im.setLore(lores);

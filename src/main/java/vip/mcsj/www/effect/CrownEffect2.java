@@ -1,15 +1,14 @@
 package vip.mcsj.www.effect;
 
 import org.bukkit.Location;
-import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import vip.mcsj.www.datamanager.EffectDataManager;
 import vip.mcsj.www.main.KarRefinement;
+import vip.mcsj.www.version.CustomParticle;
 
-import java.util.Arrays;
-import java.util.List;
+import static vip.mcsj.www.main.KarRefinement.cp;
 
 /**
  * 王冠特效
@@ -66,10 +65,10 @@ public class CrownEffect2 extends BukkitRunnable {
         double radians = Math.toRadians(degree);
         //六星特效
         Location playEffectLocation = playerLocation.clone().add(0.5 * Math.cos(radians), 2D, 0.5 * Math.sin(radians));
-        playEffectLocation.getWorld().spawnParticle(Particle.FLAME,playEffectLocation,1,0.0D,0.0D,0.0D,0.0D);
+        playEffectLocation.getWorld().spawnParticle(cp.getParticles().get(0),playEffectLocation,1,0.0D,0.0D,0.0D,0.0D);
         //九星特效
         Location playEffectLocation2 = playerLocation.clone().add(0.9 * Math.cos(radians), 0.5*Math.acos(degree2), 0.9 * Math.sin(radians));
-        playEffectLocation2.getWorld().spawnParticle(Particle.SOUL_FIRE_FLAME,playEffectLocation2,1,0.0D,0.0D,0.0D,0.0D);
+        playEffectLocation2.getWorld().spawnParticle(cp.getParticles().get(0),playEffectLocation2,1,0.0D,0.0D,0.0D,0.0D);
 
 
 

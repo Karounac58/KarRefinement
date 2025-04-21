@@ -7,8 +7,6 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.checkerframework.checker.units.qual.A;
-import org.yaml.snakeyaml.Yaml;
 import vip.mcsj.www.object.SpeStone;
 import vip.mcsj.www.utils.FileUtil;
 import vip.mcsj.www.utils.KarUtils;
@@ -22,20 +20,8 @@ public class SpecialStoneDataManager {
     public static Set<String> nbtKeys = new HashSet<>();
 
     public static Set<Material> stoneMaterials = new HashSet<>();
-    //附加宝石伤害列表——等级：伤害
-    public static Map<Integer,Integer> specialDamageStoneList = new HashMap<>();
     //附加宝石防御列表
     public static Map<Integer,Integer> specialProtectStoneList = new HashMap<>();
-    //附加宝石伤害列表——宝石名：伤害
-    public static Map<String,Integer> specialDamageStoneList2 = new HashMap<>();
-    //附加宝石防御列表
-    public static Map<String,Integer> specialProtectStoneList2 = new HashMap<>();
-    //宝石名：等级
-    public static Map<String,Integer> specialStoneList = new HashMap<>();
-    //宝石名列表
-    public static List<String> specialStoneNameList = new ArrayList<>();
-    //伤害等级：宝石名
-    public static Map<Integer,String> specialDamageStoneToLevelList = new HashMap<>();
     //保护等级：宝石名
     public static Map<Integer,String> specialProtectStoneToLevelList = new HashMap<>();
 
@@ -213,9 +199,9 @@ public class SpecialStoneDataManager {
             lores = new ArrayList<>();
         }
 
-        lores.add(KarUtils.applyTextFormatting(KarUtils.createColorGradientMessage("00FFFF", "FFFF00", "-----------"))
+        lores.add(KarUtils.applyTextFormatting(KarUtils.createColorGradientMessage(true))
                 + "§e§l宝石镶嵌"
-                + KarUtils.applyTextFormatting(KarUtils.createColorGradientMessage("FFFF00", "00FFFF", "-----------")));
+                + KarUtils.applyTextFormatting(KarUtils.createColorGradientMessage(false)));
         lores.addAll(speStone.getEquipmentLore());
         for (SpeStone speStone1 : originSpeStoneList) {
             lores.addAll(speStone1.getEquipmentLore());
@@ -277,9 +263,9 @@ public class SpecialStoneDataManager {
             if(lores == null){
                 lores = new ArrayList<>();
             }
-            lores.add(KarUtils.applyTextFormatting(KarUtils.createColorGradientMessage("00FFFF","FFFF00","-----------"))
+            lores.add(KarUtils.applyTextFormatting(KarUtils.createColorGradientMessage(true))
                     +"§e§l宝石镶嵌"
-                    +KarUtils.applyTextFormatting(KarUtils.createColorGradientMessage("FFFF00","00FFFF","-----------")));
+                    +KarUtils.applyTextFormatting(KarUtils.createColorGradientMessage(false)));
             lores.add(stoneName + " §f- §a附加防御+§6"+stoneProtect);
             equipmentMeta.setLore(lores);
             equipmentItem.setItemMeta(equipmentMeta);
@@ -304,9 +290,9 @@ public class SpecialStoneDataManager {
                 }
             }
             lores.remove(nowStoneName + " §f- §a附加防御+§6"+nowStoneProtect);
-            lores.add(KarUtils.applyTextFormatting(KarUtils.createColorGradientMessage("00FFFF","FFFF00","-----------"))
+            lores.add(KarUtils.applyTextFormatting(KarUtils.createColorGradientMessage(true))
                     +"§e§l宝石镶嵌"
-                    +KarUtils.applyTextFormatting(KarUtils.createColorGradientMessage("FFFF00","00FFFF","-----------")));
+                    +KarUtils.applyTextFormatting(KarUtils.createColorGradientMessage(false)));
             lores.add(willStoneName + " §f- §a附加防御+§6"+willStoneProtect);
             equipmentMeta.setLore(lores);
             equipmentItem.setItemMeta(equipmentMeta);

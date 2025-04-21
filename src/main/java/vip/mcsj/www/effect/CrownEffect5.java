@@ -1,6 +1,5 @@
 package vip.mcsj.www.effect;
 
-import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.entity.Player;
@@ -8,9 +7,9 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import vip.mcsj.www.datamanager.EffectDataManager;
 import vip.mcsj.www.main.KarRefinement;
-import vip.mcsj.www.utils.KarUtils;
+import vip.mcsj.www.version.CustomParticle;
 
-import java.util.Random;
+import static vip.mcsj.www.main.KarRefinement.cp;
 
 /**
  * 王冠特效
@@ -30,6 +29,7 @@ public class CrownEffect5 extends BukkitRunnable {
     //画完整个圆的变量
     private double degree3 = 0.0;
     private double degree4 = -1;
+
 
     private int[][] a = new int[][]{
 //            {1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1},
@@ -73,43 +73,48 @@ public class CrownEffect5 extends BukkitRunnable {
 
         //六星特效:degree1
         Location playEffectLocation = playerLocation.clone().add(0.5 * Math.cos(radians), 2D, 0.5 * Math.sin(radians));
-        playEffectLocation.getWorld().spawnParticle(Particle.FLAME,playEffectLocation,1,0.0D,0.0D,0.0D,0.0D);
+        playEffectLocation.getWorld().spawnParticle(cp.getParticles().get(0),playEffectLocation,1,0.0D,0.0D,0.0D,0.0D);
         //九星特效:degree4
         Location playEffectLocation2 = playerLocation.clone().add(0.9 * Math.cos(radians), 0.5*Math.acos(degree4), 0.9 * Math.sin(radians));
-        playEffectLocation2.getWorld().spawnParticle(Particle.SOUL_FIRE_FLAME,playEffectLocation2,1,0.0D,0.0D,0.0D,0.0D);
+        playEffectLocation2.getWorld().spawnParticle(cp.getParticles().get(0),playEffectLocation2,1,0.0D,0.0D,0.0D,0.0D);
         //12星特效:degree2 degree3
         Location playerEffectLocation3 = playerLocation.clone().add(1.5*x2,y1,1.5*z2);
-        playerEffectLocation3.getWorld().spawnParticle(KarRefinement.particles[0],playerEffectLocation3,3,0.0D,0.0D,0.0D,0.0D);
+        playerEffectLocation3.getWorld().spawnParticle(cp.getParticles().get(3),playerEffectLocation3,3,0.0D,0.0D,0.0D,0.0D);
 
         //15星特效
-        loc2.setPitch(0.0F);
-        Location locc1 = loc2.clone();
-        Location locc2 = loc2.clone();
-        Location locc3 = loc2.clone();
-        loc2.setYaw(45.0F);
-        loc2.add(loc2.getDirection().multiply(1));
-        locc1.setYaw(-45.0F);
-        locc1.add(locc1.getDirection().multiply(1));
-        locc2.setYaw(135.0F);
-        locc2.add(locc2.getDirection().multiply(1));
-        locc3.setYaw(-135.0F);
-        locc3.add(locc3.getDirection().multiply(1));
-        for (int i = 0; i < 5; i++) {
-            float shit = KarUtils.nextFloat(359);
-            int rgb = java.awt.Color.HSBtoRGB(shit, 1.0f, 1.0f);
-            Color color = Color.fromRGB((rgb >> 16) & 0xFF, (rgb >> 8) & 0xFF, rgb & 0xFF);
-            Particle.DustOptions options = new Particle.DustOptions(color,1.0F);
-            loc2.getWorld().spawnParticle(KarRefinement.particles[1],loc2,1,0.3,0,0.3,options);
-            locc1.getWorld().spawnParticle(KarRefinement.particles[1],locc1,1,0.3,0,0.3,options);
-            locc2.getWorld().spawnParticle(KarRefinement.particles[1],locc2,1,0.3,0,0.3,options);
-            locc3.getWorld().spawnParticle(KarRefinement.particles[1],locc3,1,0.3,0,0.3,options);
+        try {
+            cp.addParticleFifteenth(player);
+        }catch (Exception e){
+            e.printStackTrace();
         }
+//        loc2.setPitch(0.0F);
+//        Location locc1 = loc2.clone();
+//        Location locc2 = loc2.clone();
+//        Location locc3 = loc2.clone();
+//        loc2.setYaw(45.0F);
+//        loc2.add(loc2.getDirection().multiply(1));
+//        locc1.setYaw(-45.0F);
+//        locc1.add(locc1.getDirection().multiply(1));
+//        locc2.setYaw(135.0F);
+//        locc2.add(locc2.getDirection().multiply(1));
+//        locc3.setYaw(-135.0F);
+//        locc3.add(locc3.getDirection().multiply(1));
+//        for (int i = 0; i < 5; i++) {
+//            float shit = KarUtils.nextFloat(359);
+//            int rgb = java.awt.Color.HSBtoRGB(shit, 1.0f, 1.0f);
+//            Color color = Color.fromRGB((rgb >> 16) & 0xFF, (rgb >> 8) & 0xFF, rgb & 0xFF);
+//            Particle.DustOptions options = new Particle.DustOptions(color,1.0F);
+//            loc2.getWorld().spawnParticle(KarRefinement.particles[1],loc2,1,0.3,0,0.3,options);
+//            locc1.getWorld().spawnParticle(KarRefinement.particles[1],locc1,1,0.3,0,0.3,options);
+//            locc2.getWorld().spawnParticle(KarRefinement.particles[1],locc2,1,0.3,0,0.3,options);
+//            locc3.getWorld().spawnParticle(KarRefinement.particles[1],locc3,1,0.3,0,0.3,options);
+//        }
         Location pLoc = player.getLocation();
         //18星特效
         for (int i = a.length - 1; i >= 0; i--) {
             for (int j = a[i].length - 1; j >= 0; j--) {
                 if(a[i][j] != 0){
-                    draw(pLoc,pLoc.clone().add(-a[i].length * 1.0 / 10 + j * 1.0 / 5 + 0.1, 0.2, 0),1.8 - i * 1.0 / 5 + 0.2,KarRefinement.particles[2], 20);
+                    draw(pLoc,pLoc.clone().add(-a[i].length * 1.0 / 10 + j * 1.0 / 5 + 0.1, 0.2, 0),1.8 - i * 1.0 / 5 + 0.2,cp.getParticles().get(2), 20);
                 }
             }
         }

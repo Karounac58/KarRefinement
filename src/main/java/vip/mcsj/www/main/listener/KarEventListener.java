@@ -27,6 +27,7 @@ import vip.mcsj.www.main.KarRefinement;
 import vip.mcsj.www.object.SpeStone;
 import vip.mcsj.www.utils.KarUtils;
 import static vip.mcsj.www.datamanager.EquipmentDataManager.*;
+import static vip.mcsj.www.main.KarRefinement.cs;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -78,7 +79,7 @@ public class KarEventListener implements Listener {
                         //System.out.println("2222");
                         Player p = (Player)e.getWhoClicked();
                         p.sendMessage("§a保护符已经成功融入这件装备");
-                        p.playSound(p.getLocation(),Sound.ENTITY_FIREWORK_ROCKET_BLAST,1,1);
+                        p.playSound(p.getLocation(),cs.getSounds().get(0),1,1);
                         KarUtils.removeItemRefinement(itemPaper);
                     }
                 }
@@ -106,7 +107,7 @@ public class KarEventListener implements Listener {
                     if(SpecialStoneDataManager.specialStoneUp(itemStone,itemEquipment)){
                         Player p = (Player)e.getWhoClicked();
                         p.sendMessage("§a宝石已经成功镶嵌进这件装备！");
-                        p.playSound(p.getLocation(),Sound.ENTITY_FIREWORK_ROCKET_BLAST,1,1);
+                        p.playSound(p.getLocation(),cs.getSounds().get(0),1,1);
                         KarUtils.removeItemRefinement(itemStone);
                     }
                 }
@@ -131,7 +132,7 @@ public class KarEventListener implements Listener {
                     if(InfiniteSoulManager.infiniteSoulUp(itemSoul,itemEquipment)) {
                         Player p = (Player)e.getWhoClicked();
                         p.sendMessage("§a精魂已经成功融入这件装备");
-                        p.playSound(p.getLocation(),Sound.ENTITY_FIREWORK_ROCKET_BLAST,1,1);
+                        p.playSound(p.getLocation(),cs.getSounds().get(0),1,1);
                         KarUtils.removeItemRefinement(itemSoul);
                     }
                 }
@@ -169,7 +170,7 @@ public class KarEventListener implements Listener {
             return;
         }
         //如果正在淬炼中，则不能移动物品
-        if(Objects.requireNonNullElse(judgeInvRefinementOrNot.get((Player)e.getWhoClicked()),0) == 1){
+        if(judgeInvRefinementOrNot.get((Player)e.getWhoClicked()) != null && judgeInvRefinementOrNot.get((Player)e.getWhoClicked()) == 1){
             e.getWhoClicked().sendMessage("§c请等待淬炼结束！");
             e.setCancelled(true);
             return;
@@ -364,7 +365,7 @@ public class KarEventListener implements Listener {
             return;
         }
         //如果正在淬炼中，则不能移动物品
-        if(Objects.requireNonNullElse(judgeInvForgeOrNot.get((Player)e.getWhoClicked()),0) == 1){
+        if(judgeInvForgeOrNot.get((Player)e.getWhoClicked()) != null && judgeInvForgeOrNot.get((Player)e.getWhoClicked()) == 1){
             e.getWhoClicked().sendMessage("§c请等待锻造结束！");
             e.setCancelled(true);
             return;

@@ -11,6 +11,8 @@ import vip.mcsj.www.datamanager.DUPaperDataManager;
 import vip.mcsj.www.datamanager.EquipmentDataManager;
 import vip.mcsj.www.utils.KarUtils;
 
+import static vip.mcsj.www.main.KarRefinement.cs;
+
 public class DirectUpgradePaperEvent implements Listener {
 
     @EventHandler
@@ -29,7 +31,7 @@ public class DirectUpgradePaperEvent implements Listener {
                     Player p = (Player) e.getWhoClicked();
                     if(DUPaperDataManager.duPaperUp(itemDUPaper,itemEquipment,p)){
                         p.sendMessage("§a直升符已经成功融入这件装备");
-                        p.playSound(p.getLocation(), Sound.ENTITY_FIREWORK_ROCKET_BLAST,1,1);
+                        p.playSound(p.getLocation(), cs.getSounds().get(0),1,1);
                         KarUtils.removeItemRefinement(itemDUPaper);
                     }
                 }

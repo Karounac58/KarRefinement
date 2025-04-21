@@ -26,6 +26,7 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static vip.mcsj.www.gui.KarCompoundStoneGui.*;
+import static vip.mcsj.www.main.KarRefinement.cm;
 
 public class KarCompoundGUIListener implements Listener {
 
@@ -104,7 +105,7 @@ public class KarCompoundGUIListener implements Listener {
                     return;
                 }
                 double chance = KarCompoundStoneGui.compoundMap.get(firstNBT.getString("refinementstone")).getChance();
-                ItemStack sign = new ItemStack(Material.OAK_SIGN);
+                ItemStack sign = cm.getItems().get(6);
                 ItemMeta meta = sign.getItemMeta();
                 meta.setLore(Arrays.asList(
                         "§a§l成功率：§b§l"+chance

@@ -1,15 +1,14 @@
 package vip.mcsj.www.effect;
 
 import org.bukkit.Location;
-import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import vip.mcsj.www.datamanager.EffectDataManager;
 import vip.mcsj.www.main.KarRefinement;
+import vip.mcsj.www.version.CustomParticle;
 
-import java.util.Arrays;
-import java.util.List;
+import static vip.mcsj.www.main.KarRefinement.cp;
 
 /**
  * 王冠特效
@@ -29,6 +28,7 @@ public class CrownEffect3 extends BukkitRunnable {
 
     private double degree4 = -1;
     private BukkitTask task = null;
+
     public CrownEffect3(Player player) {
         this.player = player;
     }
@@ -61,14 +61,14 @@ public class CrownEffect3 extends BukkitRunnable {
 
         //六星特效:degree1
         Location playEffectLocation = playerLocation.clone().add(0.5 * Math.cos(radians), 2D, 0.5 * Math.sin(radians));
-        playEffectLocation.getWorld().spawnParticle(Particle.FLAME,playEffectLocation,1,0.0D,0.0D,0.0D,0.0D);
+        playEffectLocation.getWorld().spawnParticle(cp.getParticles().get(0),playEffectLocation,1,0.0D,0.0D,0.0D,0.0D);
         //九星特效:degree4
         Location playEffectLocation2 = playerLocation.clone().add(0.9 * Math.cos(radians), 0.5*Math.acos(degree4), 0.9 * Math.sin(radians));
-        playEffectLocation2.getWorld().spawnParticle(Particle.SOUL_FIRE_FLAME,playEffectLocation2,1,0.0D,0.0D,0.0D,0.0D);
+        playEffectLocation2.getWorld().spawnParticle(cp.getParticles().get(0),playEffectLocation2,1,0.0D,0.0D,0.0D,0.0D);
 
         //十二星特效:degree1 degree2 degree3
         Location playerEffectLocation3 = playerLocation.clone().add(1.5*x2,y1,1.5*z2);
-        playerEffectLocation3.getWorld().spawnParticle(KarRefinement.particles[0],playerEffectLocation3,3,0.0D,0.0D,0.0D,0.0D);
+        playerEffectLocation3.getWorld().spawnParticle(cp.getParticles().get(3),playerEffectLocation3,3,0.0D,0.0D,0.0D,0.0D);
         if (degree >= 360) {
             degree = 0;
         } else {

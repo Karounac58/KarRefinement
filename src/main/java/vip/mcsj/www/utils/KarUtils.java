@@ -1,8 +1,10 @@
 package vip.mcsj.www.utils;
 
 import net.md_5.bungee.api.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.awt.*;
 import java.util.Map;
@@ -41,29 +43,6 @@ public class KarUtils {
     }
 
 
-    /**
-     * 单十六进制方法
-     * @param message
-     * @return
-     */
-    private String translateRGBToMinecraftColor(String message) {
-        // Use regular expression to find RGB color codes and replace them
-        //找到十六进制颜色代码
-        Pattern pattern = Pattern.compile("&#([0-9A-Fa-f]{6})");
-        //创建匹配器
-        Matcher matcher = pattern.matcher(message);
-
-        while (matcher.find()) {
-            String hexColor = matcher.group(1);
-            //根据十六进制颜色代码查询到原生颜色代码，以便后续的替换
-            String replacement = ChatColor.of("#" + hexColor) + "";
-            //将十六进制颜色代码替换成原生颜色代码，以便程序识别
-            message = message.replace("&#" + hexColor, replacement);
-        }
-
-        return ChatColor.translateAlternateColorCodes('&', message);
-    }
-
     public static String joinStrings(String[] strings, int startIndex) {
         StringBuilder builder = new StringBuilder();
         for (int i = startIndex; i < strings.length; i++) {
@@ -77,27 +56,32 @@ public class KarUtils {
 
     /**
      * 渐变色方法
-     * @param startColor
-     * @param endColor
-     * @param message
      * @return
      */
-    public static String createColorGradientMessage(String startColor, String endColor, String message) {
-        int length = message.length();
-
-        StringBuilder gradientMessage = new StringBuilder();
-        Color startRGB = hexToColor(startColor);
-        Color endRGB = hexToColor(endColor);
-
-        for (int i = 0; i < length; i++) {
-            float ratio = (float) i / (length - 1);
-            Color interpolatedColor = interpolateColor(startRGB, endRGB, ratio);
-
-            ChatColor chatColor = ChatColor.of(String.format("#%06X", interpolatedColor.getRGB() & 0xFFFFFF));
-            gradientMessage.append(chatColor).append(message.charAt(i));
+    public static String createColorGradientMessage(Boolean b) {
+//        int length = message.length();
+//
+//        StringBuilder gradientMessage = new StringBuilder();
+//        Color startRGB = hexToColor(startColor);
+//        Color endRGB = hexToColor(endColor);
+//
+//        for (int i = 0; i < length; i++) {
+//            float ratio = (float) i / (length - 1);
+//            Color interpolatedColor = interpolateColor(startRGB, endRGB, ratio);
+//
+//            ChatColor chatColor = ChatColor.of(String.format("#%06X", interpolatedColor.getRGB() & 0xFFFFFF));
+//            gradientMessage.append(chatColor).append(message.charAt(i));
+//        }
+        String msg1 = org.bukkit.ChatColor.RED+"&l▬▬";
+        String msg2 = org.bukkit.ChatColor.GOLD+"&l▬▬";
+        String msg3 = org.bukkit.ChatColor.YELLOW+"&l▬▬";
+        String msg4 = org.bukkit.ChatColor.GREEN+"&l▬▬";
+        String msg5 = org.bukkit.ChatColor.AQUA+"&l▬▬";
+        if(!b){
+            return org.bukkit.ChatColor.translateAlternateColorCodes('&',msg1+msg2+msg3+msg4+msg5);
+        }else{
+            return org.bukkit.ChatColor.translateAlternateColorCodes('&',msg5+msg4+msg3+msg2+msg1);
         }
-
-        return gradientMessage.toString();
     }
 
     public static String applyTextFormatting(String message) {
@@ -153,5 +137,18 @@ public class KarUtils {
         }else{
             return Particle.valueOf("SMOKE");
         }
+    }
+
+    public static ItemStack createColorPane(int dataValue){
+        ItemStack colorPane = new ItemStack(Material.valueOf("STAINED_GLASS_PANE"));
+        colorPane.setDurability((short) dataValue);
+        return colorPane;
+    }
+
+    public static ItemStack removeItemName(ItemStack itemStack){
+        ItemMeta itemMeta = itemStack.getItemMeta();
+        itemMeta.setDisplayName("");
+        itemStack.setItemMeta(itemMeta);
+        return itemStack;
     }
 }

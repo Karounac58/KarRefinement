@@ -35,6 +35,5 @@ public class ItemStackSerializeUtil {
             item = new ItemStack(Material.AIR, 1);
         }
         return item;
-
     }
 }

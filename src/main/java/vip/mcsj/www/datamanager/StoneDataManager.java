@@ -22,39 +22,8 @@ import java.util.stream.Collectors;
 public class StoneDataManager {
 
     public static Map<String,Stone> stones = new HashMap<>();
-    public final List<String> stoneLoreList = new Vector<>();
-    public static final List<String> stoneList = Arrays.asList("普通","中等","高等","完美","会员");
-    /**
-     * 淬炼石成功倍数
-     */
-    public static final Map<String,Double> stoneSuccessList = new HashMap<>();
-    /**
-     * 淬炼石成功率String，例如"极低"
-     */
-    public static final Map<String,String> stoneSuccessStringList = new HashMap<>();
-
-    public static final Map<Double,Double> stoneCostList = new HashMap<>();
     public String stoneName;
 
-    static{
-        stoneSuccessList.put("普通",1.0);
-        stoneSuccessList.put("中等",1.5);
-        stoneSuccessList.put("高等",2.5);
-        stoneSuccessList.put("完美",5.0);
-        stoneSuccessList.put("会员",10.0);
-
-        stoneSuccessStringList.put("普通","极低");
-        stoneSuccessStringList.put("中等","较低");
-        stoneSuccessStringList.put("高等","一般");
-        stoneSuccessStringList.put("完美","较高");
-        stoneSuccessStringList.put("会员","极高");
-
-        stoneCostList.put(1.0, 2500.0);
-        stoneCostList.put(1.5, 5000.0);
-        stoneCostList.put(2.5, 20000.0);
-        stoneCostList.put(5.0, 40000.0);
-        stoneCostList.put(10.0, 80000.0);
-    }
     public StoneDataManager(String name){
         this.stoneName = name;
     }
