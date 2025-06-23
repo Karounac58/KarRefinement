@@ -5,10 +5,12 @@ import vip.mcsj.www.version.v1122.V1122;
 import vip.mcsj.www.version.v1201.V1201;
 import vip.mcsj.www.version.v1210.V1210;
 import vip.mcsj.www.object.MCVersions;
+
+import static vip.mcsj.www.main.KarRefinement.pv;
 import static vip.mcsj.www.utils.ReflectionUtils.*;
 
 public class ParticleResource {
-    private MCVersions pv;
+//    private MCVersions pv;
     private CustomParticle cP;
 
     public ParticleResource(){

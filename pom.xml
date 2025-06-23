@@ -6,7 +6,7 @@
 
     <groupId>vip.mcsj.www</groupId>
     <artifactId>KarRefinement</artifactId>
-    <version>1.0-beta5</version>
+    <version>1.0-beta6</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -34,10 +34,10 @@
             <url>https://repo.rosewooddev.io/repository/public/</url>
         </repository>
 
-        <repository>
-            <id>placeholderapi</id>
-            <url>https://repo.extendedclip.com/releases/</url>
-        </repository>
+<!--        <repository>-->
+<!--            <id>placeholderapi</id>-->
+<!--            <url>https://repo.extendedclip.com/releases/</url>-->
+<!--        </repository>-->
     </repositories>
 
     <dependencies>
@@ -59,12 +59,12 @@
             <version>2.12.4</version>
             <scope>provided</scope>
         </dependency>
-        <dependency>
-            <groupId>me.clip</groupId>
-            <artifactId>placeholderapi</artifactId>
-            <version>2.11.6</version>
-            <scope>provided</scope>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>me.clip</groupId>-->
+<!--            <artifactId>placeholderapi</artifactId>-->
+<!--            <version>2.11.6</version>-->
+<!--            <scope>provided</scope>-->
+<!--        </dependency>-->
         <dependency>
             <groupId>org.jetbrains</groupId>
             <artifactId>annotations</artifactId>

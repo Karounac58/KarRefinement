@@ -37,10 +37,11 @@ public class InfiniteSoulManager {
         for (String key : keys) {
             String name = customFileYaml.getString(key+".Name");
             Material type = Material.valueOf(customFileYaml.getString(key+".Type"));
-            int customModelData = customFileYaml.getInt(key+".Data");
+            int data = customFileYaml.getInt(key+".Data");
+            int customModelData = customFileYaml.getInt(key+".CustomModelData");
             int level = customFileYaml.getInt(key+".Level");
             List<String> lores = customFileYaml.getStringList(key+".Lore");
-            InfiniteSoul infiniteSoul = new InfiniteSoul(key,name,lores,type,customModelData,level);
+            InfiniteSoul infiniteSoul = new InfiniteSoul(key,name,lores,type,data,customModelData,level);
             infiniteSouls.put(key,infiniteSoul);
             soulMaterials.add(type);
         }
@@ -48,7 +49,7 @@ public class InfiniteSoulManager {
 
     public ItemStack createInfiniteSoul(){
         InfiniteSoul infiniteSoul = infiniteSouls.get(this.soulName);
-        ItemStack soulItem = new ItemStack(infiniteSoul.getType());
+        ItemStack soulItem = new ItemStack(infiniteSoul.getType(), 1, (short) infiniteSoul.getData());
         ItemMeta im = soulItem.getItemMeta();
         im.setDisplayName(infiniteSoul.getName());
         im.setLore(infiniteSoul.getLore());

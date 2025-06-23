@@ -13,17 +13,19 @@ public class ProtectPaper {
     private List<String> lore;
 
     private Material type;
+    private int data;
     private int customModelData;
 
     private int level;
 
 
 
-    public ProtectPaper(String identifier, String name, List<String> lore, Material type, int customModelData, int level) {
+    public ProtectPaper(String identifier, String name, List<String> lore, Material type,int data, int customModelData, int level) {
         this.identifier = identifier;
         this.name = name;
         this.lore = lore;
         this.type = type;
+        this.data = data;
         this.customModelData = customModelData;
         this.level = level;
     }
@@ -85,5 +87,9 @@ public class ProtectPaper {
 
     public void setCustomModelData(int customModelData) {
         this.customModelData = customModelData;
+    }
+
+    public int getData() {
+        return data;
     }
 }

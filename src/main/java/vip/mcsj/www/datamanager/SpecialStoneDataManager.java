@@ -42,12 +42,14 @@ public class SpecialStoneDataManager {
         for (String key : file.getKeys(false)) {
             String name = file.getString(key+".Name");
             Material type = Material.valueOf(file.getString(key+".Type"));
+            int data = file.getInt(key+".Data");
+            int cmd = file.getInt(key+".CustomModelData");
             int level = file.getInt(key+".Level");
             String nbtKey = file.getString(key+".Nbtkey");
             List<String> canUseItems = file.getStringList(key+".Items");
             List<String> lore = file.getStringList(key+".Lore");
             List<String> equipmentLore = file.getStringList(key+".Equipmentlore");
-            SpeStone speStone = new SpeStone(key,name,lore,level,nbtKey,canUseItems,type,equipmentLore);
+            SpeStone speStone = new SpeStone(key,name,lore,level,nbtKey,canUseItems,type,data,cmd,equipmentLore);
             speStones.put(key,speStone);
             stoneMaterials.add(type);
         }
@@ -63,7 +65,7 @@ public class SpecialStoneDataManager {
 
     public ItemStack createSpeStone(){
         SpeStone speStone = speStones.get(this.speStoneName);
-        ItemStack speStoneItem = new ItemStack(speStone.getType());
+        ItemStack speStoneItem = new ItemStack(speStone.getType(),1, (short) speStone.getData());
         ItemMeta im = speStoneItem.getItemMeta();
         im.setDisplayName(speStone.getName());
         im.setLore(speStone.getLore());

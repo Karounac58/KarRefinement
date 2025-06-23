@@ -37,10 +37,11 @@ public class DUPaperDataManager {
         for (String key : keys) {
             String name = customFileYaml.getString(key+".Name");
             Material type = Material.valueOf(customFileYaml.getString(key+".Type"));
-            int customModelData = customFileYaml.getInt(key+".Data");
+            int data = customFileYaml.getInt(key+".Data");
+            int customModelData = customFileYaml.getInt(key+".CustomModelData");
             int level = customFileYaml.getInt(key+".Level");
             List<String> lores = customFileYaml.getStringList(key+".Lore");
-            DirectUpgradePaper duPaper = new DirectUpgradePaper(level,name,lores,type,customModelData);
+            DirectUpgradePaper duPaper = new DirectUpgradePaper(level,name,lores,type,data,customModelData);
             duPapers.put(key,duPaper);
             duMaterials.add(type);
         }
@@ -48,7 +49,7 @@ public class DUPaperDataManager {
 
     public static ItemStack createDUPaper(String identifier){
         DirectUpgradePaper duPaper = duPapers.get(identifier);
-        ItemStack duPaperItem = new ItemStack(duPaper.getMaterial());
+        ItemStack duPaperItem = new ItemStack(duPaper.getMaterial(), 1, (short) duPaper.getData());
         ItemMeta im = duPaperItem.getItemMeta();
         im.setDisplayName(duPaper.getName());
         im.setLore(duPaper.getLore());

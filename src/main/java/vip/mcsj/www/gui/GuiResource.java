@@ -1,6 +1,7 @@
 package vip.mcsj.www.gui;
 
 import org.bukkit.entity.Player;
+import vip.mcsj.www.main.KarRefinement;
 import vip.mcsj.www.object.MCVersions;
 import vip.mcsj.www.version.CustomMaterial;
 import vip.mcsj.www.version.CustomParticle;
@@ -9,10 +10,11 @@ import vip.mcsj.www.version.v1122.V1122;
 import vip.mcsj.www.version.v1201.V1201;
 import vip.mcsj.www.version.v1210.V1210;
 
+import static vip.mcsj.www.main.KarRefinement.pv;
 import static vip.mcsj.www.utils.ReflectionUtils.judgeVersion;
 
 public class GuiResource {
-    private MCVersions pv;
+//    private MCVersions pv;
     private CustomSounds cp;
     private CustomMaterial cm;
     public GuiResource(){

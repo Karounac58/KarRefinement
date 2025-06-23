@@ -52,10 +52,11 @@ public class PaperDataManager {
         for (String key : keys) {
             String name = customFileYaml.getString(key+".Name");
             Material type = Material.valueOf(customFileYaml.getString(key+".Type"));
-            int customModelData = customFileYaml.getInt(key+".Data");
+            int customModelData = customFileYaml.getInt(key+".CustomModelData");
+            int data = customFileYaml.getInt(key+"Data");
             int level = customFileYaml.getInt(key+".Level");
             List<String> lores = customFileYaml.getStringList(key+".Lore");
-            ProtectPaper paper = new ProtectPaper(key,name,lores,type,customModelData,level);
+            ProtectPaper paper = new ProtectPaper(key,name,lores,type,data,customModelData,level);
             papers.put(key,paper);
             paperMaterials.add(type);
         }
@@ -63,7 +64,7 @@ public class PaperDataManager {
 
     public ItemStack createProtectedPaper(){
         ProtectPaper paper = papers.get(this.paperName);
-        ItemStack paperItem = new ItemStack(paper.getType());
+        ItemStack paperItem = new ItemStack(paper.getType(),1, (short) paper.getData());
         ItemMeta im = paperItem.getItemMeta();
         im.setDisplayName(paper.getName());
         //setLore

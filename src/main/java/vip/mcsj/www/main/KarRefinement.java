@@ -14,7 +14,6 @@ import vip.mcsj.www.main.listener.FurnaceListener;
 import vip.mcsj.www.main.listener.KarCompoundGUIListener;
 import vip.mcsj.www.main.listener.KarEventListener;
 import vip.mcsj.www.object.MCVersions;
-import vip.mcsj.www.papi.SuitLevel;
 import vip.mcsj.www.utils.FileUtil;
 import vip.mcsj.www.utils.KarUtils;
 import vip.mcsj.www.utils.ReflectionUtils;
@@ -36,7 +35,7 @@ public class KarRefinement extends JavaPlugin{
 
     public static CustomParticle cp = new ParticleResource().get();
 
-    public static MCVersions mcVersions = ReflectionUtils.judgeVersion();
+    public static MCVersions pv = ReflectionUtils.judgeVersion();
     @Override
     public void onEnable(){
         instance = this;
@@ -75,10 +74,6 @@ public class KarRefinement extends JavaPlugin{
         DUPaperDataManager.init();
         KarCompoundStoneGui.initCompoundData();
         initThread();
-
-        if(Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")){
-            new SuitLevel(this).register();
-        }
 
         log.info(String.format("[%s] - 插件启动成功...",getDescription().getName()));
 

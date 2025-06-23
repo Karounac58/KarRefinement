@@ -13,15 +13,18 @@ public class InfiniteSoul {
 
     private Material type;
 
+    private int data;
+
     private int customModelData;
 
     private int level;
 
-    public InfiniteSoul(String identifier, String name, List<String> lore, Material type, int customModelData, int level) {
+    public InfiniteSoul(String identifier, String name, List<String> lore, Material type, int data, int customModelData, int level) {
         this.identifier = identifier;
         this.name = name;
         this.lore = lore;
         this.type = type;
+        this.data = data;
         this.customModelData = customModelData;
         this.level = level;
     }
@@ -72,5 +75,9 @@ public class InfiniteSoul {
 
     public void setLevel(int level) {
         this.level = level;
+    }
+
+    public int getData() {
+        return data;
     }
 }

@@ -8,6 +8,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.material.MaterialData;
 import vip.mcsj.www.object.Stone;
 import vip.mcsj.www.utils.FileUtil;
 import vip.mcsj.www.utils.KarUtils;
@@ -42,7 +43,8 @@ public class StoneDataManager {
             String identifier = s;
             String name = file.getString(s+".Name");
             Material type = Material.valueOf(file.getString(s+".Type"));
-            int customModelData = Integer.parseInt(file.getString(s+".Data"));
+            int data = file.getInt(s+".Data");
+            int customModelData = Integer.parseInt(file.getString(s+".CustomModelData"));
             int[] dropLevel = Arrays.stream(file.getString(s+".dropLevel").split(" ")).mapToInt(Integer::parseInt).toArray();
             List<String> lore = file.getStringList(s+".Lore");
             ConfigurationSection cs = file.getConfigurationSection(s+".Chance");
@@ -52,7 +54,7 @@ public class StoneDataManager {
             for (int i = 0; i < chanceList.size(); i++) {
                 probability.add(file.getDouble(s+".Chance."+(i+1)));
             }
-            Stone stone = new Stone(identifier,name,lore,probability,type,dropLevel,customModelData);
+            Stone stone = new Stone(identifier,name,lore,probability,type,data,dropLevel,customModelData);
             stones.put(identifier,stone);
         }
     }
@@ -62,7 +64,7 @@ public class StoneDataManager {
             return null;
         }
         Stone stone = stones.get(this.stoneName);
-        ItemStack stoneItem = new ItemStack(stone.getType());
+        ItemStack stoneItem = new ItemStack(stone.getType(),1, (short) stone.getData());
         ItemMeta im = stoneItem.getItemMeta();
         im.setDisplayName(stone.getName());
         im.setLore(stone.getLore());

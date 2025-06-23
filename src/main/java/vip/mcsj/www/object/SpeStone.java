@@ -19,11 +19,15 @@ public class SpeStone {
 
     private Material type;
 
+    private int data;
+
+    private int customModelData;
+
     private List<String> equipmentLore;
     public SpeStone() {
     }
 
-    public SpeStone(String identifier, String name, List<String> lore, int level, String nbtKey, List<String> canUseItems, Material type, List<String> equipmentLore) {
+    public SpeStone(String identifier, String name, List<String> lore, int level, String nbtKey, List<String> canUseItems, Material type,int data,int customModelData, List<String> equipmentLore) {
         this.identifier = identifier;
         this.name = name;
         this.lore = lore;
@@ -31,6 +35,8 @@ public class SpeStone {
         this.nbtKey = nbtKey;
         this.canUseItems = canUseItems;
         this.type = type;
+        this.data = data;
+        this.customModelData = customModelData;
         this.equipmentLore = equipmentLore;
     }
 
@@ -98,6 +104,19 @@ public class SpeStone {
         this.equipmentLore = equipmentLore;
     }
 
+    public int getData() {
+        return data;
+    }
+
+    public void setData(int data) {
+        this.data = data;
+    }
+
+
+    public int getCustomModelData() {
+        return customModelData;
+    }
+
     @Override
     public String toString() {
         return "SpeStone{" +
@@ -108,6 +127,8 @@ public class SpeStone {
                 ", nbtKey='" + nbtKey + '\'' +
                 ", canUseItems=" + canUseItems +
                 ", type=" + type +
+                ", data=" + data +
+                ", customModelData=" + customModelData +
                 ", equipmentLore=" + equipmentLore +
                 '}';
     }

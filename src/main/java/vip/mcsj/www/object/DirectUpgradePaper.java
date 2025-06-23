@@ -16,17 +16,23 @@ public class DirectUpgradePaper {
 
     private Material material;
 
+    private int data;
+
     private int customModelData;
 
-    public DirectUpgradePaper(int level, String name, List<String> lore, Material material, int customModelData) {
+    public DirectUpgradePaper(int level, String name, List<String> lore, Material material,int data, int customModelData) {
         this.level = level;
         this.name = name;
         this.lore = lore;
         this.material = material;
+        this.data = data;
         this.customModelData = customModelData;
     }
 
-    //    public String getIdentifier() {
+    public int getData() {
+        return data;
+    }
+//    public String getIdentifier() {
 //        return identifier;
 //    }
 //

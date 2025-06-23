@@ -2,6 +2,7 @@
   Name: "§a三星淬炼保护符"
   Type: PAPER
   Data: 0
+  CustomModelData: 0
   Level: 3
   Lore:
     - "§e用法：§a打开背包，拖拽物品到装备上"
@@ -14,6 +15,7 @@
   Name: "§a六星淬炼保护符"
   Type: PAPER
   Data: 0
+  CustomModelData: 0
   Level: 6
   Lore:
     - "§e用法：§a打开背包，拖拽物品到装备上"
@@ -26,6 +28,7 @@
   Name: "§a九星淬炼保护符"
   Type: PAPER
   Data: 0
+  CustomModelData: 0
   Level: 9
   Lore:
     - "§e用法：§a打开背包，拖拽物品到装备上"
@@ -38,6 +41,7 @@
   Name: "§a十二星淬炼保护符"
   Type: PAPER
   Data: 0
+  CustomModelData: 0
   Level: 12
   Lore:
     - "§e用法：§a打开背包，拖拽物品到装备上"
@@ -50,6 +54,7 @@
   Name: "§a十五星淬炼保护符"
   Type: PAPER
   Data: 0
+  CustomModelData: 0
   Level: 15
   Lore:
     - "§e用法：§a打开背包，拖拽物品到装备上"

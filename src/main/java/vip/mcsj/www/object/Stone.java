@@ -17,6 +17,8 @@ public class Stone {
 
     private Material type;
 
+    private int data;
+
     private int[] downLevels;
 
     private int customModelData;
@@ -31,12 +33,13 @@ public class Stone {
      * @param dropLevels    石头掉级数组
      * @param customModelData   顾名思义
      */
-    public Stone(String identifier, String name, List<String> lore, List<Double> probability, Material type, int[] dropLevels, int customModelData) {
+    public Stone(String identifier, String name, List<String> lore, List<Double> probability, Material type, int data, int[] dropLevels, int customModelData) {
         this.identifier = identifier;
         this.name = name;
         this.lore = lore;
         this.probability = probability;
         this.type = type;
+        this.data = data;
         this.downLevels = dropLevels;
         this.customModelData = customModelData;
     }
@@ -97,6 +100,14 @@ public class Stone {
         this.downLevels = downLevels;
     }
 
+    public int getData() {
+        return data;
+    }
+
+    public void setData(int data) {
+        this.data = data;
+    }
+
     @Override
     public String toString() {
         return "Stone{" +
@@ -105,6 +116,7 @@ public class Stone {
                 ", lore=" + lore +
                 ", probability=" + probability +
                 ", type=" + type +
+                ", data=" + data +
                 ", downLevels=" + Arrays.toString(downLevels) +
                 ", customModelData=" + customModelData +
                 '}';

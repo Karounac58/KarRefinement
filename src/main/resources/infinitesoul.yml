@@ -2,6 +2,7 @@
   Name: "三星无限耐久精魂"
   Type: STONE
   Data: 0
+  CustomModelData: 0
   Level: 3
   Lore:
     - "§e用法: §a打开背包，将物品移动至装备"
@@ -14,6 +15,7 @@
   Name: "六星无限耐久精魂"
   Type: STONE
   Data: 0
+  CustomModelData: 0
   Level: 6
   Lore:
     - "§e用法: §a打开背包，将物品移动至装备"

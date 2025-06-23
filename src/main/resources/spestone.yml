@@ -1,6 +1,8 @@
 一级青鳞石:
   Name: "§b§l一级青鳞石"
   Type: STONE
+  Data: 0
+  CustomModelData: 0
   Level: 1
   Nbtkey: "qls"
   Items:
@@ -18,6 +20,8 @@
 二级青鳞石:
   Name: "§b§l二级青鳞石"
   Type: STONE
+  Data: 0
+  CustomModelData: 0
   Level: 2
   Nbtkey: "qls"
   Items:
@@ -35,6 +39,8 @@
 三级青鳞石:
   Name: "§b§l三级青鳞石"
   Type: STONE
+  Data: 0
+  CustomModelData: 0
   Level: 3
   Nbtkey: "qls"
   Items:
@@ -52,6 +58,8 @@
 四级青鳞石:
   Name: "§b§l四级青鳞石"
   Type: STONE
+  Data: 0
+  CustomModelData: 0
   Level: 4
   Nbtkey: "qls"
   Items:
@@ -69,6 +77,8 @@
 五级青鳞石:
   Name: "§b§l五级青鳞石"
   Type: STONE
+  Data: 0
+  CustomModelData: 0
   Level: 5
   Nbtkey: "qls"
   Items:
@@ -86,6 +96,8 @@
 一级落凤石:
   Name: "§e§l一级落凤石"
   Type: STONE
+  Data: 0
+  CustomModelData: 0
   Level: 1
   Nbtkey: "lfs"
   Items:
@@ -103,6 +115,8 @@
 二级落凤石:
   Name: "§e§l二级落凤石"
   Type: STONE
+  Data: 0
+  CustomModelData: 0
   Level: 2
   Nbtkey: "lfs"
   Items:
@@ -120,6 +134,8 @@
 三级落凤石:
   Name: "§e§l三级落凤石"
   Type: STONE
+  Data: 0
+  CustomModelData: 0
   Level: 3
   Nbtkey: "lfs"
   Items:
@@ -137,6 +153,8 @@
 四级落凤石:
   Name: "§e§l四级落凤石"
   Type: STONE
+  Data: 0
+  CustomModelData: 0
   Level: 4
   Nbtkey: "lfs"
   Items:
@@ -154,6 +172,8 @@
 五级落凤石:
   Name: "§e§l五级落凤石"
   Type: STONE
+  Data: 0
+  CustomModelData: 0
   Level: 5
   Nbtkey: "lfs"
   Items:
@@ -171,6 +191,8 @@
 一级水夕石:
   Name: "§3§l一级水夕石"
   Type: STONE
+  Data: 0
+  CustomModelData: 0
   Level: 1
   Nbtkey: "sxs"
   Items:
@@ -191,6 +213,8 @@
 二级水夕石:
   Name: "§3§l二级水夕石"
   Type: STONE
+  Data: 0
+  CustomModelData: 0
   Level: 2
   Nbtkey: "sxs"
   Items:
@@ -211,6 +235,8 @@
 三级水夕石:
   Name: "§3§l三级水夕石"
   Type: STONE
+  Data: 0
+  CustomModelData: 0
   Level: 3
   Nbtkey: "sxs"
   Items:
@@ -231,6 +257,8 @@
 四级水夕石:
   Name: "§3§l四级水夕石"
   Type: STONE
+  Data: 0
+  CustomModelData: 0
   Level: 4
   Nbtkey: "sxs"
   Items:
@@ -251,6 +279,8 @@
 五级水夕石:
   Name: "§3§l五级水夕石"
   Type: STONE
+  Data: 0
+  CustomModelData: 0
   Level: 5
   Nbtkey: "sxs"
   Items:
@@ -271,6 +301,8 @@
 一级烟灵玉:
   Name: "§7§l一级烟灵玉"
   Type: STONE
+  Data: 0
+  CustomModelData: 0
   Level: 1
   Nbtkey: "yly"
   Items:
@@ -291,6 +323,8 @@
 二级烟灵玉:
   Name: "§7§l二级烟灵玉"
   Type: STONE
+  Data: 0
+  CustomModelData: 0
   Level: 2
   Nbtkey: "yly"
   Items:
@@ -311,6 +345,8 @@
 三级烟灵玉:
   Name: "§7§l三级烟灵玉"
   Type: STONE
+  Data: 0
+  CustomModelData: 0
   Level: 3
   Nbtkey: "yly"
   Items:
@@ -331,6 +367,8 @@
 四级烟灵玉:
   Name: "§7§l四级烟灵玉"
   Type: STONE
+  Data: 0
+  CustomModelData: 0
   Level: 4
   Nbtkey: "yly"
   Items:
@@ -351,6 +389,8 @@
 五级烟灵玉:
   Name: "§7§l五级烟灵玉"
   Type: STONE
+  Data: 0
+  CustomModelData: 0
   Level: 5
   Nbtkey: "yly"
   Items:

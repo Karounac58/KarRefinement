@@ -2,6 +2,7 @@ putong:
   Name: "§3§l普通淬炼宝石"
   Type: COAL
   Data: 0
+  CustomModelData: 0
   dropLevel: 2 3
   Lore:
     - "§e用法：§a当作燃料放进熔炉"
@@ -35,6 +36,7 @@ zhongdeng:
   Name: "§5§l中等淬炼宝石"
   Type: COAL
   Data: 0
+  CustomModelData: 0
   riseLevel: 1
   dropLevel: 2 3
   Lore:
@@ -69,6 +71,7 @@ gaodeng:
   Name: "§6§l高等淬炼宝石"
   Type: COAL
   Data: 0
+  CustomModelData: 0
   dropLevel: 2 3
   Lore:
     - "§e用法：§a当作燃料放进熔炉"
@@ -102,6 +105,7 @@ wanmei:
   Name: "§4§l完美淬炼宝石"
   Type: COAL
   Data: 0
+  CustomModelData: 0
   dropLevel: 0 1 2 3
   Lore:
     - "§e用法：§a当作燃料放进熔炉"
