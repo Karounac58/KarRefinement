@@ -1,8 +1,10 @@
 package vip.mcsj.www.karrefinement.main;
 
+import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.Particle;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import vip.mcsj.www.karrefinement.datamanager.*;
@@ -33,17 +35,26 @@ public class KarRefinement extends JavaPlugin{
     public static CustomParticle cp = new ParticleResource().get();
 
     public static MCVersions pv = ReflectionUtils.judgeVersion();
+
+    public static Economy econ = null;
     @Override
     public void onEnable(){
         instance = this;
         log.info(String.format("[%s] - 插件启动中...",getDescription().getName()));
+        if (!setupEconomy() ) {
+            log.severe(String.format("[%s] - 未找到Vault依赖！停止运行.", getDescription().getName()));
+            getServer().getPluginManager().disablePlugin(this);
+            return;
+        }
         Bukkit.getPluginManager().registerEvents(new KarEventListener(),this);
         Bukkit.getPluginManager().registerEvents(new DirectUpgradePaperEvent(),this);
         Bukkit.getPluginManager().registerEvents(new FurnaceListener(),this);
         Bukkit.getPluginManager().registerEvents(new KarCompoundGUIListener(),this);
         Bukkit.getPluginManager().registerEvents(new KarTakeItemGuiListener(),this);
+        Bukkit.getPluginManager().registerEvents(new KarTransformGuiListener(),this);
 
         Bukkit.getPluginCommand("karrefinement").setExecutor(new KarExecutor());
+        saveDefaultConfig();
         FileUtil.initCustomFile("stone.yml");
         FileUtil.initCustomFile("spestone.yml");
         FileUtil.initCustomFile("refinement.yml");
@@ -52,7 +63,7 @@ public class KarRefinement extends JavaPlugin{
         FileUtil.initCustomFile("protectpaper.yml");
         FileUtil.initCustomFile("forge.yml");
         FileUtil.initCustomFile("infinitesoul.yml");
-
+        FileUtil.initCustomFile("transform.yml");
         log.info(" --------------------------------------------------------------------------");
         log.info("  _  __          _____       __ _                                 _  ");
         log.info(" | |/ /         |  __ \\     / _(_)                               | |  ");
@@ -65,6 +76,7 @@ public class KarRefinement extends JavaPlugin{
         StoneDataManager.init();
         EquipmentDataManager.init();
         EquipmentDataManager.initForgeData();
+        EquipmentDataManager.initTransformData();
         LevelDataManager.init();
         PaperDataManager.init();
         SpecialStoneDataManager.init();
@@ -96,5 +108,17 @@ public class KarRefinement extends JavaPlugin{
                 }
             }
         }.runTaskTimer(this,0,80);
+    }
+
+    private boolean setupEconomy() {
+        if (getServer().getPluginManager().getPlugin("Vault") == null) {
+            return false;
+        }
+        RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
+        if (rsp == null) {
+            return false;
+        }
+        econ = rsp.getProvider();
+        return econ != null;
     }
 }

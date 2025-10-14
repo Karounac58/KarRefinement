@@ -40,6 +40,11 @@ public class KarEventListener implements Listener {
     public static ConcurrentHashMap<Player,Integer> judgeForgeInvCloseOrNot = new ConcurrentHashMap<>();
     //判断是否正在锻造
     public static ConcurrentHashMap<Player,Integer> judgeInvForgeOrNot = new ConcurrentHashMap<>();
+
+    public static ConcurrentHashMap<Player,Integer> judgeTransformInvCloseOrNot = new ConcurrentHashMap<>();
+
+    public static ConcurrentHashMap<Player,Integer> judgeInvTransformOrNot = new ConcurrentHashMap<>();
+
     //用于在锻造时关闭菜单后恢复菜单状态
     public static ConcurrentHashMap<Player,Inventory> forgeInvs = new ConcurrentHashMap<>();
 

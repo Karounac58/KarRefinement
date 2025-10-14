@@ -123,6 +123,11 @@ public class KarExecutor implements CommandExecutor, TabCompleter {
                     KarCompoundStoneGui.initial(inv2);
                     KarCompoundStoneGui.openGuiForPlayer(inv2,p);
                     break;
+                case "opentransformgui":
+                    Inventory inv3 = Bukkit.createInventory(new KarTransformStarGui.KarTransformStarGuiInvHolder(), 27, "§c§l移星界面");
+                    KarTransformStarGui.init(inv3);
+                    p.openInventory(inv3);
+                    break;
             }
         }
 //        if(args[0].equals("admindown")){
@@ -172,6 +177,7 @@ public class KarExecutor implements CommandExecutor, TabCompleter {
             completions.add("setnbt");
             completions.add("opengui");
             completions.add("openforgegui");
+            completions.add("opentransformgui");
             completions.add("adminup");
             completions.add("reload");
             completions.add("getnbt");
@@ -207,6 +213,7 @@ public class KarExecutor implements CommandExecutor, TabCompleter {
         StoneDataManager.init();
         EquipmentDataManager.init();
         EquipmentDataManager.initForgeData();
+        EquipmentDataManager.initTransformData();
         LevelDataManager.init();
         PaperDataManager.init();
         SpecialStoneDataManager.init();

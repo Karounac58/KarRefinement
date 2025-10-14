@@ -22,7 +22,7 @@ public class KarForgeGui {
         List<Integer> greenPanes = Arrays.asList(9,10,11,18,20,27,28,29);
         List<Integer> blackPanes = Arrays.asList(12,13,14,21,23,30,31,32);
         List<Integer> bluePanes = Arrays.asList(15,16,17,24,26,33,34,35);
-        ItemStack greenPaneItem = KarRefinement.cm.getItems().get(0);
+        ItemStack redPaneItem = KarRefinement.cm.getItems().get(0);
         ItemStack blackPaneItem = KarRefinement.cm.getItems().get(2);
         ItemStack bluePaneItem = KarRefinement.cm.getItems().get(5);
         ItemStack whitePaneItem = KarRefinement.cm.getItems().get(3);
@@ -38,7 +38,7 @@ public class KarForgeGui {
             inv.setItem(index,whitePaneItem);
         }
         for (Integer index : greenPanes) {
-            inv.setItem(index,greenPaneItem);
+            inv.setItem(index,redPaneItem);
         }
         for (Integer index : blackPanes) {
             inv.setItem(index,blackPaneItem);

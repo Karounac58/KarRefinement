@@ -1,0 +1,4 @@
+# 允许移星物品有淬炼等级(移星后即覆盖)
+allowAfterItemIsRefinement: true
+# 移星花费,不想耗费则填0
+money: 1000000

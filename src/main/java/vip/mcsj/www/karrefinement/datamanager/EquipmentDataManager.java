@@ -7,6 +7,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import vip.mcsj.www.karrefinement.main.KarRefinement;
 import vip.mcsj.www.karrefinement.object.Level;
 import vip.mcsj.www.karrefinement.object.Stone;
 import vip.mcsj.www.karrefinement.utils.FileUtil;
@@ -23,6 +24,12 @@ public class EquipmentDataManager {
     public static final Map<String, List<String>> canRefinementEquipment = new HashMap<>();
 
     public static final Map<Integer,Double> forgeSuccessList = new HashMap<>();
+
+    public static boolean allowAfterItemIsRefinement = true;
+
+    public static int transformCost = 1000000;
+
+    public static String mainLore = "";
     private ItemStack equipmentItem;
 
     private Player p;
@@ -52,6 +59,8 @@ public class EquipmentDataManager {
         canRefinementEquipment.put("Chestplate", chestPlate);
         canRefinementEquipment.put("Leggings", leggings);
         canRefinementEquipment.put("Boots", boots);
+        KarRefinement.instance.reloadConfig();
+        mainLore = KarRefinement.instance.getConfig().getString("mainLore");
     }
 
     public static void initForgeData(){
@@ -64,6 +73,12 @@ public class EquipmentDataManager {
             Double chance = customFileYaml.getDouble(key+".Chance");
             forgeSuccessList.put(Integer.parseInt(key),chance);
         }
+    }
+
+    public static void initTransformData(){
+        YamlConfiguration customFileYaml = FileUtil.getCustomFileYaml("transform.yml");
+        allowAfterItemIsRefinement =  customFileYaml.getBoolean("allowAfterItemIsRefinement");
+        transformCost = customFileYaml.getInt("money");
     }
 
     /**
@@ -144,9 +159,7 @@ public class EquipmentDataManager {
             lores = new ArrayList<>();
         }
 
-        lores.add(KarUtils.applyTextFormatting(KarUtils.createColorGradientMessage(true))
-                + "§e§l装备淬炼"
-                + KarUtils.applyTextFormatting(KarUtils.createColorGradientMessage(false)));
+        lores.add(EquipmentDataManager.mainLore);
         lores.addAll(mainLore);
         lores.addAll(extractLore);
         im.setLore(lores);
@@ -181,6 +194,20 @@ public class EquipmentDataManager {
         });
 
     }
+
+
+    /**
+     * 根据等级直接去除淬炼信息
+     * @param nowLevel
+     */
+    public void removeNowItemRefinementInfo(int nowLevel){
+        Level newlevel = LevelDataManager.levels.get(nowLevel-1);
+        String newEquipmentIdentifier = getEquipmentIdentifier(this.equipmentItem);
+        List<String> newMainLore = newlevel.getMainLore();
+        List<String> newExtractLore = newlevel.getExtractLores().get(newEquipmentIdentifier);
+        removeNowItemRefinementInfo(newMainLore, newExtractLore, nowLevel);
+    }
+
 
 
     public int injuryDownStar(int protectPaperLevel, Stone stone) {
