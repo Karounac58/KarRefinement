@@ -34,6 +34,12 @@ public class KarUtils {
         item.setAmount(j);
     }
 
+    public static void removeItemRefinement(ItemStack item,int i){
+        int j = item.getAmount();
+        j-=i;
+        item.setAmount(j);
+    }
+
     public static Integer getIntFromMap(Map<String,Integer> map,String key){
         return map.get(regxChinese(key));
     }

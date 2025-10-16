@@ -11,8 +11,21 @@ public class Level {
     private int refinementLevel;
     private List<String> mainLore;
     private Map<String, List<String>> extractLores = new HashMap<>();
+    public HashMap<String, List<String>> attribute;
+    public SuitEffect suitEffect;
 
-    private List<PotionEffect> potionEffects = new ArrayList<>(0);
+    public Level() {
+    }
+
+    public Level(int refinementLevel, List<String> mainLore, Map<String, List<String>> extractLores, HashMap<String, List<String>> attribute, SuitEffect suitEffect) {
+        this.refinementLevel = refinementLevel;
+        this.mainLore = mainLore;
+        this.extractLores = extractLores;
+        this.attribute = attribute;
+        this.suitEffect = suitEffect;
+    }
+
+
     private int getRefinementLevel() {
         return refinementLevel;
     }
@@ -37,11 +50,19 @@ public class Level {
         this.extractLores = extractLores;
     }
 
-    public List<PotionEffect> getPotionEffects() {
-        return potionEffects;
+    public HashMap<String, List<String>> getAttribute() {
+        return attribute;
     }
 
-    public void setPotionEffects(List<PotionEffect> potionEffects) {
-        this.potionEffects = potionEffects;
+    public void setAttribute(HashMap<String, List<String>> attribute) {
+        this.attribute = attribute;
+    }
+
+    public SuitEffect getSuitEffect() {
+        return suitEffect;
+    }
+
+    public void setSuitEffect(SuitEffect suitEffect) {
+        this.suitEffect = suitEffect;
     }
 }

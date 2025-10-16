@@ -49,6 +49,21 @@ public class KarTakeItemGui {
         for (Map.Entry<String, DirectUpgradePaper> entry : entries) {
             guiItems.add(DUPaperDataManager.createDUPaper(entry.getKey()));
         }
+        //放入拆卸刀和保护符碎片
+        guiItems.add(DetachDataManager.createPaperDetachItem());
+        Set<String> detaches1 = DetachDataManager.paperDetachs.keySet();
+        for (String detach : detaches1) {
+            DetachDataManager ddm = new DetachDataManager(detach);
+            guiItems.add(ddm.createPaperPiece());
+        }
+
+        guiItems.add(DetachDataManager.createSpeStoneDetachItem());
+        //放入拆卸刀和宝石碎片
+        Set<String> detaches2 = DetachDataManager.speStoneDetachs.keySet();
+        for (String s : detaches2) {
+            DetachDataManager ddm1 = new DetachDataManager(s);
+            guiItems.add(ddm1.createSpeStonePiece());
+        }
     }
 
     public static void openKarTakeItemGui(Player p){

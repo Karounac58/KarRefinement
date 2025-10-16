@@ -9,6 +9,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import vip.mcsj.www.karrefinement.datamanager.*;
 import vip.mcsj.www.karrefinement.effect.ParticleResource;
+import vip.mcsj.www.karrefinement.effect.ScriptRunnable;
 import vip.mcsj.www.karrefinement.gui.GuiResource;
 import vip.mcsj.www.karrefinement.gui.KarCompoundStoneGui;
 import vip.mcsj.www.karrefinement.gui.KarTakeItemGui;
@@ -52,6 +53,8 @@ public class KarRefinement extends JavaPlugin{
         Bukkit.getPluginManager().registerEvents(new KarCompoundGUIListener(),this);
         Bukkit.getPluginManager().registerEvents(new KarTakeItemGuiListener(),this);
         Bukkit.getPluginManager().registerEvents(new KarTransformGuiListener(),this);
+        Bukkit.getPluginManager().registerEvents(new KarDetachListener(),this);
+        Bukkit.getPluginManager().registerEvents(new KarCompoundPieceListener(),this);
 
         Bukkit.getPluginCommand("karrefinement").setExecutor(new KarExecutor());
         saveDefaultConfig();
@@ -64,6 +67,7 @@ public class KarRefinement extends JavaPlugin{
         FileUtil.initCustomFile("forge.yml");
         FileUtil.initCustomFile("infinitesoul.yml");
         FileUtil.initCustomFile("transform.yml");
+        FileUtil.initCustomFile("detach.yml");
         log.info(" --------------------------------------------------------------------------");
         log.info("  _  __          _____       __ _                                 _  ");
         log.info(" | |/ /         |  __ \\     / _(_)                               | |  ");
@@ -83,6 +87,7 @@ public class KarRefinement extends JavaPlugin{
         InfiniteSoulManager.init();
         DUPaperDataManager.init();
         KarCompoundStoneGui.initCompoundData();
+        DetachDataManager.init();
         KarTakeItemGui.initItems();
         initThread();
 
@@ -91,15 +96,15 @@ public class KarRefinement extends JavaPlugin{
     }
 
     public void initThread(){
-        new BukkitRunnable(){
-            @Override
-            public void run() {
-                for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-                    EffectDataManager.handlePlayerEffect(onlinePlayer);
-                }
-            }
-        }.runTaskTimer(this,0,80);
-
+//        new BukkitRunnable(){
+//            @Override
+//            public void run() {
+//                for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+//                    EffectDataManager.handlePlayerEffect(onlinePlayer);
+//                }
+//            }
+//        }.runTaskTimer(this,0,80);
+        Bukkit.getScheduler().runTaskTimerAsynchronously(this,new ScriptRunnable(),0,2);
         new BukkitRunnable(){
             @Override
             public void run() {

@@ -5,6 +5,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import vip.mcsj.www.karrefinement.object.Level;
+import vip.mcsj.www.karrefinement.object.SuitEffect;
 import vip.mcsj.www.karrefinement.utils.FileUtil;
 
 import java.util.*;
@@ -31,16 +32,17 @@ public class LevelDataManager {
                 List<String> handLore = customFileYaml.getStringList(s + ".Attribute."+key);
                 extractlores.put(key,handLore);
             }
-            List<String> potionEffectStrings = customFileYaml.getStringList(s+".SuitEffect.PotionEffect");
-            if(potionEffectStrings.size() != 0) {
-                List<PotionEffect> potionEffects = new ArrayList<>();
-                for (String potionEffectString : potionEffectStrings) {
-                    String[] potionAndLevel = potionEffectString.split(" ");
-                    PotionEffect potion = new PotionEffect(PotionEffectType.getByName(potionAndLevel[0]), 120, Integer.parseInt(potionAndLevel[1]));
-                    potionEffects.add(potion);
-                }
-                level.setPotionEffects(potionEffects);
-            }
+//            List<String> potionEffectStrings = customFileYaml.getStringList(s+".SuitEffect.PotionEffect");
+//            if(potionEffectStrings.size() != 0) {
+//                List<PotionEffect> potionEffects = new ArrayList<>();
+//                for (String potionEffectString : potionEffectStrings) {
+//                    String[] potionAndLevel = potionEffectString.split(" ");
+//                    PotionEffect potion = new PotionEffect(PotionEffectType.getByName(potionAndLevel[0]), 120, Integer.parseInt(potionAndLevel[1]));
+//                    potionEffects.add(potion);
+//                }
+//                level.setPotionEffects(potionEffects);
+//            }
+            level.setSuitEffect(SuitEffect.deserialize(customFileYaml,s+".SuitEffect"));
             level.setExtractLores(extractlores);
             levels.add(level);
         }

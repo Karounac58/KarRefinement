@@ -41,6 +41,7 @@
     Boots:
       - "§a物理防御: §e4"
   SuitEffect:
+    Attribute:
     PotionEffect:
       - "SPEED 0"
 4:
@@ -60,7 +61,7 @@
   SuitEffect:
     Attribute:
     PotionEffect:
-      - "SPEED 1"
+      - "SPEED 0"
 5:
   Lore:
     - "§a§l✡✯✯五星淬炼"
@@ -78,7 +79,7 @@
   SuitEffect:
     Attribute:
     PotionEffect:
-      - "SPEED 1"
+      - "SPEED 0"
 6:
   Lore:
     - "§3§l❂六星淬炼"
@@ -94,8 +95,11 @@
     Boots:
       - "§a物理防御: §e10"
   SuitEffect:
+    Attribute:
     PotionEffect:
-      - "SPEED 1"
+      - "SPEED 0"
+    Script:
+      - "六星淬炼特效.js"
 7:
   Lore:
     - "§3§l❂✯七星淬炼"
@@ -111,8 +115,11 @@
     Boots:
       - "§a物理防御: §e11"
   SuitEffect:
+    Attribute:
     PotionEffect:
-      - "SPEED 2"
+      - "SPEED 0"
+    Script:
+      - "六星淬炼特效.js"
 8:
   Lore:
     - "§3§l❂✯✯八星淬炼"
@@ -128,8 +135,11 @@
     Boots:
       - "§a物理防御: §e12"
   SuitEffect:
+    Attribute:
     PotionEffect:
-      - "SPEED 2"
+      - "SPEED 0"
+    Script:
+      - "六星淬炼特效.js"
 9:
   Lore:
     - "§5§l❂✡九星淬炼"
@@ -146,8 +156,11 @@
     Boots:
       - "§a物理防御: §e14"
   SuitEffect:
+    Attribute:
     PotionEffect:
-      - "SPEED 2"
+      - "SPEED 0"
+    Script:
+      - "九星淬炼特效.js"
 10:
   Lore:
     - "§5§l❂✡✯十星淬炼"
@@ -163,8 +176,11 @@
     Boots:
       - "§a物理防御: §e20"
   SuitEffect:
+    Attribute:
     PotionEffect:
-      - "SPEED 3"
+      - "SPEED 0"
+    Script:
+      - "九星淬炼特效.js"
 11:
   Lore:
     - "§5§l❂✡✯✯十一星淬炼"
@@ -180,8 +196,11 @@
     Boots:
       - "§a物理防御: §e22"
   SuitEffect:
+    Attribute:
     PotionEffect:
-      - "SPEED 3"
+      - "SPEED 0"
+    Script:
+      - "九星淬炼特效.js"
 12:
   Lore:
     - "§6§l❂❂十二星淬炼"
@@ -197,8 +216,11 @@
     Boots:
       - "§a物理防御: §e30"
   SuitEffect:
+    Attribute:
     PotionEffect:
-      - "SPEED 3"
+      - "SPEED 0"
+    Script:
+      - "十二星淬炼特效.js"
 13:
   Lore:
     - "§6§l❂❂✯十三星淬炼"
@@ -214,8 +236,11 @@
     Boots:
       - "§a物理防御: §e32"
   SuitEffect:
+    Attribute:
     PotionEffect:
-      - "SPEED 4"
+      - "SPEED 0"
+    Script:
+      - "十二星淬炼特效.js"
 14:
   Lore:
     - "§6§l❂❂✯✯十四星淬炼"
@@ -231,8 +256,11 @@
     Boots:
       - "§a物理防御: §e34"
   SuitEffect:
+    Attribute:
     PotionEffect:
-      - "SPEED 4"
+      - "SPEED 0"
+    Script:
+      - "十二星淬炼特效.js"
 15:
   Lore:
     - "§c§l❂❂✡十五星淬炼"
@@ -248,8 +276,11 @@
     Boots:
       - "§a物理防御: §e50"
   SuitEffect:
+    Attribute:
     PotionEffect:
-      - "SPEED 4"
+      - "SPEED 0"
+    Script:
+      - "十五星淬炼特效.js"
 16:
   Lore:
     - "§c§l❂❂✡✯十六星淬炼"
@@ -265,8 +296,11 @@
     Boots:
       - "§a物理防御: §e54"
   SuitEffect:
+    Attribute:
     PotionEffect:
-      - "SPEED 4"
+      - "SPEED 0"
+    Script:
+      - "十五星淬炼特效.js"
 17:
   Lore:
     - "§c§l❂❂✡✯✯十七星淬炼"
@@ -282,8 +316,11 @@
     Boots:
       - "§a物理防御: §e60"
   SuitEffect:
+    Attribute:
     PotionEffect:
-      - "SPEED 4"
+      - "SPEED 0"
+    Script:
+      - "十五星淬炼特效.js"
 18:
   Lore:
     - "§4§l❂❂❂十八星淬炼"
@@ -299,5 +336,8 @@
     Boots:
       - "§a物理防御: §e80"
   SuitEffect:
+    Attribute:
     PotionEffect:
-      - "SPEED 4"
+      - "SPEED 0"
+    Script:
+      - "十八星淬炼特效.js"

@@ -30,6 +30,7 @@ public class EquipmentDataManager {
     public static int transformCost = 1000000;
 
     public static String mainLore = "";
+    public static String speStoneLore = "";
     private ItemStack equipmentItem;
 
     private Player p;
@@ -61,6 +62,7 @@ public class EquipmentDataManager {
         canRefinementEquipment.put("Boots", boots);
         KarRefinement.instance.reloadConfig();
         mainLore = KarRefinement.instance.getConfig().getString("mainLore");
+        speStoneLore = KarRefinement.instance.getConfig().getString("speStoneLore");
     }
 
     public static void initForgeData(){

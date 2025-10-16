@@ -4,6 +4,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import vip.mcsj.www.karrefinement.version.CustomSounds;
@@ -147,7 +148,7 @@ public class V1122 implements CustomParticle, CustomMaterial, CustomSounds {
 //            locc2.getWorld().spawnParticle(KarRefinement.particles[1],locc2,3,red*size,0,blue,1);
 //            locc3.getWorld().spawnParticle(KarRefinement.particles[1],locc3,3,red*size,0,blue,1);
 
-            loc2.getWorld().spawnParticle(particles.get(1), loc2,3,red*size,0,blue,1);
+            loc.getWorld().spawnParticle(particles.get(1), loc,3,red*size,0,blue,1);
             loc1.getWorld().spawnParticle(particles.get(1),loc1,3,red*size,0,blue,1);
             loc2.getWorld().spawnParticle(particles.get(1),loc2,3,red*size,0,blue,1);
             loc3.getWorld().spawnParticle(particles.get(1),loc3,3,red*size,0,blue,1);

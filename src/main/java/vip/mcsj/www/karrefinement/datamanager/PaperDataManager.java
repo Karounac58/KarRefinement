@@ -154,8 +154,12 @@ public class PaperDataManager {
 
     public static String getPaperIdentifier(ItemStack itemPaper){
         int paperLevel = new NBTItem(itemPaper).getInteger("protector");
+        return getPaperIdentifier(paperLevel);
+    }
+
+    public static String getPaperIdentifier(int level){
         for (String s : papers.keySet()) {
-            if(papers.get(s).getLevel() == paperLevel){
+            if(papers.get(s).getLevel() == level){
                 return s;
             }
         }

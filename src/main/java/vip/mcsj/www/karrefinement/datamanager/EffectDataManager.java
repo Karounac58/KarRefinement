@@ -4,12 +4,18 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitTask;
 import vip.mcsj.www.karrefinement.effect.*;
 import vip.mcsj.www.karrefinement.main.KarRefinement;
 import vip.mcsj.www.karrefinement.object.Level;
+import vip.mcsj.www.karrefinement.object.SuitEffect;
+import vip.mcsj.www.karrefinement.utils.FileUtil;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -73,11 +79,14 @@ public class EffectDataManager {
     public static void handlePlayerPotionEffect(Player p){
         Level minLevel = LevelDataManager.getMinLevel(p);
         if(minLevel != null){
-            List<PotionEffect> potionEffects = minLevel.getPotionEffects();
-            if(minLevel.getPotionEffects().size() != 0){
-                for (PotionEffect potionEffect : potionEffects) {
-                    p.removePotionEffect(potionEffect.getType());
-                    p.addPotionEffect(potionEffect);
+            List<String> potionEffects = minLevel.getSuitEffect().potionEffect;
+            if(!minLevel.getSuitEffect().potionEffect.isEmpty()){
+                for (String potionEffect : potionEffects) {
+                    PotionEffectType type = PotionEffectType.getByName(potionEffect.split(" ")[0]);
+                    int level = Integer.parseInt(potionEffect.split(" ")[1]);
+                    PotionEffect potionEffect1 = new PotionEffect(type, 120, level);
+                    p.removePotionEffect(type);
+                    p.addPotionEffect(potionEffect1);
                 }
             }
         }
@@ -139,4 +148,23 @@ public class EffectDataManager {
         return taskMap;
     }
 
+
+    public static String loadSuitEffectScriptStr(String name) {
+        if (!KarRefinement.instance.getDataFolder().exists()) {
+            KarRefinement.instance.getDataFolder().mkdir();
+        }
+        File folder = new File(KarRefinement.instance.getDataFolder(), "script");
+        if (!folder.exists()) {
+            folder.mkdir();
+        }
+        File file = new File(folder, name);
+        if (!file.exists()) {
+            try {
+                file.createNewFile();
+                FileUtil.write(file, SuitEffect.defaultScript);
+            } catch (IOException ex) {
+            }
+        }
+        return FileUtil.read(file);
+    }
 }

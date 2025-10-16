@@ -6,10 +6,12 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
 import vip.mcsj.www.karrefinement.main.KarRefinement;
 
-import java.io.File;
+import java.io.*;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 
@@ -149,5 +151,133 @@ public class FileUtil {
         File file = new File(KarRefinement.instance.getDataFolder(),fileName);
         YamlConfiguration yaml = YamlConfiguration.loadConfiguration(file);
         return yaml.getConfigurationSection(key);
+    }
+
+    public static byte[] readBytes(File file) {
+        FileInputStream fis = null;
+
+        try {
+            fis = new FileInputStream(file);
+            ByteArrayOutputStream bos = new ByteArrayOutputStream(1024);
+            byte[] b = new byte[1024];
+
+            int n;
+            while((n = fis.read(b)) != -1) {
+                bos.write(b, 0, n);
+            }
+
+            fis.close();
+            return bos.toByteArray();
+        } catch (IOException ex) {
+            Logger.getLogger(FileUtil.class.getName()).log(Level.SEVERE, (String)null, ex);
+
+            return new byte[0];
+        }
+    }
+
+    public static String read(File file) {
+        StringBuffer buf = null;
+        BufferedReader breader = null;
+
+        try {
+            breader = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
+            buf = new StringBuffer();
+
+            while(breader.ready()) {
+                buf.append((char)breader.read());
+            }
+
+            breader.close();
+        } catch (IOException ex) {
+            Logger.getLogger(FileUtil.class.getName()).log(Level.SEVERE, (String)null, ex);
+        }
+
+        return buf.toString();
+    }
+
+    public static void write(File file, String str) {
+        try {
+            OutputStream out = new FileOutputStream(file);
+
+            try {
+                out.write(str.getBytes());
+            } catch (Throwable var6) {
+                try {
+                    out.close();
+                } catch (Throwable var5) {
+                    var6.addSuppressed(var5);
+                }
+
+                throw var6;
+            }
+
+            out.close();
+        } catch (IOException ex) {
+            Logger.getLogger(FileUtil.class.getName()).log(Level.SEVERE, (String)null, ex);
+        }
+
+    }
+
+    public static void copyFolder(File resourceFile, File targetFile) throws Exception {
+        File[] resourceFiles = resourceFile.listFiles();
+
+        for(File file : resourceFiles) {
+            File file1 = new File(targetFile.getAbsolutePath() + File.separator + resourceFile.getName());
+            if (file.isFile()) {
+                if (!file1.exists()) {
+                    file1.mkdirs();
+                }
+
+                File targetFile1 = new File(file1.getAbsolutePath() + File.separator + file.getName());
+                copyFile(file, targetFile1);
+            }
+
+            if (file.isDirectory()) {
+                copyFolder(file, file1);
+            }
+        }
+
+    }
+
+    public static void copyFile(File resource, File target) throws Exception {
+        FileInputStream inputStream = new FileInputStream(resource);
+
+        FileOutputStream outputStream;
+        try {
+            outputStream = new FileOutputStream(target);
+            BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(outputStream);
+
+            try {
+                byte[] bytes = new byte[2048];
+                int len = 0;
+
+                while((len = inputStream.read(bytes)) != -1) {
+                    bufferedOutputStream.write(bytes, 0, len);
+                }
+
+                bufferedOutputStream.flush();
+            } catch (Throwable var9) {
+                try {
+                    bufferedOutputStream.close();
+                } catch (Throwable var8) {
+                    var9.addSuppressed(var8);
+                }
+
+                throw var9;
+            }
+
+            bufferedOutputStream.close();
+        } catch (Throwable var10) {
+            try {
+                inputStream.close();
+            } catch (Throwable var7) {
+                var10.addSuppressed(var7);
+            }
+
+            throw var10;
+        }
+
+        inputStream.close();
+        outputStream.close();
     }
 }

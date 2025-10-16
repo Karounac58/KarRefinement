@@ -33,6 +33,22 @@ public class KarExecutor implements CommandExecutor, TabCompleter {
         if(args.length == 1){
             Player p = (Player) sender;
             switch (args[0]){
+                case "help":
+                    p.sendMessage("§c§l§m  §6§l§m  §e§l§m  §a§l§m  §b§l§m  §e§lKarRefinement§b§l§m  §a§l§m  §e§l§m  §6§l§m  §c§l§m  ");
+                    p.sendMessage("§e/krf adminup —— §b为手上物品升星");
+                    p.sendMessage("§e/krf reload —— §b重载配置文件");
+                    p.sendMessage("§e/krf openitemgui —— §b打开淬炼物品菜单");
+                    p.sendMessage("§e/krf givestone <玩家名> <淬炼石名> <数量> —— §b获取淬炼石");
+                    p.sendMessage("§e/krf givepaper <玩家名> <保护符名> —— §b获取保护符");
+                    p.sendMessage("§e/krf givedupaper <玩家名> <直升符名> —— §b获取直升符");
+                    p.sendMessage("§e/krf givespestone <玩家名> <宝石名> —— §b获取宝石");
+                    p.sendMessage("§e/krf givesoul <玩家名> <精魂名> —— §b获取无限耐久精魂");
+                    p.sendMessage("§e/krf opengui <玩家名> —— §b打开淬炼界面");
+                    p.sendMessage("§e/krf openforgegui <玩家名> —— §b打开锻造界面");
+                    p.sendMessage("§e/krf opencompoundgui <玩家名> —— §b打开宝石合石界面");
+                    p.sendMessage("§e/krf opencompoundpiecegui <玩家名> —— §b打开保护符碎片合成界面");
+                    p.sendMessage("§e/krf opentransformgui <玩家名> —— §b打开淬炼移星界面");
+                    break;
                 case "adminup":
                     ItemStack itemInMainHand = p.getInventory().getItemInMainHand();
                     if (EquipmentDataManager.isEquipmentLegal(itemInMainHand)) {
@@ -128,6 +144,15 @@ public class KarExecutor implements CommandExecutor, TabCompleter {
                     KarTransformStarGui.init(inv3);
                     p.openInventory(inv3);
                     break;
+                case "opencompoundpiecegui":
+                    if (!DetachDataManager.enabled) {
+                        p.sendMessage("§c§l请前往detach.yml配置文件中开启保护符拆卸功能");
+                        return true;
+                    }
+                    Inventory inv4 = Bukkit.createInventory(new KarCompoundPieceGui.KarCompoundPieceGuiInvHolder(),27,"§a§l碎片合成界面");
+                    KarCompoundPieceGui.init(inv4);
+                    p.openInventory(inv4);
+                    break;
             }
         }
 //        if(args[0].equals("admindown")){
@@ -183,6 +208,7 @@ public class KarExecutor implements CommandExecutor, TabCompleter {
             completions.add("getnbt");
             completions.add("clearlore");
             completions.add("openitemgui");
+            completions.add("opencompoundpiecegui");
         }else if(strings.length == 2){
             completions.addAll(Bukkit.getOnlinePlayers().stream().map(Player::getName).collect(Collectors.toList()));
         }else if(strings.length == 3){
@@ -220,5 +246,6 @@ public class KarExecutor implements CommandExecutor, TabCompleter {
         InfiniteSoulManager.init();
         DUPaperDataManager.init();
         KarCompoundStoneGui.initCompoundData();
+        DetachDataManager.init();
     }
 }

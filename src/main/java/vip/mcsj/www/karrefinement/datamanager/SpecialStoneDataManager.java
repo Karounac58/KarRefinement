@@ -116,6 +116,25 @@ public class SpecialStoneDataManager {
     }
 
     /**
+     * 获取装备上的所有宝石
+     * @param speStoneItem
+     * @return
+     */
+    public static List<SpeStone> getSpeStones(ItemStack speStoneItem){
+        NBTItem nbtItem = new NBTItem(speStoneItem);
+        List<SpeStone> speStones1 = new ArrayList<>();
+        for (String s : speStones.keySet()) {
+            SpeStone speStone = speStones.get(s);
+            if(nbtItem.hasTag(speStone.getNbtKey())){
+                if(nbtItem.getInteger(speStone.getNbtKey()) == speStone.getLevel()){
+                    speStones1.add(speStone);
+                }
+            }
+        }
+        return speStones1;
+    }
+
+    /**
      * 通过nbt键和值获取SpeStone
      * @param key
      * @param value
@@ -200,9 +219,7 @@ public class SpecialStoneDataManager {
             lores = new ArrayList<>();
         }
 
-        lores.add(KarUtils.applyTextFormatting(KarUtils.createColorGradientMessage(true))
-                + "§e§l宝石镶嵌"
-                + KarUtils.applyTextFormatting(KarUtils.createColorGradientMessage(false)));
+        lores.add(EquipmentDataManager.speStoneLore);
         lores.addAll(speStone.getEquipmentLore());
         for (SpeStone speStone1 : originSpeStoneList) {
             lores.addAll(speStone1.getEquipmentLore());
