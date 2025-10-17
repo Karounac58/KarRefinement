@@ -9,6 +9,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import vip.mcsj.www.karrefinement.object.ProtectPaper;
 import vip.mcsj.www.karrefinement.utils.FileUtil;
+import vip.mcsj.www.karrefinement.utils.ReflectionUtils;
 
 import java.util.*;
 
@@ -67,6 +68,7 @@ public class PaperDataManager {
         //setLore
         im.setLore(paper.getLore());
         paperItem.setItemMeta(im);
+        ReflectionUtils.setCustomModelData(paperItem,paper.getCustomModelData());
         NBT.modify(paperItem,nbt -> {
             nbt.setInteger("protector",paper.getLevel());
         });

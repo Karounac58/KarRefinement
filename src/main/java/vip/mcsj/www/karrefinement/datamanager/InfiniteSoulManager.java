@@ -8,6 +8,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import vip.mcsj.www.karrefinement.object.InfiniteSoul;
 import vip.mcsj.www.karrefinement.utils.FileUtil;
+import vip.mcsj.www.karrefinement.utils.ReflectionUtils;
 
 import java.util.*;
 
@@ -53,6 +54,7 @@ public class InfiniteSoulManager {
         im.setDisplayName(infiniteSoul.getName());
         im.setLore(infiniteSoul.getLore());
         soulItem.setItemMeta(im);
+        ReflectionUtils.setCustomModelData(soulItem,infiniteSoul.getCustomModelData());
         NBT.modify(soulItem,nbt -> {
             nbt.setInteger("infinite",infiniteSoul.getLevel());
         });

@@ -55,7 +55,7 @@ public class KarRefinement extends JavaPlugin{
         Bukkit.getPluginManager().registerEvents(new KarTransformGuiListener(),this);
         Bukkit.getPluginManager().registerEvents(new KarDetachListener(),this);
         Bukkit.getPluginManager().registerEvents(new KarCompoundPieceListener(),this);
-
+        Bukkit.getPluginManager().registerEvents(new AdhesiveListener(),this);
         Bukkit.getPluginCommand("karrefinement").setExecutor(new KarExecutor());
         saveDefaultConfig();
         FileUtil.initCustomFile("stone.yml");
@@ -68,6 +68,8 @@ public class KarRefinement extends JavaPlugin{
         FileUtil.initCustomFile("infinitesoul.yml");
         FileUtil.initCustomFile("transform.yml");
         FileUtil.initCustomFile("detach.yml");
+        FileUtil.initCustomFile("chinesename.yml");
+        FileUtil.initCustomFile("adhesive.yml");
         log.info(" --------------------------------------------------------------------------");
         log.info("  _  __          _____       __ _                                 _  ");
         log.info(" | |/ /         |  __ \\     / _(_)                               | |  ");
@@ -88,6 +90,7 @@ public class KarRefinement extends JavaPlugin{
         DUPaperDataManager.init();
         KarCompoundStoneGui.initCompoundData();
         DetachDataManager.init();
+        AdhesiveDataManager.init();
         KarTakeItemGui.initItems();
         initThread();
 

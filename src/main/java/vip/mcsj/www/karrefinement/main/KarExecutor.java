@@ -118,6 +118,9 @@ public class KarExecutor implements CommandExecutor, TabCompleter {
                     InfiniteSoulManager soulManager = new InfiniteSoulManager(args[2]);
                     p.getInventory().addItem(soulManager.createInfiniteSoul());
                     break;
+                case "giveadhesive":
+                    p.getInventory().addItem(AdhesiveDataManager.createAdhesiveItem(args[2]));
+                    break;
                 case "setnbt":
                     ItemStack invItem = p.getInventory().getItemInMainHand();
                     NBT.modify(invItem, nbt -> {
@@ -199,6 +202,7 @@ public class KarExecutor implements CommandExecutor, TabCompleter {
             completions.add("givedupaper");
             completions.add("givespestone");
             completions.add("givesoul");
+            completions.add("giveadhesive");
             completions.add("setnbt");
             completions.add("opengui");
             completions.add("openforgegui");
@@ -231,6 +235,9 @@ public class KarExecutor implements CommandExecutor, TabCompleter {
                 case "setnbt":
                     completions.add("<nbt键名> <nbt值>");
                     break;
+                case "giveadhesive":
+                    completions.add("<宝石粘合剂名>");
+                    break;
             }
         }
         return completions;
@@ -247,5 +254,7 @@ public class KarExecutor implements CommandExecutor, TabCompleter {
         DUPaperDataManager.init();
         KarCompoundStoneGui.initCompoundData();
         DetachDataManager.init();
+        AdhesiveDataManager.init();
+        KarTakeItemGui.initItems();
     }
 }

@@ -1,3 +1,10 @@
 #主lore中必须包含"装备淬炼"这四个字
 mainLore: "§c§l§m  §6§l§m  §e§l§m  §a§l§m  §b§l§m  §e§l装备淬炼§b§l§m  §a§l§m  §e§l§m  §6§l§m  §c§l§m  "
 speStoneLore: "§c§l§m  §6§l§m  §e§l§m  §a§l§m  §b§l§m  §e§l宝石镶嵌§b§l§m  §a§l§m  §e§l§m  §6§l§m  §c§l§m  "
+# 是否开启物品名+几的等级信息
+# 由于高版本和低版本许多武器装备材料名不一致
+# 使用前请先前往chinesename.yml修改材料名或自己添加材料名和名字
+# 目前的chinesename.yml是1.12.2版本
+DisplayNameInfo:
+  enabled: false
+  suffix: "§a§l+{level}" # 物品名后缀,{level}为淬炼等级

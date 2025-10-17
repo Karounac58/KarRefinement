@@ -9,6 +9,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import vip.mcsj.www.karrefinement.object.SpeStone;
 import vip.mcsj.www.karrefinement.utils.FileUtil;
 import vip.mcsj.www.karrefinement.utils.KarUtils;
+import vip.mcsj.www.karrefinement.utils.ReflectionUtils;
 
 import java.util.*;
 
@@ -69,6 +70,7 @@ public class SpecialStoneDataManager {
         im.setDisplayName(speStone.getName());
         im.setLore(speStone.getLore());
         speStoneItem.setItemMeta(im);
+        ReflectionUtils.setCustomModelData(speStoneItem,speStone.getCustomModelData());
         NBT.modify(speStoneItem,nbt -> {
             nbt.setInteger(speStone.getNbtKey(),speStone.getLevel());
         });

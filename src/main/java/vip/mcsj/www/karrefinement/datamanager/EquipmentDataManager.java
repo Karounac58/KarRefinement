@@ -25,12 +25,17 @@ public class EquipmentDataManager {
 
     public static final Map<Integer,Double> forgeSuccessList = new HashMap<>();
 
+    public static final Map<String,String> chinesenames = new HashMap<>();
+
     public static boolean allowAfterItemIsRefinement = true;
 
     public static int transformCost = 1000000;
 
     public static String mainLore = "";
     public static String speStoneLore = "";
+
+    public static boolean enableDisplayNameInfo = true;
+    public static String displayNameSuffix = "";
     private ItemStack equipmentItem;
 
     private Player p;
@@ -48,6 +53,9 @@ public class EquipmentDataManager {
         if (!canRefinementEquipment.isEmpty()) {
             canRefinementEquipment.clear();
         }
+        if(!chinesenames.isEmpty()) {
+            chinesenames.clear();
+        }
         YamlConfiguration customFileYaml = FileUtil.getCustomFileYaml("items.yml");
         List<String> hand = customFileYaml.getStringList("Hand");
         List<String> helmet = customFileYaml.getStringList("Helmet");
@@ -63,6 +71,13 @@ public class EquipmentDataManager {
         KarRefinement.instance.reloadConfig();
         mainLore = KarRefinement.instance.getConfig().getString("mainLore");
         speStoneLore = KarRefinement.instance.getConfig().getString("speStoneLore");
+        enableDisplayNameInfo = KarRefinement.instance.getConfig().getBoolean("DisplayNameInfo.enabled");
+        displayNameSuffix = KarRefinement.instance.getConfig().getString("DisplayNameInfo.suffix");
+
+        YamlConfiguration chineseNameYaml = FileUtil.getCustomFileYaml("chinesename.yml");
+        chineseNameYaml.getKeys(false).forEach(key -> {
+            chinesenames.put(key,chineseNameYaml.getString(key));
+        });
     }
 
     public static void initForgeData(){
@@ -156,6 +171,11 @@ public class EquipmentDataManager {
      */
     private void addItemRefinementInfo(List<String> mainLore, List<String> extractLore, int refinementNBTNum) {
         ItemMeta im = equipmentItem.getItemMeta();
+        if(enableDisplayNameInfo){
+            String displayName = im.hasDisplayName() ? im.getDisplayName() : chinesenames.get(equipmentItem.getType().name());
+            displayName +=  displayNameSuffix.replace("{level}",refinementNBTNum+"");
+            im.setDisplayName(displayName);
+        }
         List<String> lores = im.getLore();
         if (lores == null) {
             lores = new ArrayList<>();
@@ -177,6 +197,12 @@ public class EquipmentDataManager {
      */
     private void removeNowItemRefinementInfo(List<String> mainLore, List<String> extractLore, int refinementNBTNum) {
         ItemMeta im = equipmentItem.getItemMeta();
+        if(enableDisplayNameInfo){
+            String displayName = im.getDisplayName();
+            String suffix = displayNameSuffix.replace("{level}",refinementNBTNum+"");
+            displayName = displayName.replace(suffix,"");
+            im.setDisplayName(displayName);
+        }
         List<String> lores = im.getLore();
         if (lores == null) {
             lores = new ArrayList<>();

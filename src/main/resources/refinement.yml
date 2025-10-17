@@ -12,6 +12,10 @@
       - "§a物理防御: §e1"
     Boots:
       - "§a物理防御: §e1"
+  SuitEffect:
+    Attribute:
+    PotionEffect:
+      - "SPEED 0"
 2:
   Lore:
     - "§f§l✯✯二星淬炼"
@@ -26,6 +30,10 @@
       - "§a物理防御: §e2"
     Boots:
       - "§a物理防御: §e2"
+  SuitEffect:
+    Attribute:
+    PotionEffect:
+      - "SPEED 0"
 3:
   Lore:
     - "§a§l✡三星淬炼"

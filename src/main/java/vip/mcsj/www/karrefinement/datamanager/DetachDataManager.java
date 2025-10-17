@@ -14,6 +14,7 @@ import vip.mcsj.www.karrefinement.object.ProtectPaper;
 import vip.mcsj.www.karrefinement.object.SpeStone;
 import vip.mcsj.www.karrefinement.utils.FileUtil;
 import vip.mcsj.www.karrefinement.utils.KarUtils;
+import vip.mcsj.www.karrefinement.utils.ReflectionUtils;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -64,6 +65,7 @@ public class DetachDataManager {
         im.setDisplayName(paperDetachItem.getName());
         im.setLore(paperDetachItem.getLore());
         item.setItemMeta(im);
+        ReflectionUtils.setCustomModelData(item,paperDetachItem.getCmd());
         NBT.modify(item,nbt -> {
             nbt.setInteger("paperpiece",paperDetachItem.getLevel());
         });
@@ -90,6 +92,7 @@ public class DetachDataManager {
         im.setDisplayName(paperDetachItem.getName());
         im.setLore(paperDetachItem.getLore());
         item.setItemMeta(im);
+        ReflectionUtils.setCustomModelData(item,paperDetachItem.getCmd());
         NBT.modify(item,nbt -> {
             nbt.setInteger("paperdetachitem",1);
         });

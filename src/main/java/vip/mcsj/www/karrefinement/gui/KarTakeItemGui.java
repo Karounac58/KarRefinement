@@ -64,6 +64,11 @@ public class KarTakeItemGui {
             DetachDataManager ddm1 = new DetachDataManager(s);
             guiItems.add(ddm1.createSpeStonePiece());
         }
+
+        Set<String> adhesive = AdhesiveDataManager.adhesives.keySet();
+        for (String s : adhesive) {
+            guiItems.add(AdhesiveDataManager.createAdhesiveItem(s));
+        }
     }
 
     public static void openKarTakeItemGui(Player p){

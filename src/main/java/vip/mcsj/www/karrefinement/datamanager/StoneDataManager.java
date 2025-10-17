@@ -9,6 +9,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import vip.mcsj.www.karrefinement.object.Stone;
 import vip.mcsj.www.karrefinement.utils.FileUtil;
+import vip.mcsj.www.karrefinement.utils.ReflectionUtils;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -67,6 +68,7 @@ public class StoneDataManager {
         im.setDisplayName(stone.getName());
         im.setLore(stone.getLore());
         stoneItem.setItemMeta(im);
+        ReflectionUtils.setCustomModelData(stoneItem,stone.getCustomModelData());
         NBT.modify(stoneItem,nbt -> {
             nbt.setString("refinementstone",this.stoneNbt);
         });

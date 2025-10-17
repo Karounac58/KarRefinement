@@ -1,6 +1,8 @@
 package vip.mcsj.www.karrefinement.utils;
 
 import org.bukkit.Bukkit;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import vip.mcsj.www.karrefinement.object.MCVersions;
 
 import java.lang.reflect.Field;
@@ -41,6 +43,23 @@ public class ReflectionUtils {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public static ItemStack setCustomModelData(ItemStack item,int cmd){
+        ItemMeta itemMeta = item.getItemMeta();
+        if(getSpigotVersion()[1] < 14){
+            return item;
+        }
+        try {
+            Class<?> aClass = itemMeta.getClass();
+            Method setCustomModelData = aClass.getMethod("setCustomModelData", Integer.class);
+            setCustomModelData.setAccessible(true);
+            setCustomModelData.invoke(itemMeta,cmd);
+            item.setItemMeta(itemMeta);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return item;
     }
 
 

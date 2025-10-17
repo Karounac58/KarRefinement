@@ -9,6 +9,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import vip.mcsj.www.karrefinement.object.DirectUpgradePaper;
 import vip.mcsj.www.karrefinement.utils.FileUtil;
+import vip.mcsj.www.karrefinement.utils.ReflectionUtils;
 
 import java.util.*;
 
@@ -53,6 +54,7 @@ public class DUPaperDataManager {
         im.setDisplayName(duPaper.getName());
         im.setLore(duPaper.getLore());
         duPaperItem.setItemMeta(im);
+        ReflectionUtils.setCustomModelData(duPaperItem,duPaper.getCustomModelData());
         NBT.modify(duPaperItem,nbt -> {
             nbt.setInteger("dulevel",duPaper.getLevel());
         });
