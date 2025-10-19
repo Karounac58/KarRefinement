@@ -30,7 +30,7 @@ public class KarCompoundPieceGui {
         if(!cpItems.isEmpty()){
             cpItems.clear();
         }
-        YamlConfiguration file = FileUtil.getCustomFileYaml("gui/transformgui.yml");
+        YamlConfiguration file = FileUtil.getCustomFileYaml("gui/compoundpiecegui.yml");
         title = file.getString("Title");
         size = file.getInt("Size");
         originSlot = file.getInt("OriginSlot");
