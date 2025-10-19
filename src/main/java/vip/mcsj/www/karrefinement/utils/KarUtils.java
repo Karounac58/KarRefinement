@@ -151,6 +151,11 @@ public class KarUtils {
         return colorPane;
     }
 
+    public static ItemStack createColorPane(ItemStack item,int dataValue){
+        item.setDurability((short) dataValue);
+        return item;
+    }
+
     public static ItemStack removeItemName(ItemStack itemStack){
         ItemMeta itemMeta = itemStack.getItemMeta();
         itemMeta.setDisplayName("");

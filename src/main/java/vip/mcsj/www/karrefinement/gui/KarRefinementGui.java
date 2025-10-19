@@ -1,9 +1,12 @@
 package vip.mcsj.www.karrefinement.gui;
 
+import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -16,56 +19,86 @@ import vip.mcsj.www.karrefinement.datamanager.PaperDataManager;
 import vip.mcsj.www.karrefinement.datamanager.StoneDataManager;
 import vip.mcsj.www.karrefinement.main.KarRefinement;
 import vip.mcsj.www.karrefinement.main.listener.KarEventListener;
+import vip.mcsj.www.karrefinement.object.InvItem;
+import vip.mcsj.www.karrefinement.object.MCVersions;
 import vip.mcsj.www.karrefinement.object.Stone;
+import vip.mcsj.www.karrefinement.utils.FileUtil;
 import vip.mcsj.www.karrefinement.utils.KarUtils;
+import vip.mcsj.www.karrefinement.utils.ReflectionUtils;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.*;
 
 public class KarRefinementGui {
-    public static void setInvInitial(Inventory inv) {
+    public static Map<String, InvItem> rItems = new HashMap<>();
+    public static String title = "";
+
+    public static void init(){
+        if(!rItems.isEmpty()){
+            rItems.clear();
+        }
+        YamlConfiguration file = FileUtil.getCustomFileYaml("gui/refinementgui.yml");
+        title = file.getString("Title");
+        ConfigurationSection fileCS = file.getConfigurationSection("Item");
+        Set<String> keys = fileCS.getKeys(false);
+        for (String key : keys) {
+            String name = fileCS.getString(key + ".Name");
+            Material material = Material.valueOf(fileCS.getString(key + ".Material"));
+            int data = fileCS.getInt(key + ".Data");
+            int customModelData = fileCS.getInt(key + ".CustomModelData");
+            List<String> lore = fileCS.getStringList(key + ".Lore");
+            rItems.put(key,new InvItem(name, material, data, customModelData, lore));
+        }
+    }
+    public static void setInvInitial(Inventory inv,Player p) {
         List<Integer> indexs = Arrays.asList(0, 1, 2, 3, 4, 5, 6, 7, 45, 46, 47, 48, 50, 51, 52, 53);
         for (int i = 0; i < 54; i++) {
             if (i == 29 || i == 33) {
                 continue;
             }
             if(i == 8){
-                ItemStack anvil = new ItemStack(Material.ANVIL);
-                ItemMeta itemMeta = anvil.getItemMeta();
-                itemMeta.setDisplayName("§c锻造界面");
-                anvil.setItemMeta(itemMeta);
-                inv.setItem(8, anvil);
+                InvItem forgeButton = rItems.get("ForgeButton");
+                ItemStack invItem = createInvItem(forgeButton,p);
+                inv.setItem(8, invItem);
             }
             else if (i == 20) {
-                ItemStack furance = new ItemStack(Material.FURNACE);
-                ItemMeta itemMeta = furance.getItemMeta();
-                itemMeta.setDisplayName("§c§l☼§d§l淬炼石§c§l☼");
-                furance.setItemMeta(itemMeta);
-                inv.setItem(20, furance);
+                InvItem stoneInfo = rItems.get("StoneInfo");
+                ItemStack invItem = createInvItem(stoneInfo,p);
+                inv.setItem(20, invItem);
             } else if (i == 24) {
-                ItemStack ironSword = new ItemStack(Material.IRON_SWORD);
-                ItemMeta itemMeta = ironSword.getItemMeta();
-                itemMeta.setDisplayName("§c§l☼§6§l淬炼装备§c§l☼");
-                ironSword.setItemMeta(itemMeta);
-                inv.setItem(24, ironSword);
+                InvItem equipmentinfo = rItems.get("Equipmentinfo");
+                ItemStack invItem = createInvItem(equipmentinfo,p);
+                inv.setItem(24, invItem);
             } else if (i == 49) {
-                ItemStack glowstone = new ItemStack(Material.GLOWSTONE_DUST);
-                ItemMeta itemMeta = glowstone.getItemMeta();
-                itemMeta.setDisplayName("§6左键进行淬炼 §f| §b右键快速淬炼");
-                List<String> lore = new ArrayList<>();
-                lore.add("§e- §a左边放淬炼石，右边放待淬炼装备");
-                lore.add("§e- §a进行淬炼时请§c不要退出界面或拿出物品，");
-                lore.add("§e- §a否则有概率会造成淬炼石或装备丢失！");
-                itemMeta.setLore(lore);
-                glowstone.setItemMeta(itemMeta);
-                inv.setItem(49, glowstone);
+                InvItem confirmButton = rItems.get("ConfirmButton");
+                ItemStack invItem = createInvItem(confirmButton,p);
+                inv.setItem(49, invItem);
             } else if (indexs.contains(i)) {
-                inv.setItem(i, new ItemStack(KarRefinement.cm.getItems().get(2)));
+                InvItem barrier = rItems.get("Barrier");
+                ItemStack invItem = createInvItem(barrier,p);
+                inv.setItem(i,invItem);
             } else {
-                inv.setItem(i, new ItemStack(KarRefinement.cm.getItems().get(3)));
+                InvItem barrier2 = rItems.get("Barrier2");
+                ItemStack invItem = createInvItem(barrier2,p);
+                inv.setItem(i, invItem);
             }
         }
+    }
+
+    public static ItemStack createInvItem(InvItem invItem,Player p){
+        ItemStack furance = new ItemStack(invItem.getMaterial(),1,(short)invItem.getData());
+        ItemMeta itemMeta = furance.getItemMeta();
+        itemMeta.setDisplayName(PlaceholderAPI.setPlaceholders(p,invItem.getName()));
+        itemMeta.setLore(PlaceholderAPI.setPlaceholders(p,invItem.getLore()));
+        ReflectionUtils.setCustomModelData(furance, invItem.getCustomModelData());
+        furance.setItemMeta(itemMeta);
+        if(KarRefinement.pv.equals(MCVersions.v1122)){
+            if(furance.getType() == Material.valueOf("STAINED_GLASS_PANE")){
+                KarUtils.createColorPane(furance,invItem.getData());
+            }
+        }
+        return furance;
     }
 
     /**
@@ -99,6 +132,8 @@ public class KarRefinementGui {
         removeIndex.add(49);
         removeIndex.add(20);
         removeIndex.add(24);
+        InvItem videoItem = rItems.get("VideoItem");
+        ItemStack invItem = createInvItem(videoItem,p);
         new BukkitRunnable() {
             @Override
             public void run() {
@@ -118,7 +153,7 @@ public class KarRefinementGui {
                     while (!lists.contains(Integer.valueOf(h)) || removeIndex.contains(Integer.valueOf(h))) {
                         h = random.nextInt(54);
                     }
-                    inv.setItem(h, KarRefinement.cm.getItems().get(0));
+                    inv.setItem(h, invItem);
                     p.updateInventory();
                     lists.remove(Integer.valueOf(h));
                     KarEventListener.invs.put(p, inv);
@@ -130,7 +165,7 @@ public class KarRefinementGui {
                     }
                     if (i == size - 1) {
                         KarRefinementMethod(itemStone, itemEquipment, p);
-                        setInvInitial(inv);
+                        setInvInitial(inv,p);
                         //标识已淬炼完毕
                         KarEventListener.judgeInvRefinementOrNot.put(p, 0);
                     }

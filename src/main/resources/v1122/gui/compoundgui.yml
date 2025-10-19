@@ -1,0 +1,29 @@
+Title: "§c§l宝石合成界面"
+Item:
+  Barrier:
+    Name: ""
+    Material: STAINED_GLASS_PANE
+    Data: 14
+    CustomModelData: 0
+    Lore: []
+  Barrier2:
+    Name: ""
+    Material: STAINED_GLASS_PANE
+    Data: 0
+    CustomModelData: 0
+    Lore: []
+  VideoItem:
+    Name: ""
+    Material: STAINED_GLASS_PANE
+    Data: 14
+    CustomModelData: 0
+    Lore: []
+  ConfirmButton:
+    Name: "§6点击开始合成"
+    Material: STAINED_GLASS_PANE
+    Data: 13
+    CustomModelData: 0
+    Lore:
+      - "§e- §a右边放入同阶淬炼石"
+      - "§e- §a进行合成时请§c不要退出界面或拿出物品，"
+      - "§e- §a否则有概率会造成淬炼石丢失！"

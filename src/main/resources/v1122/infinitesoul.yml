@@ -1,6 +1,6 @@
 三星无限耐久精魂:
   Name: "三星无限耐久精魂"
-  Type: STONE
+  Type: DRAGONS_BREATH
   Data: 0
   CustomModelData: 0
   Level: 3
@@ -13,7 +13,7 @@
     - "  §7- §a三星精魂要求装备淬炼等级小于等于三星"
 六星无限耐久精魂:
   Name: "六星无限耐久精魂"
-  Type: STONE
+  Type: DRAGONS_BREATH
   Data: 0
   CustomModelData: 0
   Level: 6

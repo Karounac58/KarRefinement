@@ -1,0 +1,44 @@
+Title: "§c§l锻造界面"
+Item:
+  InfoButton:
+    Name: "§c§l点击查看/刷新成功率"
+    Material: SIGN
+    Data: 0
+    CustomModelData: 0
+    Lore: []
+  ConfirmButton:
+    Name: "§c§l点击开始锻造"
+    Material: RED_SANDSTONE
+    Data: 0
+    CustomModelData: 0
+    Lore: []
+  Barrier:
+    Name: ""
+    Material: STAINED_GLASS_PANE
+    Data: 0
+    CustomModelData: 0
+    Lore: []
+  Barrier2:
+    Name: ""
+    Material: STAINED_GLASS_PANE
+    Data: 14
+    CustomModelData: 0
+    Lore: []
+  Barrier3:
+    Name: ""
+    Material: STAINED_GLASS_PANE
+    Data: 15
+    CustomModelData: 0
+    Lore: []
+  Barrier4:
+    Name: ""
+    Material: STAINED_GLASS_PANE
+    Data: 10
+    CustomModelData: 0
+    Lore: []
+  VideoItem:
+    Name: ""
+    Material: STAINED_GLASS_PANE
+    Data: 13
+    CustomModelData: 0
+    Lore: []

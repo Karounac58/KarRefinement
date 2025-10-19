@@ -184,7 +184,7 @@ public class KarEventListener implements Listener {
         }
         if(e.getSlot() == 8){
             Inventory forgeInv = Bukkit.createInventory(new KarForgeInvHolder(),45,"§c§l锻造界面");
-            KarForgeGui.initInv(forgeInv);
+            KarForgeGui.initInv(forgeInv,(Player) e.getWhoClicked());
             e.getWhoClicked().openInventory(forgeInv);
         }
         if(e.getSlot() == 49 && e.getClick().equals(ClickType.LEFT)){

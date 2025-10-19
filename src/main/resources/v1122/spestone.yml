@@ -1,7 +1,7 @@
 一级青鳞石:
   Name: "§b§l一级青鳞石"
-  Type: STONE
-  Data: 0
+  Type: INK_SACK
+  Data: 4
   CustomModelData: 0
   Level: 1
   Nbtkey: "qls"
@@ -19,8 +19,8 @@
     - "§b§l一级青鳞石 §f- §a附加伤害§6+5"
 二级青鳞石:
   Name: "§b§l二级青鳞石"
-  Type: STONE
-  Data: 0
+  Type: INK_SACK
+  Data: 4
   CustomModelData: 0
   Level: 2
   Nbtkey: "qls"
@@ -38,8 +38,8 @@
     - "§b§l二级青鳞石 §f- §a附加伤害§6+10"
 三级青鳞石:
   Name: "§b§l三级青鳞石"
-  Type: STONE
-  Data: 0
+  Type: INK_SACK
+  Data: 4
   CustomModelData: 0
   Level: 3
   Nbtkey: "qls"
@@ -57,8 +57,8 @@
     - "§b§l三级青鳞石 §f- §a附加伤害§6+20"
 四级青鳞石:
   Name: "§b§l四级青鳞石"
-  Type: STONE
-  Data: 0
+  Type: INK_SACK
+  Data: 4
   CustomModelData: 0
   Level: 4
   Nbtkey: "qls"
@@ -76,8 +76,8 @@
     - "§b§l四级青鳞石 §f- §a附加伤害§6+40"
 五级青鳞石:
   Name: "§b§l五级青鳞石"
-  Type: STONE
-  Data: 0
+  Type: INK_SACK
+  Data: 4
   CustomModelData: 0
   Level: 5
   Nbtkey: "qls"
@@ -95,8 +95,8 @@
     - "§b§l五级青鳞石 §f- §a附加伤害§6+100"
 一级落凤石:
   Name: "§e§l一级落凤石"
-  Type: STONE
-  Data: 0
+  Type: INK_SACK
+  Data: 11
   CustomModelData: 0
   Level: 1
   Nbtkey: "lfs"
@@ -114,8 +114,8 @@
     - "§e§l一级落凤石 §f- §a火焰附加§6+2s"
 二级落凤石:
   Name: "§e§l二级落凤石"
-  Type: STONE
-  Data: 0
+  Type: INK_SACK
+  Data: 11
   CustomModelData: 0
   Level: 2
   Nbtkey: "lfs"
@@ -133,8 +133,8 @@
     - "§e§l二级落凤石 §f- §a火焰附加§6+5s"
 三级落凤石:
   Name: "§e§l三级落凤石"
-  Type: STONE
-  Data: 0
+  Type: INK_SACK
+  Data: 11
   CustomModelData: 0
   Level: 3
   Nbtkey: "lfs"
@@ -152,8 +152,8 @@
     - "§e§l三级落凤石 §f- §a火焰附加§6+15s"
 四级落凤石:
   Name: "§e§l四级落凤石"
-  Type: STONE
-  Data: 0
+  Type: INK_SACK
+  Data: 11
   CustomModelData: 0
   Level: 4
   Nbtkey: "lfs"
@@ -171,8 +171,8 @@
     - "§e§l四级落凤石 §f- §a火焰附加§6+30s"
 五级落凤石:
   Name: "§e§l五级落凤石"
-  Type: STONE
-  Data: 0
+  Type: INK_SACK
+  Data: 11
   CustomModelData: 0
   Level: 5
   Nbtkey: "lfs"
@@ -190,7 +190,7 @@
     - "§e§l五级落凤石 §f- §a火焰附加§6+50s"
 一级水夕石:
   Name: "§3§l一级水夕石"
-  Type: STONE
+  Type: GHAST_TEAR
   Data: 0
   CustomModelData: 0
   Level: 1
@@ -212,7 +212,7 @@
     - "§3§l一级水夕石 §f- §a附加防御§6+2"
 二级水夕石:
   Name: "§3§l二级水夕石"
-  Type: STONE
+  Type: GHAST_TEAR
   Data: 0
   CustomModelData: 0
   Level: 2
@@ -234,7 +234,7 @@
     - "§3§l二级水夕石 §f- §a附加防御§6+4"
 三级水夕石:
   Name: "§3§l三级水夕石"
-  Type: STONE
+  Type: GHAST_TEAR
   Data: 0
   CustomModelData: 0
   Level: 3
@@ -256,7 +256,7 @@
     - "§3§l三级水夕石 §f- §a附加防御§6+8"
 四级水夕石:
   Name: "§3§l四级水夕石"
-  Type: STONE
+  Type: GHAST_TEAR
   Data: 0
   CustomModelData: 0
   Level: 4
@@ -278,7 +278,7 @@
     - "§3§l四级水夕石 §f- §a附加防御§6+12"
 五级水夕石:
   Name: "§3§l五级水夕石"
-  Type: STONE
+  Type: GHAST_TEAR
   Data: 0
   CustomModelData: 0
   Level: 5
@@ -300,8 +300,8 @@
     - "§3§l五级水夕石 §f- §a附加防御§6+20"
 一级烟灵玉:
   Name: "§7§l一级烟灵玉"
-  Type: STONE
-  Data: 0
+  Type: INK_SACK
+  Data: 15
   CustomModelData: 0
   Level: 1
   Nbtkey: "yly"
@@ -322,8 +322,8 @@
     - "§7§l一级烟灵玉 §f- §a闪避几率§6+1%"
 二级烟灵玉:
   Name: "§7§l二级烟灵玉"
-  Type: STONE
-  Data: 0
+  Type: INK_SACK
+  Data: 15
   CustomModelData: 0
   Level: 2
   Nbtkey: "yly"
@@ -344,8 +344,8 @@
     - "§7§l二级烟灵玉 §f- §a闪避几率§6+2%"
 三级烟灵玉:
   Name: "§7§l三级烟灵玉"
-  Type: STONE
-  Data: 0
+  Type: INK_SACK
+  Data: 15
   CustomModelData: 0
   Level: 3
   Nbtkey: "yly"
@@ -366,8 +366,8 @@
     - "§7§l三级烟灵玉 §f- §a闪避几率§6+3%"
 四级烟灵玉:
   Name: "§7§l四级烟灵玉"
-  Type: STONE
-  Data: 0
+  Type: INK_SACK
+  Data: 15
   CustomModelData: 0
   Level: 4
   Nbtkey: "yly"
@@ -388,8 +388,8 @@
     - "§7§l四级烟灵玉 §f- §a闪避几率§6+4%"
 五级烟灵玉:
   Name: "§7§l五级烟灵玉"
-  Type: STONE
-  Data: 0
+  Type: INK_SACK
+  Data: 15
   CustomModelData: 0
   Level: 5
   Nbtkey: "yly"

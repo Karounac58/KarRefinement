@@ -1,0 +1,40 @@
+Title: "§c§l碎片合成界面"
+Size: 27
+OriginSlot: 10
+AfterSlot: 16
+Item:
+  OriginInfo:
+    Name: "§c§l☼§d§l合成材料§c§l☼"
+    Material: OAK_SIGN
+    Slots: [1]
+    Data: 0
+    CustomModelData: 0
+    Lore: []
+  AfterInfo:
+    Name: "§c§l☼§d§l合成结果§c§l☼"
+    Material: OAK_SIGN
+    Slots: [7]
+    Data: 0
+    CustomModelData: 0
+    Lore: []
+  ConfirmButton:
+    Name: "§a§l开始合成"
+    Material: RED_STAINED_GLASS_PANE
+    Slots: [22]
+    Data: 0
+    CustomModelData: 0
+    Lore: []
+  Barrier:
+    Name: ""
+    Material: WHITE_STAINED_GLASS_PANE
+    Data: 0
+    Slots: [0,2,3,4,5,6,8,9,17,18,19,20,21,23,24,25,26]
+    CustomModelData: 0
+    Lore: []
+  Barrier2:
+    Name: ""
+    Material: BLACK_STAINED_GLASS_PANE
+    Data: 0
+    Slots: [11,12,13,14,15]
+    CustomModelData: 0
+    Lore: []

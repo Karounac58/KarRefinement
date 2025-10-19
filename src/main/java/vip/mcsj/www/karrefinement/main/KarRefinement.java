@@ -10,22 +10,21 @@ import org.bukkit.scheduler.BukkitRunnable;
 import vip.mcsj.www.karrefinement.datamanager.*;
 import vip.mcsj.www.karrefinement.effect.ParticleResource;
 import vip.mcsj.www.karrefinement.effect.ScriptRunnable;
-import vip.mcsj.www.karrefinement.gui.GuiResource;
-import vip.mcsj.www.karrefinement.gui.KarCompoundStoneGui;
-import vip.mcsj.www.karrefinement.gui.KarTakeItemGui;
+import vip.mcsj.www.karrefinement.gui.*;
 import vip.mcsj.www.karrefinement.main.listener.*;
 import vip.mcsj.www.karrefinement.object.MCVersions;
 import vip.mcsj.www.karrefinement.utils.FileUtil;
 import vip.mcsj.www.karrefinement.utils.ReflectionUtils;
 import vip.mcsj.www.karrefinement.version.CustomMaterial;
 import vip.mcsj.www.karrefinement.version.CustomParticle;
+import vip.mcsj.www.karrefinement.version.CustomPath;
 import vip.mcsj.www.karrefinement.version.CustomSounds;
 
 import java.util.logging.Logger;
 
 public class KarRefinement extends JavaPlugin{
     private static final Logger log = Logger.getLogger("Minecraft");
-    public static JavaPlugin instance;
+    public static KarRefinement instance;
     //12星淬炼特效
     public static Particle[] particles = new Particle[3];
 
@@ -34,6 +33,8 @@ public class KarRefinement extends JavaPlugin{
     public static CustomSounds cs = new GuiResource().getSound();
 
     public static CustomParticle cp = new ParticleResource().get();
+
+    public static CustomPath customPath = new GuiResource().getPath();
 
     public static MCVersions pv = ReflectionUtils.judgeVersion();
 
@@ -58,18 +59,24 @@ public class KarRefinement extends JavaPlugin{
         Bukkit.getPluginManager().registerEvents(new AdhesiveListener(),this);
         Bukkit.getPluginCommand("karrefinement").setExecutor(new KarExecutor());
         saveDefaultConfig();
-        FileUtil.initCustomFile("stone.yml");
-        FileUtil.initCustomFile("spestone.yml");
+        FileUtil.initCustomFile(customPath.getPath()+"stone.yml","stone.yml");
+        FileUtil.initCustomFile(customPath.getPath()+"spestone.yml","spestone.yml");
         FileUtil.initCustomFile("refinement.yml");
-        FileUtil.initCustomFile("directupgradepaper.yml");
+        FileUtil.initCustomFile(customPath.getPath()+"directupgradepaper.yml","directupgradepaper.yml");
         FileUtil.initCustomFile("items.yml");
-        FileUtil.initCustomFile("protectpaper.yml");
+        FileUtil.initCustomFile(customPath.getPath()+"protectpaper.yml","protectpaper.yml");
         FileUtil.initCustomFile("forge.yml");
-        FileUtil.initCustomFile("infinitesoul.yml");
+        FileUtil.initCustomFile(customPath.getPath()+"infinitesoul.yml","infinitesoul.yml");
         FileUtil.initCustomFile("transform.yml");
-        FileUtil.initCustomFile("detach.yml");
-        FileUtil.initCustomFile("chinesename.yml");
-        FileUtil.initCustomFile("adhesive.yml");
+        FileUtil.initCustomFile(customPath.getPath()+"detach.yml","detach.yml");
+        FileUtil.initCustomFile(customPath.getPath()+"chinesename.yml","chinesename.yml");
+        FileUtil.initCustomFile(customPath.getPath()+"adhesive.yml","adhesive.yml");
+        //gui数据
+        FileUtil.initCustomFile(customPath.getPath()+"gui/compoundgui.yml","gui/compoundgui.yml");
+        FileUtil.initCustomFile(customPath.getPath()+"gui/compoundpiecegui.yml","gui/compoundpiecegui.yml");
+        FileUtil.initCustomFile(customPath.getPath()+"gui/forgegui.yml","gui/forgegui.yml");
+        FileUtil.initCustomFile(customPath.getPath()+"gui/refinementgui.yml","gui/refinementgui.yml");
+        FileUtil.initCustomFile(customPath.getPath()+"gui/transformgui.yml","gui/transformgui.yml");
         log.info(" --------------------------------------------------------------------------");
         log.info("  _  __          _____       __ _                                 _  ");
         log.info(" | |/ /         |  __ \\     / _(_)                               | |  ");
@@ -79,6 +86,7 @@ public class KarRefinement extends JavaPlugin{
         log.info(" |_|\\_\\__,_|_|  |_|  \\_\\___|_| |_|_| |_|\\___|_| |_| |_|\\___|_| |_|\\__|");
         log.info("");
         log.info(" --------------------------------------------------------------------------");
+        initGuiData();
         StoneDataManager.init();
         EquipmentDataManager.init();
         EquipmentDataManager.initForgeData();
@@ -128,5 +136,13 @@ public class KarRefinement extends JavaPlugin{
         }
         econ = rsp.getProvider();
         return econ != null;
+    }
+
+    public void initGuiData(){
+        KarRefinementGui.init();
+        KarForgeGui.init();
+        KarTransformStarGui.init();
+        KarCompoundStoneGui.init();
+        KarCompoundPieceGui.init();
     }
 }

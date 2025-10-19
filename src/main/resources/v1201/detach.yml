@@ -4,7 +4,7 @@ enable: true
 # 保护符拆卸道具
 PaperDetachItem:
   Name: "§a保护符拆卸刀"
-  Type: PAPER
+  Type: TRIPWIRE_HOOK
   Data: 0
   CustomModelData: 0
   Lore:
@@ -40,7 +40,7 @@ ProtectPaper:
   # 拆卸道具，未实装，等待v1.0 - snapshot更新
 SpeStoneDetachItem:
   Name: "§a宝石拆卸刀"
-  Type: PAPER
+  Type: TRIPWIRE_HOOK
   Data: 0
   CustomModelData: 0
   Lore:

@@ -2,6 +2,8 @@ package vip.mcsj.www.karrefinement.gui;
 
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -10,30 +12,49 @@ import org.bukkit.scheduler.BukkitRunnable;
 import vip.mcsj.www.karrefinement.datamanager.EquipmentDataManager;
 import vip.mcsj.www.karrefinement.main.KarRefinement;
 import vip.mcsj.www.karrefinement.main.listener.KarEventListener;
+import vip.mcsj.www.karrefinement.object.InvItem;
+import vip.mcsj.www.karrefinement.utils.FileUtil;
 import vip.mcsj.www.karrefinement.utils.KarUtils;
+import vip.mcsj.www.karrefinement.utils.ReflectionUtils;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.*;
 
+import static vip.mcsj.www.karrefinement.gui.KarRefinementGui.createInvItem;
+
 public class KarForgeGui {
-    public static void initInv(Inventory inv) {
+    public static Map<String, InvItem> fItems = new HashMap<>();
+    public static String title = "";
+
+    public static void init(){
+        if(!fItems.isEmpty()){
+            fItems.clear();
+        }
+        YamlConfiguration file = FileUtil.getCustomFileYaml("gui/forgegui.yml");
+        title = file.getString("Title");
+        ConfigurationSection fileCS = file.getConfigurationSection("Item");
+        Set<String> keys = fileCS.getKeys(false);
+        for (String key : keys) {
+            String name = fileCS.getString(key + ".Name");
+            Material material = Material.valueOf(fileCS.getString(key + ".Material"));
+            int data = fileCS.getInt(key + ".Data");
+            int customModelData = fileCS.getInt(key + ".CustomModelData");
+            List<String> lore = fileCS.getStringList(key + ".Lore");
+            fItems.put(key,new InvItem(name, material, data, customModelData, lore));
+        }
+    }
+    public static void initInv(Inventory inv,Player p) {
         List<Integer> other = Arrays.asList(0,1,2,3,5,6,7,8,36,37,38,39,40,41,42,43,44);
         List<Integer> greenPanes = Arrays.asList(9,10,11,18,20,27,28,29);
         List<Integer> blackPanes = Arrays.asList(12,13,14,21,23,30,31,32);
         List<Integer> bluePanes = Arrays.asList(15,16,17,24,26,33,34,35);
-        ItemStack redPaneItem = KarRefinement.cm.getItems().get(0);
-        ItemStack blackPaneItem = KarRefinement.cm.getItems().get(2);
-        ItemStack bluePaneItem = KarRefinement.cm.getItems().get(5);
-        ItemStack whitePaneItem = KarRefinement.cm.getItems().get(3);
-        ItemStack redStone = new ItemStack(Material.RED_SANDSTONE);
-        ItemMeta itemMeta = redStone.getItemMeta();
-        itemMeta.setDisplayName("§c§l点击开始锻造");
-        redStone.setItemMeta(itemMeta);
-        ItemStack oak_sign = KarRefinement.cm.getItems().get(6);
-        ItemMeta itemMeta1 = oak_sign.getItemMeta();
-        itemMeta1.setDisplayName("§c§l点击查看/刷新成功率");
-        oak_sign.setItemMeta(itemMeta1);
+        ItemStack redPaneItem = createInvItem(fItems.get("Barrier2"),p);
+        ItemStack blackPaneItem = createInvItem(fItems.get("Barrier3"),p);
+        ItemStack bluePaneItem = createInvItem(fItems.get("Barrier4"),p);
+        ItemStack whitePaneItem = createInvItem(fItems.get("Barrier"),p);
+        ItemStack redStone = createInvItem(fItems.get("ConfirmButton"),p);
+        ItemStack oak_sign = createInvItem(fItems.get("InfoButton"),p);
         for (Integer index : other) {
             inv.setItem(index,whitePaneItem);
         }
@@ -49,7 +70,6 @@ public class KarForgeGui {
         inv.setItem(22,redStone);
         inv.setItem(4,oak_sign);
     }
-
 
 
     public static ItemStack removeItemStackName(ItemStack itemStack){
@@ -110,7 +130,7 @@ public class KarForgeGui {
      */
     public static void playInvVideo(Inventory inv, ItemStack itemEquipment1, ItemStack itemEquipment2, Player p) {
         List<Integer> indexs = Arrays.asList(12,13,14,23,32,31,30,21);
-
+        ItemStack videoItem = createInvItem(fItems.get("VideoItem"),p);
         new BukkitRunnable() {
             @Override
             public void run() {
@@ -122,7 +142,7 @@ public class KarForgeGui {
                         return;
                     }
 
-                    inv.setItem(indexs.get(i), KarRefinement.cm.getItems().get(0));
+                    inv.setItem(indexs.get(i), videoItem);
                     p.updateInventory();
                     KarEventListener.forgeInvs.put(p, inv);
                     try {
@@ -133,7 +153,7 @@ public class KarForgeGui {
                     }
                     if (i == indexs.size() - 1) {
                         KarForgeMethod(itemEquipment1,itemEquipment2, p);
-                        initInv(inv);
+                        initInv(inv,p);
                         //标识已淬炼完毕
                         KarEventListener.judgeInvForgeOrNot.put(p, 0);
                     }

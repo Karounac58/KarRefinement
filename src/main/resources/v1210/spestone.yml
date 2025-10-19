@@ -1,0 +1,410 @@
+一级青鳞石:
+  Name: "§b§l一级青鳞石"
+  Type: LAPIS_LAZULI
+  Data: 0
+  CustomModelData: 0
+  Level: 1
+  Nbtkey: "qls"
+  Items:
+    - "Hand"
+  Lore:
+    - "§e用法: §a打开背包 将宝石移到装备上"
+    - "§e作用: §a将该宝石镶嵌§c武器"
+    - "§e属性: 附加伤害 +§65"
+    - "§e说明: "
+    - "  §f- §c该宝石只对武器有效"
+    - "  §f- §a武器伤害值增加"
+    - "  §f- §a同类型宝石只能镶嵌一颗"
+  Equipmentlore:
+    - "§b§l一级青鳞石 §f- §a附加伤害§6+5"
+二级青鳞石:
+  Name: "§b§l二级青鳞石"
+  Type: LAPIS_LAZULI
+  Data: 0
+  CustomModelData: 0
+  Level: 2
+  Nbtkey: "qls"
+  Items:
+    - "Hand"
+  Lore:
+    - "§e用法: §a打开背包 将宝石移到装备上"
+    - "§e作用: §a将该宝石镶嵌§c武器"
+    - "§e属性: 附加伤害 +§610"
+    - "§e说明: "
+    - "  §f- §c该宝石只对武器有效"
+    - "  §f- §a武器伤害值增加"
+    - "  §f- §a同类型宝石只能镶嵌一颗"
+  Equipmentlore:
+    - "§b§l二级青鳞石 §f- §a附加伤害§6+10"
+三级青鳞石:
+  Name: "§b§l三级青鳞石"
+  Type: LAPIS_LAZULI
+  Data: 0
+  CustomModelData: 0
+  Level: 3
+  Nbtkey: "qls"
+  Items:
+    - "Hand"
+  Lore:
+    - "§e用法: §a打开背包 将宝石移到装备上"
+    - "§e作用: §a将该宝石镶嵌§c武器"
+    - "§e属性: 附加伤害 +§630"
+    - "§e说明: "
+    - "  §f- §c该宝石只对武器有效"
+    - "  §f- §a武器伤害值增加"
+    - "  §f- §a同类型宝石只能镶嵌一颗"
+  Equipmentlore:
+    - "§b§l三级青鳞石 §f- §a附加伤害§6+20"
+四级青鳞石:
+  Name: "§b§l四级青鳞石"
+  Type: LAPIS_LAZULI
+  Data: 0
+  CustomModelData: 0
+  Level: 4
+  Nbtkey: "qls"
+  Items:
+    - "Hand"
+  Lore:
+    - "§e用法: §a打开背包 将宝石移到装备上"
+    - "§e作用: §a将该宝石镶嵌§c武器"
+    - "§e属性: 附加伤害 +§640"
+    - "§e说明: "
+    - "  §f- §c该宝石只对武器有效"
+    - "  §f- §a武器伤害值增加"
+    - "  §f- §a同类型宝石只能镶嵌一颗"
+  Equipmentlore:
+    - "§b§l四级青鳞石 §f- §a附加伤害§6+40"
+五级青鳞石:
+  Name: "§b§l五级青鳞石"
+  Type: LAPIS_LAZULI
+  Data: 0
+  CustomModelData: 0
+  Level: 5
+  Nbtkey: "qls"
+  Items:
+    - "Hand"
+  Lore:
+    - "§e用法: §a打开背包 将宝石移到装备上"
+    - "§e作用: §a将该宝石镶嵌§c武器"
+    - "§e属性: 附加伤害 +§6100"
+    - "§e说明: "
+    - "  §f- §c该宝石只对武器有效"
+    - "  §f- §a武器伤害值增加"
+    - "  §f- §a同类型宝石只能镶嵌一颗"
+  Equipmentlore:
+    - "§b§l五级青鳞石 §f- §a附加伤害§6+100"
+一级落凤石:
+  Name: "§e§l一级落凤石"
+  Type: YELLOW_DYE
+  Data: 0
+  CustomModelData: 0
+  Level: 1
+  Nbtkey: "lfs"
+  Items:
+    - "Hand"
+  Lore:
+    - "§e用法: §a打开背包 将宝石移到装备上"
+    - "§e作用: §a将该宝石镶嵌§c武器"
+    - "§e属性: 火焰附加 +§62秒"
+    - "§e说明: "
+    - "  §f- §c该宝石只对武器有效"
+    - "  §f- §a武器伤害值增加"
+    - "  §f- §a同类型宝石只能镶嵌一颗"
+  Equipmentlore:
+    - "§e§l一级落凤石 §f- §a火焰附加§6+2s"
+二级落凤石:
+  Name: "§e§l二级落凤石"
+  Type: YELLOW_DYE
+  Data: 0
+  CustomModelData: 0
+  Level: 2
+  Nbtkey: "lfs"
+  Items:
+    - "Hand"
+  Lore:
+    - "§e用法: §a打开背包 将宝石移到装备上"
+    - "§e作用: §a将该宝石镶嵌§c武器"
+    - "§e属性: 火焰附加 +§65秒"
+    - "§e说明: "
+    - "  §f- §c该宝石只对武器有效"
+    - "  §f- §a武器伤害值增加"
+    - "  §f- §a同类型宝石只能镶嵌一颗"
+  Equipmentlore:
+    - "§e§l二级落凤石 §f- §a火焰附加§6+5s"
+三级落凤石:
+  Name: "§e§l三级落凤石"
+  Type: YELLOW_DYE
+  Data: 0
+  CustomModelData: 0
+  Level: 3
+  Nbtkey: "lfs"
+  Items:
+    - "Hand"
+  Lore:
+    - "§e用法: §a打开背包 将宝石移到装备上"
+    - "§e作用: §a将该宝石镶嵌§c武器"
+    - "§e属性: 火焰附加 +§615秒"
+    - "§e说明: "
+    - "  §f- §c该宝石只对武器有效"
+    - "  §f- §a武器伤害值增加"
+    - "  §f- §a同类型宝石只能镶嵌一颗"
+  Equipmentlore:
+    - "§e§l三级落凤石 §f- §a火焰附加§6+15s"
+四级落凤石:
+  Name: "§e§l四级落凤石"
+  Type: YELLOW_DYE
+  Data: 0
+  CustomModelData: 0
+  Level: 4
+  Nbtkey: "lfs"
+  Items:
+    - "Hand"
+  Lore:
+    - "§e用法: §a打开背包 将宝石移到装备上"
+    - "§e作用: §a将该宝石镶嵌§c武器"
+    - "§e属性: 火焰附加 +§630秒"
+    - "§e说明: "
+    - "  §f- §c该宝石只对武器有效"
+    - "  §f- §a武器伤害值增加"
+    - "  §f- §a同类型宝石只能镶嵌一颗"
+  Equipmentlore:
+    - "§e§l四级落凤石 §f- §a火焰附加§6+30s"
+五级落凤石:
+  Name: "§e§l五级落凤石"
+  Type: YELLOW_DYE
+  Data: 0
+  CustomModelData: 0
+  Level: 5
+  Nbtkey: "lfs"
+  Items:
+    - "Hand"
+  Lore:
+    - "§e用法: §a打开背包 将宝石移到装备上"
+    - "§e作用: §a将该宝石镶嵌§c武器"
+    - "§e属性: 火焰附加 +§650秒"
+    - "§e说明: "
+    - "  §f- §c该宝石只对武器有效"
+    - "  §f- §a武器伤害值增加"
+    - "  §f- §a同类型宝石只能镶嵌一颗"
+  Equipmentlore:
+    - "§e§l五级落凤石 §f- §a火焰附加§6+50s"
+一级水夕石:
+  Name: "§3§l一级水夕石"
+  Type: GHAST_TEAR
+  Data: 0
+  CustomModelData: 0
+  Level: 1
+  Nbtkey: "sxs"
+  Items:
+    - "Chestplate"
+    - "Helmet"
+    - "Leggings"
+    - "Boots"
+  Lore:
+    - "§e用法: §a打开背包 将宝石移到装备上"
+    - "§e作用: §a将该宝石镶嵌§c护甲"
+    - "§e属性: 附加防御 +§62"
+    - "§e说明: "
+    - "  §f- §c该宝石只对护甲有效"
+    - "  §f- §a护甲防御值增加"
+    - "  §f- §a同类型宝石只能镶嵌一颗"
+  Equipmentlore:
+    - "§3§l一级水夕石 §f- §a附加防御§6+2"
+二级水夕石:
+  Name: "§3§l二级水夕石"
+  Type: GHAST_TEAR
+  Data: 0
+  CustomModelData: 0
+  Level: 2
+  Nbtkey: "sxs"
+  Items:
+    - "Chestplate"
+    - "Helmet"
+    - "Leggings"
+    - "Boots"
+  Lore:
+    - "§e用法: §a打开背包 将宝石移到装备上"
+    - "§e作用: §a将该宝石镶嵌§c护甲"
+    - "§e属性: 附加防御 +§64"
+    - "§e说明: "
+    - "  §f- §c该宝石只对护甲有效"
+    - "  §f- §a护甲防御值增加"
+    - "  §f- §a同类型宝石只能镶嵌一颗"
+  Equipmentlore:
+    - "§3§l二级水夕石 §f- §a附加防御§6+4"
+三级水夕石:
+  Name: "§3§l三级水夕石"
+  Type: GHAST_TEAR
+  Data: 0
+  CustomModelData: 0
+  Level: 3
+  Nbtkey: "sxs"
+  Items:
+    - "Chestplate"
+    - "Helmet"
+    - "Leggings"
+    - "Boots"
+  Lore:
+    - "§e用法: §a打开背包 将宝石移到装备上"
+    - "§e作用: §a将该宝石镶嵌§c护甲"
+    - "§e属性: 附加防御 +§68"
+    - "§e说明: "
+    - "  §f- §c该宝石只对护甲有效"
+    - "  §f- §a护甲防御值增加"
+    - "  §f- §a同类型宝石只能镶嵌一颗"
+  Equipmentlore:
+    - "§3§l三级水夕石 §f- §a附加防御§6+8"
+四级水夕石:
+  Name: "§3§l四级水夕石"
+  Type: GHAST_TEAR
+  Data: 0
+  CustomModelData: 0
+  Level: 4
+  Nbtkey: "sxs"
+  Items:
+    - "Chestplate"
+    - "Helmet"
+    - "Leggings"
+    - "Boots"
+  Lore:
+    - "§e用法: §a打开背包 将宝石移到装备上"
+    - "§e作用: §a将该宝石镶嵌§c护甲"
+    - "§e属性: 附加防御 +§612"
+    - "§e说明: "
+    - "  §f- §c该宝石只对护甲有效"
+    - "  §f- §a护甲防御值增加"
+    - "  §f- §a同类型宝石只能镶嵌一颗"
+  Equipmentlore:
+    - "§3§l四级水夕石 §f- §a附加防御§6+12"
+五级水夕石:
+  Name: "§3§l五级水夕石"
+  Type: GHAST_TEAR
+  Data: 0
+  CustomModelData: 0
+  Level: 5
+  Nbtkey: "sxs"
+  Items:
+    - "Chestplate"
+    - "Helmet"
+    - "Leggings"
+    - "Boots"
+  Lore:
+    - "§e用法: §a打开背包 将宝石移到装备上"
+    - "§e作用: §a将该宝石镶嵌§c护甲"
+    - "§e属性: 附加防御 +§620"
+    - "§e说明: "
+    - "  §f- §c该宝石只对护甲有效"
+    - "  §f- §a护甲防御值增加"
+    - "  §f- §a同类型宝石只能镶嵌一颗"
+  Equipmentlore:
+    - "§3§l五级水夕石 §f- §a附加防御§6+20"
+一级烟灵玉:
+  Name: "§7§l一级烟灵玉"
+  Type: BONE_MEAL
+  Data: 0
+  CustomModelData: 0
+  Level: 1
+  Nbtkey: "yly"
+  Items:
+    - "Chestplate"
+    - "Helmet"
+    - "Leggings"
+    - "Boots"
+  Lore:
+    - "§e用法: §a打开背包 将宝石移到装备上"
+    - "§e作用: §a将该宝石镶嵌§c护甲"
+    - "§e属性: 闪避几率 +§61%"
+    - "§e说明: "
+    - "  §f- §c该宝石只对护甲有效"
+    - "  §f- §a护甲闪避值增加"
+    - "  §f- §a同类型宝石只能镶嵌一颗"
+  Equipmentlore:
+    - "§7§l一级烟灵玉 §f- §a闪避几率§6+1%"
+二级烟灵玉:
+  Name: "§7§l二级烟灵玉"
+  Type: BONE_MEAL
+  Data: 0
+  CustomModelData: 0
+  Level: 2
+  Nbtkey: "yly"
+  Items:
+    - "Chestplate"
+    - "Helmet"
+    - "Leggings"
+    - "Boots"
+  Lore:
+    - "§e用法: §a打开背包 将宝石移到装备上"
+    - "§e作用: §a将该宝石镶嵌§c护甲"
+    - "§e属性: 闪避几率 +§62%"
+    - "§e说明: "
+    - "  §f- §c该宝石只对护甲有效"
+    - "  §f- §a护甲闪避值增加"
+    - "  §f- §a同类型宝石只能镶嵌一颗"
+  Equipmentlore:
+    - "§7§l二级烟灵玉 §f- §a闪避几率§6+2%"
+三级烟灵玉:
+  Name: "§7§l三级烟灵玉"
+  Type: BONE_MEAL
+  Data: 0
+  CustomModelData: 0
+  Level: 3
+  Nbtkey: "yly"
+  Items:
+    - "Chestplate"
+    - "Helmet"
+    - "Leggings"
+    - "Boots"
+  Lore:
+    - "§e用法: §a打开背包 将宝石移到装备上"
+    - "§e作用: §a将该宝石镶嵌§c护甲"
+    - "§e属性: 闪避几率 +§63%"
+    - "§e说明: "
+    - "  §f- §c该宝石只对护甲有效"
+    - "  §f- §a护甲闪避值增加"
+    - "  §f- §a同类型宝石只能镶嵌一颗"
+  Equipmentlore:
+    - "§7§l三级烟灵玉 §f- §a闪避几率§6+3%"
+四级烟灵玉:
+  Name: "§7§l四级烟灵玉"
+  Type: BONE_MEAL
+  Data: 0
+  CustomModelData: 0
+  Level: 4
+  Nbtkey: "yly"
+  Items:
+    - "Chestplate"
+    - "Helmet"
+    - "Leggings"
+    - "Boots"
+  Lore:
+    - "§e用法: §a打开背包 将宝石移到装备上"
+    - "§e作用: §a将该宝石镶嵌§c护甲"
+    - "§e属性: 闪避几率 +§64%"
+    - "§e说明: "
+    - "  §f- §c该宝石只对护甲有效"
+    - "  §f- §a护甲闪避值增加"
+    - "  §f- §a同类型宝石只能镶嵌一颗"
+  Equipmentlore:
+    - "§7§l四级烟灵玉 §f- §a闪避几率§6+4%"
+五级烟灵玉:
+  Name: "§7§l五级烟灵玉"
+  Type: BONE_MEAL
+  Data: 0
+  CustomModelData: 0
+  Level: 5
+  Nbtkey: "yly"
+  Items:
+    - "Chestplate"
+    - "Helmet"
+    - "Leggings"
+    - "Boots"
+  Lore:
+    - "§e用法: §a打开背包 将宝石移到装备上"
+    - "§e作用: §a将该宝石镶嵌§c护甲"
+    - "§e属性: 闪避几率 +§65%"
+    - "§e说明: "
+    - "  §f- §c该宝石只对护甲有效"
+    - "  §f- §a护甲闪避值增加"
+    - "  §f- §a同类型宝石只能镶嵌一颗"
+  Equipmentlore:
+    - "§7§l五级烟灵玉 §f- §a闪避几率§6+5%"

@@ -2,7 +2,9 @@ package vip.mcsj.www.karrefinement.gui;
 
 import de.tr7zw.nbtapi.NBTItem;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
@@ -12,6 +14,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import vip.mcsj.www.karrefinement.datamanager.StoneDataManager;
 import vip.mcsj.www.karrefinement.main.KarRefinement;
 import vip.mcsj.www.karrefinement.object.Compound;
+import vip.mcsj.www.karrefinement.object.InvItem;
 import vip.mcsj.www.karrefinement.utils.FileUtil;
 
 import java.util.*;
@@ -26,6 +29,27 @@ public class KarCompoundStoneGui{
     public static Map<String, Compound> compoundMap = new HashMap<>();
 
     public static List<Compound> compounds = new ArrayList<>();
+
+    public static Map<String, InvItem> cItems = new HashMap<>();
+    public static String title = "";
+
+    public static void init(){
+        if(!cItems.isEmpty()){
+            cItems.clear();
+        }
+        YamlConfiguration file = FileUtil.getCustomFileYaml("gui/compoundgui.yml");
+        title = file.getString("Title");
+        ConfigurationSection fileCS = file.getConfigurationSection("Item");
+        Set<String> keys = fileCS.getKeys(false);
+        for (String key : keys) {
+            String name = fileCS.getString(key + ".Name");
+            Material material = Material.valueOf(fileCS.getString(key + ".Material"));
+            int data = fileCS.getInt(key + ".Data");
+            int customModelData = fileCS.getInt(key + ".CustomModelData");
+            List<String> lore = fileCS.getStringList(key + ".Lore");
+            cItems.put(key,new InvItem(name, material, data, customModelData, lore));
+        }
+    }
 
     public static void initCompoundData(){
         FileUtil.FileInitialize("compound.yml");
@@ -44,19 +68,23 @@ public class KarCompoundStoneGui{
         compounds = compoundMap.values().stream().sorted(Comparator.comparingInt(Compound::getId)).collect(Collectors.toList());
     }
 
-    public static void initial(Inventory inv) {
+    public static void initial(Inventory inv,Player p) {
         List<Integer> redIndexs = Arrays.asList(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 17, 18, 26, 27, 35, 36, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53);
         List<Integer> greenIndexs = Arrays.asList(37,38,39,40,41,42,43);
+
+        ItemStack redBarrier = KarRefinementGui.createInvItem(cItems.get("Barrier"),p);
+        ItemStack whiteBarrier = KarRefinementGui.createInvItem(cItems.get("Barrier2"),p);
+        ItemStack confirmButton =  KarRefinementGui.createInvItem(cItems.get("ConfirmButton"),p);
         for (int i = 0; i < 54; i++) {
             if (i == 16 || i == 34 || i == 19) {
                 continue;
             }
             if (redIndexs.contains(i)) {
-                inv.setItem(i, KarRefinement.cm.getItems().get(0));
+                inv.setItem(i, redBarrier);
             } else if(greenIndexs.contains(i)){
-                inv.setItem(i, KarRefinement.cm.getItems().get(1));
+                inv.setItem(i, confirmButton);
             }else{
-                inv.setItem(i, KarRefinement.cm.getItems().get(3));
+                inv.setItem(i, whiteBarrier);
             }
         }
     }
@@ -101,7 +129,7 @@ public class KarCompoundStoneGui{
                         p.sendMessage("§c&l合成失败，宝石破碎！");
                     }
                     //4.初始化
-                    initial(inv);
+                    initial(inv,p);
                     compoundOrNot.put(p.getUniqueId(),0);
                 }
             }.runTaskLater(KarRefinement.instance, 60);
@@ -120,7 +148,7 @@ public class KarCompoundStoneGui{
                 p.sendMessage("§c&l合成失败，宝石破碎！");
             }
             //4.初始化
-            initial(inv);
+            initial(inv,p);
             compoundOrNot.put(p.getUniqueId(),0);
         }
 
@@ -128,11 +156,12 @@ public class KarCompoundStoneGui{
 
     public static void playInvVideo(Inventory inv,Player p) {
         List<Integer> indexs = Arrays.asList(25,24,23,22,21);
+        ItemStack videoItem = KarRefinementGui.createInvItem(cItems.get("VideoItem"),p);
         new BukkitRunnable() {
             @Override
             public void run() {
                 for (int i = 0; i < indexs.size(); i++) {
-                    inv.setItem(indexs.get(i), KarRefinement.cm.getItems().get(1));
+                    inv.setItem(indexs.get(i), videoItem);
                     p.playSound(p.getLocation(), KarRefinement.cs.getSounds().get(0), 1, 1);
                     p.updateInventory();
                     try {
@@ -175,7 +204,7 @@ public class KarCompoundStoneGui{
     }
 
     public static void openGuiForPlayer(Inventory inv,Player p){
-        initial(inv);
+        initial(inv,p);
         p.openInventory(inv);
     }
 

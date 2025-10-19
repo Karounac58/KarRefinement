@@ -2,6 +2,7 @@ package vip.mcsj.www.karrefinement.main;
 
 import de.tr7zw.nbtapi.NBT;
 import de.tr7zw.nbtapi.NBTItem;
+import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Sound;
@@ -154,23 +155,23 @@ public class KarExecutor implements CommandExecutor, TabCompleter {
                     });
                     break;
                 case "opengui":
-                    Inventory inv = Bukkit.createInventory(new KarRefinementInvHolder(), 54, "§c淬炼界面");
-                    KarRefinementGui.setInvInitial(inv);
+                    Inventory inv = Bukkit.createInventory(new KarRefinementInvHolder(), 54, PlaceholderAPI.setPlaceholders(p,KarRefinementGui.title));
+                    KarRefinementGui.setInvInitial(inv,p);
                     p.openInventory(inv);
                     break;
                 case "openforgegui":
-                    Inventory inv1 = Bukkit.createInventory(new KarForgeInvHolder(),45,"§c§l锻造界面");
-                    KarForgeGui.initInv(inv1);
+                    Inventory inv1 = Bukkit.createInventory(new KarForgeInvHolder(),45,PlaceholderAPI.setPlaceholders(p,KarForgeGui.title));
+                    KarForgeGui.initInv(inv1,p);
                     p.openInventory(inv1);
                     break;
                 case "opencompoundgui":
-                    Inventory inv2 = Bukkit.createInventory(new KarCompoundStoneInvHolder(),54,"§c§l宝石合成界面");
-                    KarCompoundStoneGui.initial(inv2);
+                    Inventory inv2 = Bukkit.createInventory(new KarCompoundStoneInvHolder(),54,PlaceholderAPI.setPlaceholders(p,KarCompoundStoneGui.title));
+                    KarCompoundStoneGui.initial(inv2,p);
                     KarCompoundStoneGui.openGuiForPlayer(inv2,p);
                     break;
                 case "opentransformgui":
-                    Inventory inv3 = Bukkit.createInventory(new KarTransformStarGui.KarTransformStarGuiInvHolder(), 27, "§c§l移星界面");
-                    KarTransformStarGui.init(inv3);
+                    Inventory inv3 = Bukkit.createInventory(new KarTransformStarGui.KarTransformStarGuiInvHolder(), 27, PlaceholderAPI.setPlaceholders(p,KarTransformStarGui.title));
+                    KarTransformStarGui.initInv(inv3,p);
                     p.openInventory(inv3);
                     break;
                 case "opencompoundpiecegui":
@@ -178,8 +179,8 @@ public class KarExecutor implements CommandExecutor, TabCompleter {
                         p.sendMessage("§c§l请前往detach.yml配置文件中开启保护符拆卸功能");
                         return true;
                     }
-                    Inventory inv4 = Bukkit.createInventory(new KarCompoundPieceGui.KarCompoundPieceGuiInvHolder(),27,"§a§l碎片合成界面");
-                    KarCompoundPieceGui.init(inv4);
+                    Inventory inv4 = Bukkit.createInventory(new KarCompoundPieceGui.KarCompoundPieceGuiInvHolder(),27,PlaceholderAPI.setPlaceholders(p,KarCompoundPieceGui.title));
+                    KarCompoundPieceGui.initInv(inv4,p);
                     p.openInventory(inv4);
                     break;
             }
@@ -273,6 +274,7 @@ public class KarExecutor implements CommandExecutor, TabCompleter {
         return completions;
     }
     public void reloadConfig(){
+        KarRefinement.instance.initGuiData();
         StoneDataManager.init();
         EquipmentDataManager.init();
         EquipmentDataManager.initForgeData();

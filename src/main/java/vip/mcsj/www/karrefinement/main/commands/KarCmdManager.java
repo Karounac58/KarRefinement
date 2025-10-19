@@ -99,19 +99,19 @@ public class KarCmdManager {
 
     public void openGui(Player p){
         Inventory inv = Bukkit.createInventory(new KarRefinementInvHolder(), 54, "§c淬炼界面");
-        KarRefinementGui.setInvInitial(inv);
+        KarRefinementGui.setInvInitial(inv,p);
         p.openInventory(inv);
     }
 
     public void openForgeGui(Player p){
         Inventory inv1 = Bukkit.createInventory(new KarForgeInvHolder(),45,"§c§l锻造界面");
-        KarForgeGui.initInv(inv1);
+        KarForgeGui.initInv(inv1,p);
         p.openInventory(inv1);
     }
 
     public void openCompoundGui(Player p){
         Inventory inv2 = Bukkit.createInventory(new KarCompoundStoneInvHolder(),54,"§c§l宝石合成界面");
-        KarCompoundStoneGui.initial(inv2);
+        KarCompoundStoneGui.initial(inv2,p);
         KarCompoundStoneGui.openGuiForPlayer(inv2,p);
     }
 }

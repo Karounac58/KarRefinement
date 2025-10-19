@@ -23,13 +23,13 @@ public class KarTransformGuiListener implements Listener {
 
         if(!(e.getClickedInventory().getHolder() instanceof KarTransformStarGui.KarTransformStarGuiInvHolder)) return;
 
-        if(!(e.getSlot() == 10 || e.getSlot() == 16)){
+        if(!(e.getSlot() == KarTransformStarGui.originSlot || e.getSlot() == KarTransformStarGui.afterSlot)){
             e.setCancelled(true);
         }
 
-        if(e.getSlot() == 22){
-            ItemStack item1 = inv.getItem(10);
-            ItemStack item2 = inv.getItem(16);
+        if(KarTransformStarGui.tItems.get("ConfirmButton").getSlots().contains(e.getSlot())){
+            ItemStack item1 = inv.getItem(KarTransformStarGui.originSlot);
+            ItemStack item2 = inv.getItem(KarTransformStarGui.afterSlot);
             KarTransformStarGui.KarTransformMethod(item1,item2,(Player) e.getWhoClicked());
         }
     }
@@ -38,8 +38,8 @@ public class KarTransformGuiListener implements Listener {
     public void onInventoryClose(InventoryCloseEvent e) {
         Inventory inv = e.getInventory();
         if(inv.getHolder() instanceof KarTransformStarGui.KarTransformStarGuiInvHolder){
-            ItemStack item1 = e.getInventory().getItem(10);
-            ItemStack item2 = e.getInventory().getItem(16);
+            ItemStack item1 = e.getInventory().getItem(KarTransformStarGui.originSlot);
+            ItemStack item2 = e.getInventory().getItem(KarTransformStarGui.afterSlot);
 
             Player p = (Player) e.getPlayer();
             if (item1 != null) {

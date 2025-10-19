@@ -19,20 +19,20 @@ public class KarCompoundPieceListener implements Listener {
 
         if(!(e.getClickedInventory().getHolder() instanceof KarCompoundPieceGui.KarCompoundPieceGuiInvHolder)) return;
 
-        if(!(e.getSlot() == 10 || e.getSlot() == 16)){
+        if(!(e.getSlot() == KarCompoundPieceGui.originSlot || e.getSlot() == KarCompoundPieceGui.afterSlot)){
             e.setCancelled(true);
         }
 
         ItemStack item = null;
         Player p = (Player) e.getWhoClicked();
-        if(e.getSlot() == 22){
-            ItemStack itemPiece = inv.getItem(10);
+        if(KarCompoundPieceGui.cpItems.get("ConfirmButton").getSlots().contains(e.getSlot())){
+            ItemStack itemPiece = inv.getItem(KarCompoundPieceGui.originSlot);
             item = KarCompoundPieceGui.karCompoundPieceMethod(itemPiece,p);
             if(item == null){
                 p.sendMessage("§c§l合成失败，请检查是否为碎片或碎片数量！");
                 p.playSound(p.getLocation(), Sound.BLOCK_ANVIL_BREAK, 1, 1);
             }else{
-                inv.setItem(16, item);
+                inv.setItem(KarCompoundPieceGui.afterSlot, item);
                 p.sendMessage("§a§l合成成功，你合成了"+item.getItemMeta().getDisplayName());
                 p.playSound(p.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
             }
@@ -45,8 +45,8 @@ public class KarCompoundPieceListener implements Listener {
     public void onInventoryClose(InventoryCloseEvent e) {
         Inventory inv = e.getInventory();
         if(inv.getHolder() instanceof KarCompoundPieceGui.KarCompoundPieceGuiInvHolder){
-            ItemStack item1 = e.getInventory().getItem(10);
-            ItemStack item2 = e.getInventory().getItem(16);
+            ItemStack item1 = e.getInventory().getItem(KarCompoundPieceGui.originSlot);
+            ItemStack item2 = e.getInventory().getItem(KarCompoundPieceGui.afterSlot);
 
             Player p = (Player) e.getPlayer();
             if (item1 != null) {

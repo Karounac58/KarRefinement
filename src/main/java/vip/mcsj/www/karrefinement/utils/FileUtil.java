@@ -141,6 +141,9 @@ public class FileUtil {
         KarRefinement.instance.saveResource(fileName,false);
     }
 
+    public static void initCustomFile(String inPath,String fileName){
+        saveResource(inPath,fileName,false);
+    }
     /**
      * 从指定文件中获取ConfigurationSection
      * @param fileName
@@ -279,5 +282,44 @@ public class FileUtil {
 
         inputStream.close();
         outputStream.close();
+    }
+
+    public static void saveResource(String inPath,String outPath, boolean replace) {
+        if (inPath != null && !inPath.equals("")) {
+            inPath = inPath.replace('\\', '/');
+            InputStream in = KarRefinement.instance.getResource(inPath);
+            if (in == null) {
+                throw new IllegalArgumentException("The embedded resource '" + inPath + "' cannot be found in datafolder!");
+            } else {
+                File outFile = new File(KarRefinement.instance.getDataFolder(), outPath);
+                int lastIndex = outPath.lastIndexOf(47);
+                File outDir = new File(KarRefinement.instance.getDataFolder(), outPath.substring(0, lastIndex >= 0 ? lastIndex : 0));
+                if (!outDir.exists()) {
+                    outDir.mkdirs();
+                }
+
+                try {
+                    if (outFile.exists() && !replace) {
+                        KarRefinement.instance.getLogger().log(Level.WARNING, "Could not save " + outFile.getName() + " to " + outFile + " because " + outFile.getName() + " already exists.");
+                    } else {
+                        OutputStream out = new FileOutputStream(outFile);
+                        byte[] buf = new byte[1024];
+
+                        int len;
+                        while((len = in.read(buf)) > 0) {
+                            out.write(buf, 0, len);
+                        }
+
+                        out.close();
+                        in.close();
+                    }
+                } catch (IOException ex) {
+                    KarRefinement.instance.getLogger().log(Level.SEVERE, "Could not save " + outFile.getName() + " to " + outFile, ex);
+                }
+
+            }
+        } else {
+            throw new IllegalArgumentException("ResourcePath cannot be null or empty");
+        }
     }
 }

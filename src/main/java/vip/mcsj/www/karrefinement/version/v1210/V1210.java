@@ -4,6 +4,7 @@ import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import vip.mcsj.www.karrefinement.utils.KarUtils;
+import vip.mcsj.www.karrefinement.version.CustomPath;
 import vip.mcsj.www.karrefinement.version.CustomSounds;
 import vip.mcsj.www.karrefinement.version.CustomMaterial;
 import vip.mcsj.www.karrefinement.version.CustomParticle;
@@ -12,7 +13,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class V1210 implements CustomParticle, CustomMaterial, CustomSounds {
+public class V1210 implements CustomParticle, CustomMaterial, CustomSounds , CustomPath {
+    public static String originPath = "";
     public static List<Particle> particles = new ArrayList<>();
     public List<Sound> sounds = new ArrayList<>();
     public List<ItemStack> items = new ArrayList<>();
@@ -21,6 +23,7 @@ public class V1210 implements CustomParticle, CustomMaterial, CustomSounds {
         initParticle();
         initItems();
         initSounds();
+        initPath();
     }
 
     public void initParticle(){
@@ -51,6 +54,10 @@ public class V1210 implements CustomParticle, CustomMaterial, CustomSounds {
         items.add(KarUtils.removeItemName(new ItemStack(Material.valueOf("BLUE_STAINED_GLASS_PANE"))));
 
         items.add(KarUtils.removeItemName(new ItemStack(Material.valueOf("OAK_SIGN"))));
+    }
+
+    public void initPath(){
+        originPath = "v1210/";
     }
 
     @Override
@@ -95,5 +102,10 @@ public class V1210 implements CustomParticle, CustomMaterial, CustomSounds {
     @Override
     public List<Sound> getSounds() {
         return sounds;
+    }
+
+    @Override
+    public String getPath() {
+        return originPath;
     }
 }

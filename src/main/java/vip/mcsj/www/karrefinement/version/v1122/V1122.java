@@ -7,6 +7,7 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import vip.mcsj.www.karrefinement.version.CustomPath;
 import vip.mcsj.www.karrefinement.version.CustomSounds;
 import vip.mcsj.www.karrefinement.utils.KarUtils;
 import vip.mcsj.www.karrefinement.version.CustomMaterial;
@@ -15,7 +16,8 @@ import vip.mcsj.www.karrefinement.version.CustomParticle;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
-public class V1122 implements CustomParticle, CustomMaterial, CustomSounds {
+public class V1122 implements CustomParticle, CustomMaterial, CustomSounds, CustomPath {
+    public String originPath = "";
     public List<Particle> particles = new ArrayList<>();
     public List<Sound> sounds = new ArrayList<>();
     public List<ItemStack> items = new ArrayList<>();
@@ -24,6 +26,7 @@ public class V1122 implements CustomParticle, CustomMaterial, CustomSounds {
         initParticle();
         initSounds();
         initItems();
+        initPath();
     }
 
     public void initParticle(){
@@ -53,6 +56,10 @@ public class V1122 implements CustomParticle, CustomMaterial, CustomSounds {
         //蓝
         items.add(KarUtils.removeItemName(KarUtils.createColorPane(11)));
         items.add(new ItemStack(Material.valueOf("SIGN")));
+    }
+
+    public void initPath(){
+        originPath = "v1122/";
     }
     //    private Method spawnParticleMethod;
 //    private Player p;
@@ -169,6 +176,13 @@ public class V1122 implements CustomParticle, CustomMaterial, CustomSounds {
     public List<Sound> getSounds() {
         return sounds;
     }
+
+    @Override
+    public String getPath() {
+        return originPath;
+    }
+
+
 //
 //    public void addParticleEighteenth(){
 //        Location pLoc = p.getLocation();

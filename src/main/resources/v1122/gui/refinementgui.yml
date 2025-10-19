@@ -1,0 +1,48 @@
+Title: "§c§l淬炼界面"
+Item:
+  StoneInfo:
+    Name: "§c§l☼§d§l淬炼石§c§l☼"
+    Material: FURNACE
+    Data: 0
+    CustomModelData: 0
+    Lore: []
+  Equipmentinfo:
+    Name: "§c§l☼§6§l淬炼装备§c§l☼"
+    Material: IRON_SWORD
+    Data: 0
+    CustomModelData: 0
+    Lore: []
+  ConfirmButton:
+    Name: "§6左键进行淬炼 §f| §b右键快速淬炼"
+    Material: GLOWSTONE_DUST
+    Data: 0
+    CustomModelData: 0
+    Lore:
+      - "§e- §a左边放淬炼石，右边放待淬炼装备"
+      - "§e- §a进行淬炼时请§c不要退出界面或拿出物品，"
+      - "§e- §a否则有概率会造成淬炼石或装备丢失！"
+  ForgeButton:
+    Name: "§c锻造界面"
+    Material: ANVIL
+    Data: 0
+    CustomModelData: 0
+    Lore: []
+  Barrier:
+    Name: ""
+    Material: STAINED_GLASS_PANE
+    Data: 15
+    CustomModelData: 0
+    Lore: []
+  Barrier2:
+    Name: ""
+    Material: STAINED_GLASS_PANE
+    Data: 0
+    CustomModelData: 0
+    Lore: []
+  # 播放动画时用的物品
+  VideoItem:
+    Name: ""
+    Material: STAINED_GLASS_PANE
+    Data: 14
+    CustomModelData: 0
+    Lore: []
