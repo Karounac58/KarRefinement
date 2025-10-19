@@ -109,7 +109,9 @@ public class EquipmentDataManager {
         return new NBTItem(this.equipmentItem).getInteger("refinement");
     }
 
-
+    public static int getEquipmentLevel(ItemStack item) {
+        return new NBTItem(item).getInteger("refinement");
+    }
     /**
      * 剑上星方法
      *
@@ -141,6 +143,47 @@ public class EquipmentDataManager {
         addItemRefinementInfo(newMainLore, newExtractLore, oldRefinementLevel + 1);
 
         return true;
+    }
+
+    public boolean setRefinementLevel(int level) {
+        if(level > LevelDataManager.levels.size()) {
+            return false;
+        }
+
+        int oldLevelNum = carifyEquipmentLevel();
+
+        if(oldLevelNum == level) {
+            return false;
+        }
+
+
+        if(level == 0){
+            Level oldLevel = LevelDataManager.levels.get(oldLevelNum - 1);
+            String newEquipmentIdentifier = getEquipmentIdentifier(equipmentItem);
+            List<String> oldMainLore = oldLevel.getMainLore();
+            List<String> oldExtractLore = oldLevel.getExtractLores().get(newEquipmentIdentifier);
+            removeNowItemRefinementInfo(oldMainLore, oldExtractLore, oldLevelNum);
+            return true;
+        }
+        Level newLevel =  LevelDataManager.levels.get(level - 1);
+        String newEquipmentIdentifier = getEquipmentIdentifier(equipmentItem);
+        List<String> newMainLore = newLevel.getMainLore();
+        List<String> newExtractLore = newLevel.getExtractLores().get(newEquipmentIdentifier);
+
+        if(oldLevelNum == 0) {
+            addItemRefinementInfo(newMainLore, newExtractLore, level);
+            return true;
+        }
+        Level oldLevel = LevelDataManager.levels.get(oldLevelNum - 1);
+        List<String> oldMainLore = oldLevel.getMainLore();
+        List<String> oldExtractLore = oldLevel.getExtractLores().get(newEquipmentIdentifier);
+
+        removeNowItemRefinementInfo(oldMainLore, oldExtractLore, oldLevelNum);
+
+        addItemRefinementInfo(newMainLore, newExtractLore, level);
+
+        return true;
+
     }
 
     private void judgeSoul(int refinementLevel){

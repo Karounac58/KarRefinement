@@ -1,6 +1,7 @@
 package vip.mcsj.www.karrefinement.main.listener;
 
 import de.tr7zw.nbtapi.NBTItem;
+import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -23,6 +24,9 @@ public class AdhesiveListener implements Listener {
             return;
         }
         ItemStack itemInMainHand = e.getPlayer().getInventory().getItemInMainHand();
+        if(itemInMainHand == null || itemInMainHand.getType() == Material.AIR){
+            return;
+        }
         NBTItem nbtItem = new NBTItem(itemInMainHand);
         if(!nbtItem.hasKey("adhesive")){
             return;

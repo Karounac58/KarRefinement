@@ -54,7 +54,7 @@ public class ScriptRunnable implements Runnable {
                 }
             } catch (NoSuchMethodException | ScriptException | ClassCastException ex) {
                 KarRefinement.instance.getLogger().log(java.util.logging.Level.SEVERE, null, ex);
-                enbaleScript = false;
+//                enbaleScript = false;
             }
         }
     }

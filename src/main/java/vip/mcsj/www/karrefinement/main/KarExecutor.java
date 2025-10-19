@@ -36,6 +36,7 @@ public class KarExecutor implements CommandExecutor, TabCompleter {
                 case "help":
                     p.sendMessage("§c§l§m  §6§l§m  §e§l§m  §a§l§m  §b§l§m  §e§lKarRefinement§b§l§m  §a§l§m  §e§l§m  §6§l§m  §c§l§m  ");
                     p.sendMessage("§e/krf adminup —— §b为手上物品升星");
+                    p.sendMessage("§e/krf set <等级> —— §b为手上物品设置淬炼等级");
                     p.sendMessage("§e/krf reload —— §b重载配置文件");
                     p.sendMessage("§e/krf openitemgui —— §b打开淬炼物品菜单");
                     p.sendMessage("§e/krf givestone <玩家名> <淬炼石名> <数量> —— §b获取淬炼石");
@@ -81,6 +82,31 @@ public class KarExecutor implements CommandExecutor, TabCompleter {
                     p.sendMessage("§a你打开了淬炼物品菜单");
                     return true;
 
+            }
+        }
+        if(args.length == 2){
+            switch (args[0]){
+                case "set":
+                    if(!(sender instanceof Player)){
+                        sender.sendMessage("§c§l只有玩家才能执行此命令");
+                        return true;
+                    }
+                    Player p = (Player) sender;
+                    int i = 0;
+                    try{
+                        i = Integer.parseInt(args[1]);
+                    }catch (Exception e){
+                        KarRefinement.instance.getLogger().log(java.util.logging.Level.SEVERE, null, e);
+                        p.sendMessage("§c§l参数必须为数字！");
+                        return true;
+                    }
+                    if(EquipmentDataManager.isEquipmentLegal(p.getInventory().getItemInMainHand())){
+                        EquipmentDataManager edm = new EquipmentDataManager(p.getInventory().getItemInMainHand(),p);
+                        edm.setRefinementLevel(i);
+                        p.playSound(p.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
+                        return true;
+                    }
+                    break;
             }
         }
         //有多个子命令
@@ -208,6 +234,7 @@ public class KarExecutor implements CommandExecutor, TabCompleter {
             completions.add("openforgegui");
             completions.add("opentransformgui");
             completions.add("adminup");
+            completions.add("set");
             completions.add("reload");
             completions.add("getnbt");
             completions.add("clearlore");
@@ -217,6 +244,9 @@ public class KarExecutor implements CommandExecutor, TabCompleter {
             completions.addAll(Bukkit.getOnlinePlayers().stream().map(Player::getName).collect(Collectors.toList()));
         }else if(strings.length == 3){
             switch (strings[0].toLowerCase()){
+                case "set":
+                    completions.add("<等级>");
+                    break;
                 case "givestone":
                     completions.add("<淬炼石名> <数量>");
                     break;
