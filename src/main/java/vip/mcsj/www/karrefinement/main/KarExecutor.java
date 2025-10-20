@@ -5,6 +5,7 @@ import de.tr7zw.nbtapi.NBTItem;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.Sound;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -20,6 +21,8 @@ import vip.mcsj.www.karrefinement.datamanager.*;
 import vip.mcsj.www.karrefinement.gui.*;
 import vip.mcsj.www.karrefinement.main.listener.KarTakeItemGuiListener;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.*;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -45,11 +48,16 @@ public class KarExecutor implements CommandExecutor, TabCompleter {
                     p.sendMessage("§e/krf givedupaper <玩家名> <直升符名> —— §b获取直升符");
                     p.sendMessage("§e/krf givespestone <玩家名> <宝石名> —— §b获取宝石");
                     p.sendMessage("§e/krf givesoul <玩家名> <精魂名> —— §b获取无限耐久精魂");
+                    p.sendMessage("§e/krf givedetachitem <玩家名> 保护符拆卸工具 —— §b获取保护符拆卸工具");
+                    p.sendMessage("§e/krf giveadhesive <玩家名> <粘合剂名> —— §b获取宝石粘合剂");
+                    p.sendMessage("§e/krf givepotion <玩家名> <淬炼药水名> —— §b获取淬炼药水");
                     p.sendMessage("§e/krf opengui <玩家名> —— §b打开淬炼界面");
                     p.sendMessage("§e/krf openforgegui <玩家名> —— §b打开锻造界面");
                     p.sendMessage("§e/krf opencompoundgui <玩家名> —— §b打开宝石合石界面");
                     p.sendMessage("§e/krf opencompoundpiecegui <玩家名> —— §b打开保护符碎片合成界面");
                     p.sendMessage("§e/krf opentransformgui <玩家名> —— §b打开淬炼移星界面");
+                    p.sendMessage("§e/krf querypotion <玩家名> —— §b让玩家查看淬炼药水加成");
+                    p.sendMessage("§e/krf adminquerypotion <玩家名> —— §b查看玩家的淬炼药水加成");
                     break;
                 case "adminup":
                     ItemStack itemInMainHand = p.getInventory().getItemInMainHand();
@@ -108,6 +116,48 @@ public class KarExecutor implements CommandExecutor, TabCompleter {
                         return true;
                     }
                     break;
+                case "querypotion":
+                    OfflinePlayer player = Bukkit.getOfflinePlayer(args[1]);
+                    if(player != null){
+                        PotionDataManager pdm = new PotionDataManager();
+                        try {
+                            List<Object> rs = pdm.queryPlayerPotionInfo(player);
+                            if (player.isOnline()) {
+                                Player player1 = player.getPlayer();
+                                if(rs == null){
+                                    player1.sendMessage("§c§l该玩家没有药水加成！");
+                                    return true;
+                                }
+                                player1.sendMessage("§c§l§m  §6§l§m  §e§l§m  §a§l§m  §b§l§m  §e§l药水增幅§b§l§m  §a§l§m  §e§l§m  §6§l§m  §c§l§m  ");
+                                player1.sendMessage("§6§l增加成功率："+(double)rs.get(1)*100);
+                                player1.sendMessage("§a§l持续时间："+PotionDataManager.formatTimeRemaining((Long)rs.get(0)));
+                            }
+                            return true;
+                        }catch (Exception e){
+                            KarRefinement.instance.getLogger().severe("查询玩家药水效果失败！" + e.getMessage());
+                            e.printStackTrace();
+                        }
+                    }else{
+                        sender.sendMessage("§c§l此玩家不存在！");
+                    }
+                    break;
+                case "adminquerypotion":
+                    OfflinePlayer player3 = Bukkit.getOfflinePlayer(args[1]);
+                    if(player3 != null){
+                        PotionDataManager pdm = new PotionDataManager();
+                        List<Object> rs = pdm.queryPlayerPotionInfo(player3);
+                        if(rs == null){
+                            sender.sendMessage("§c§l该玩家没有药水加成！");
+                            return true;
+                        }
+                        sender.sendMessage("§c§l§m  §6§l§m  §e§l§m  §a§l§m  §b§l§m  §e§l药水增幅§b§l§m  §a§l§m  §e§l§m  §6§l§m  §c§l§m  ");
+                        sender.sendMessage("§b§l玩家："+player3.getName());
+                        sender.sendMessage("§6§l增加成功率："+(double)rs.get(1)*100);
+                        sender.sendMessage("§a§l持续时间："+PotionDataManager.formatTimeRemaining((Long)rs.get(0)));
+                    }else{
+                        sender.sendMessage("§c§l此玩家不存在！");
+                    }
+                    break;
             }
         }
         //有多个子命令
@@ -147,6 +197,18 @@ public class KarExecutor implements CommandExecutor, TabCompleter {
                     break;
                 case "giveadhesive":
                     p.getInventory().addItem(AdhesiveDataManager.createAdhesiveItem(args[2]));
+                    break;
+                case "givedetachitem":
+                    if (!DetachDataManager.enabled) {
+                        p.sendMessage("§c§l请前往detach.yml配置文件中开启保护符拆卸功能");
+                        return true;
+                    }
+                    if(args[2].equalsIgnoreCase("保护符拆卸工具")){
+                        p.getInventory().addItem(DetachDataManager.createPaperDetachItem());
+                    }
+                    break;
+                case "givepotion":
+                    p.getInventory().addItem(new PotionDataManager(args[2]).createPotion());
                     break;
                 case "setnbt":
                     ItemStack invItem = p.getInventory().getItemInMainHand();
@@ -230,6 +292,8 @@ public class KarExecutor implements CommandExecutor, TabCompleter {
             completions.add("givespestone");
             completions.add("givesoul");
             completions.add("giveadhesive");
+            completions.add("givedetachitem");
+            completions.add("givepotion");
             completions.add("setnbt");
             completions.add("opengui");
             completions.add("openforgegui");
@@ -241,6 +305,8 @@ public class KarExecutor implements CommandExecutor, TabCompleter {
             completions.add("clearlore");
             completions.add("openitemgui");
             completions.add("opencompoundpiecegui");
+            completions.add("querypotion");
+            completions.add("adminquerypotion");
         }else if(strings.length == 2){
             completions.addAll(Bukkit.getOnlinePlayers().stream().map(Player::getName).collect(Collectors.toList()));
         }else if(strings.length == 3){
@@ -267,7 +333,17 @@ public class KarExecutor implements CommandExecutor, TabCompleter {
                     completions.add("<nbt键名> <nbt值>");
                     break;
                 case "giveadhesive":
-                    completions.add("<宝石粘合剂名>");
+                    completions.add("<玩家名> <宝石粘合剂名>");
+                    break;
+                case "givepotion":
+                    completions.add("<玩家名> <淬炼药水名>");
+                case "givedetachitem":
+                    completions.add("<玩家名> 保护符拆卸工具");
+                case "querypotion":
+                    completions.add("<玩家名>");
+                    break;
+                case "adminquerypotion":
+                    completions.add("<玩家名>");
                     break;
             }
         }
@@ -287,6 +363,7 @@ public class KarExecutor implements CommandExecutor, TabCompleter {
         KarCompoundStoneGui.initCompoundData();
         DetachDataManager.init();
         AdhesiveDataManager.init();
+        PotionDataManager.init();
         KarTakeItemGui.initItems();
     }
 }

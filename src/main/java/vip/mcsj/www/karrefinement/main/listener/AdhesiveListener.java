@@ -35,33 +35,47 @@ public class AdhesiveListener implements Listener {
         if(adhesive == null){
             return;
         }
-        SpecialStoneDataManager ssm = new SpecialStoneDataManager(adhesive.getOriginGem());
-        ItemStack originGem = ssm.createSpeStone();
-        int i = ItemStackUtils.judgePlayerItemStackAmount(e.getPlayer().getInventory(), originGem);
-        if(i < adhesive.getRequiredAmount()){
-            e.getPlayer().sendMessage("§c宝石数量不足！");
-            return;
-        }
-        int num = ThreadLocalRandom.current().nextInt(0, 100);
-        //成功
-        if((99- adhesive.getChance()) < num){
-            ItemStackUtils.reducePlayerItemStack(e.getPlayer().getInventory(), originGem,adhesive.getRequiredAmount());
-            SpecialStoneDataManager ssm2 = new SpecialStoneDataManager(adhesive.getAfterGem());
-            ItemStack afterGem = ssm2.createSpeStone();
-            KarUtils.removeItemRefinement(itemInMainHand);
-            e.getPlayer().getInventory().addItem(afterGem);
-            e.getPlayer().sendMessage("§a成功合成"+afterGem.getItemMeta().getDisplayName());
-            e.getPlayer().playSound(e.getPlayer().getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
-            //失败
-        }else{
-            int num1 = ThreadLocalRandom.current().nextInt(adhesive.getFailedAmount().get(0),adhesive.getFailedAmount().get(1));
-            int leaves = adhesive.getRequiredAmount() -  num1 ;
-            KarUtils.removeItemRefinement(itemInMainHand);
-            ItemStackUtils.reducePlayerItemStack(e.getPlayer().getInventory(), originGem,leaves);
-            e.getPlayer().sendMessage("§c合成失败,返还"+num1+"个宝石");
-            e.getPlayer().playSound(e.getPlayer().getLocation(), Sound.BLOCK_ANVIL_BREAK, 1, 1);
 
+        for (String nbtKey : SpecialStoneDataManager.nbtKeys) {
+            for (int i = 0; i < SpecialStoneDataManager.getTypeSpeStoneAmount(nbtKey); i++) {
+                ItemStack speStone = new SpecialStoneDataManager(SpecialStoneDataManager.getSpeStone(nbtKey,i+1).getIdentifier()).createSpeStone();
+                int amount = ItemStackUtils.judgePlayerItemStackAmount(e.getPlayer().getInventory(), speStone);
+                if(amount >= adhesive.getRequiredAmount()){
+                    int num = ThreadLocalRandom.current().nextInt(0, 100);
+                    SpeStone speStone1 = SpecialStoneDataManager.getSpeStone(nbtKey, i + 2);
+                    if(speStone1 == null){
+                        e.getPlayer().sendMessage("§c§l无法合成更高级的宝石");
+                        return;
+                    }
+                    SpecialStoneDataManager ssm2 = new SpecialStoneDataManager(speStone1.getIdentifier());
+                    ItemStack afterGem = ssm2.createSpeStone();
+                    if(afterGem == null){
+                        e.getPlayer().sendMessage("§c§l无法合成更高级的宝石");
+                        return;
+                    }
+                    //成功
+                    if((99- adhesive.getChance()) < num){
+                        ItemStackUtils.reducePlayerItemStack(e.getPlayer().getInventory(), speStone,adhesive.getRequiredAmount());
+                        KarUtils.removeItemRefinement(itemInMainHand);
+                        e.getPlayer().getInventory().addItem(afterGem);
+                        e.getPlayer().sendMessage("§a成功合成"+afterGem.getItemMeta().getDisplayName());
+                        e.getPlayer().playSound(e.getPlayer().getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
+                        //失败
+                    }else{
+                        int num1 = ThreadLocalRandom.current().nextInt(adhesive.getFailedAmount().get(0),adhesive.getFailedAmount().get(1));
+                        int leaves = adhesive.getRequiredAmount() -  num1 ;
+                        KarUtils.removeItemRefinement(itemInMainHand);
+                        ItemStackUtils.reducePlayerItemStack(e.getPlayer().getInventory(), speStone,leaves);
+                        e.getPlayer().sendMessage("§c合成失败,返还"+num1+"个宝石");
+                        e.getPlayer().playSound(e.getPlayer().getLocation(), Sound.BLOCK_ANVIL_BREAK, 1, 1);
+                    }
+                    return;
+                }
+            }
         }
+
+
+
 
     }
 

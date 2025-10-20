@@ -29,14 +29,12 @@ public class AdhesiveDataManager {
             Material type = Material.valueOf(customFileYaml.getString(key + ".Type"));
             int data =  customFileYaml.getInt(key + ".Data");
             int customModelData =  customFileYaml.getInt(key + ".CustomModelData");
-            String originGem =   customFileYaml.getString(key + ".OriginGem");
-            String afterGem =   customFileYaml.getString(key + ".AfterGem");
             int requiredAmount =  customFileYaml.getInt(key + ".RequiredAmount");
             List<Integer> failedAmount =   customFileYaml.getIntegerList(key + ".FailedAmount");
             int chance =  customFileYaml.getInt(key + ".Chance");
             List<String> lore = customFileYaml.getStringList(key + ".Lore");
 
-            Adhesive adhesive = new Adhesive(name, type, data, customModelData, lore, originGem, afterGem, requiredAmount, failedAmount, chance);
+            Adhesive adhesive = new Adhesive(name, type, data, customModelData, lore, requiredAmount, failedAmount, chance);
             adhesives.put(key, adhesive);
         }
     }

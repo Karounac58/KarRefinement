@@ -219,12 +219,13 @@ public class DetachDataManager {
     }
 
     public ItemStack paperDetachItemUp(ItemStack detachItem,ItemStack equipmentItem){
-        Random random = new Random();
         String paperIdentifier = PaperDataManager.getPaperIdentifier(equipmentItem);
         Detach paperDetach = paperDetachs.get(paperIdentifier);
         ProtectPaper protectPaper = PaperDataManager.papers.get(paperIdentifier);
         String equipmentLore = protectPaper.getName();
         List<Integer> numbers = paperDetach.getNumbers();
+
+        System.out.println(numbers);
 
 
         ItemMeta itemMeta = equipmentItem.getItemMeta();
@@ -239,7 +240,7 @@ public class DetachDataManager {
         KarUtils.removeItemRefinement(detachItem);
 
         ItemStack paperPiece = createPaperPiece();
-        paperPiece.setAmount(random.nextInt(ThreadLocalRandom.current().nextInt(numbers.get(0),numbers.get(1))));
+        paperPiece.setAmount(ThreadLocalRandom.current().nextInt(numbers.get(0),numbers.get(1)));
 
         return paperPiece;
     }

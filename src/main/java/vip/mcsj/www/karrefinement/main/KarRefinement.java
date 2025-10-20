@@ -8,6 +8,9 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import vip.mcsj.www.karrefinement.datamanager.*;
+import vip.mcsj.www.karrefinement.datamanager.database.DatabaseManager;
+import vip.mcsj.www.karrefinement.datamanager.database.MySQLDatabaseManager;
+import vip.mcsj.www.karrefinement.datamanager.database.SQLiteDatabaseManager;
 import vip.mcsj.www.karrefinement.effect.ParticleResource;
 import vip.mcsj.www.karrefinement.effect.ScriptRunnable;
 import vip.mcsj.www.karrefinement.gui.*;
@@ -20,6 +23,8 @@ import vip.mcsj.www.karrefinement.version.CustomParticle;
 import vip.mcsj.www.karrefinement.version.CustomPath;
 import vip.mcsj.www.karrefinement.version.CustomSounds;
 
+import java.sql.SQLException;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class KarRefinement extends JavaPlugin{
@@ -38,7 +43,11 @@ public class KarRefinement extends JavaPlugin{
 
     public static MCVersions pv = ReflectionUtils.judgeVersion();
 
+    public static PotionDataManager pdm = new PotionDataManager();
+
     public static Economy econ = null;
+
+    public static DatabaseManager dm;
     @Override
     public void onEnable(){
         instance = this;
@@ -48,6 +57,8 @@ public class KarRefinement extends JavaPlugin{
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
+
+
         Bukkit.getPluginManager().registerEvents(new KarEventListener(),this);
         Bukkit.getPluginManager().registerEvents(new DirectUpgradePaperEvent(),this);
         Bukkit.getPluginManager().registerEvents(new FurnaceListener(),this);
@@ -57,6 +68,7 @@ public class KarRefinement extends JavaPlugin{
         Bukkit.getPluginManager().registerEvents(new KarDetachListener(),this);
         Bukkit.getPluginManager().registerEvents(new KarCompoundPieceListener(),this);
         Bukkit.getPluginManager().registerEvents(new AdhesiveListener(),this);
+        Bukkit.getPluginManager().registerEvents(new KarPotionListener(),this);
         Bukkit.getPluginCommand("karrefinement").setExecutor(new KarExecutor());
         saveDefaultConfig();
         FileUtil.initCustomFile(customPath.getPath()+"stone.yml","stone.yml");
@@ -71,6 +83,7 @@ public class KarRefinement extends JavaPlugin{
         FileUtil.initCustomFile(customPath.getPath()+"detach.yml","detach.yml");
         FileUtil.initCustomFile(customPath.getPath()+"chinesename.yml","chinesename.yml");
         FileUtil.initCustomFile(customPath.getPath()+"adhesive.yml","adhesive.yml");
+        FileUtil.initCustomFile(customPath.getPath()+"potion.yml","potion.yml");
         //gui数据
         FileUtil.initCustomFile(customPath.getPath()+"gui/compoundgui.yml","gui/compoundgui.yml");
         FileUtil.initCustomFile(customPath.getPath()+"gui/compoundpiecegui.yml","gui/compoundpiecegui.yml");
@@ -99,11 +112,30 @@ public class KarRefinement extends JavaPlugin{
         KarCompoundStoneGui.initCompoundData();
         DetachDataManager.init();
         AdhesiveDataManager.init();
+        PotionDataManager.init();
         KarTakeItemGui.initItems();
+        String storage = getConfig().getString("settings.data.storage");
+        if(storage.equals("SQLite")) {
+            dm = new SQLiteDatabaseManager(this);
+        }else if(storage.equals("MySQL")){
+            dm = new MySQLDatabaseManager(this);
+        }
+        dm.initialize();
         initThread();
 
         log.info(String.format("[%s] - 插件启动成功...",getDescription().getName()));
 
+    }
+
+    @Override
+    public void onDisable() {
+        try{
+            if(dm.getDataSource() != null && dm.getDataSource().isClosed()){
+                dm.close();
+            }
+        }catch (SQLException e){
+            getLogger().log(Level.SEVERE,"关闭数据库连接失败!",e);
+        }
     }
 
     public void initThread(){
@@ -124,6 +156,14 @@ public class KarRefinement extends JavaPlugin{
                 }
             }
         }.runTaskTimer(this,0,80);
+
+        //删除过期淬炼增幅药水信息
+        new BukkitRunnable(){
+            @Override
+            public void run() {
+                pdm.deleteOudatedPlayerPotionInfo();
+            }
+        }.runTaskTimerAsynchronously(this,0,20);
     }
 
     private boolean setupEconomy() {

@@ -12,6 +12,7 @@ import vip.mcsj.www.karrefinement.utils.KarUtils;
 import vip.mcsj.www.karrefinement.utils.ReflectionUtils;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class SpecialStoneDataManager {
 
@@ -65,6 +66,9 @@ public class SpecialStoneDataManager {
 
     public ItemStack createSpeStone(){
         SpeStone speStone = speStones.get(this.speStoneName);
+        if(speStone == null){
+            return null;
+        }
         ItemStack speStoneItem = new ItemStack(speStone.getType(),1, (short) speStone.getData());
         ItemMeta im = speStoneItem.getItemMeta();
         im.setDisplayName(speStone.getName());
@@ -136,6 +140,10 @@ public class SpecialStoneDataManager {
         return speStones1;
     }
 
+
+    public static int getTypeSpeStoneAmount(String nbtKey){
+        return Math.toIntExact(speStones.values().stream().filter(speStone -> speStone.getNbtKey().equals(nbtKey)).count());
+    }
     /**
      * 通过nbt键和值获取SpeStone
      * @param key

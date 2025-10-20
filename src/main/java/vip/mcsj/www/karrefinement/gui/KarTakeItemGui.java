@@ -69,6 +69,11 @@ public class KarTakeItemGui {
         for (String s : adhesive) {
             guiItems.add(AdhesiveDataManager.createAdhesiveItem(s));
         }
+
+        Set<String> strings = PotionDataManager.potions.keySet();
+        for (String s : strings) {
+            guiItems.add(new PotionDataManager(s).createPotion());
+        }
     }
 
     public static void openKarTakeItemGui(Player p){

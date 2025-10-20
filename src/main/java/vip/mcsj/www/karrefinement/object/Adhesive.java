@@ -10,20 +10,16 @@ public class Adhesive {
     private int data;
     private int customModelData;
     private List<String> lore;
-    private String originGem;
-    private String afterGem;
     private int requiredAmount;
     private List<Integer> failedAmount;
     private int chance;
 
-    public Adhesive(String name, Material type, int data, int customModelData, List<String> lore, String originGem, String afterGem, int requiredAmount, List<Integer> failedAmount, int chance) {
+    public Adhesive(String name, Material type, int data, int customModelData, List<String> lore, int requiredAmount, List<Integer> failedAmount, int chance) {
         this.name = name;
         this.type = type;
         this.data = data;
         this.customModelData = customModelData;
         this.lore = lore;
-        this.originGem = originGem;
-        this.afterGem = afterGem;
         this.requiredAmount = requiredAmount;
         this.failedAmount = failedAmount;
         this.chance = chance;
@@ -69,22 +65,6 @@ public class Adhesive {
         this.lore = lore;
     }
 
-    public String getOriginGem() {
-        return originGem;
-    }
-
-    public void setOriginGem(String originGem) {
-        this.originGem = originGem;
-    }
-
-    public String getAfterGem() {
-        return afterGem;
-    }
-
-    public void setAfterGem(String afterGem) {
-        this.afterGem = afterGem;
-    }
-
     public int getRequiredAmount() {
         return requiredAmount;
     }
@@ -117,8 +97,6 @@ public class Adhesive {
                 ", data=" + data +
                 ", customModelData=" + customModelData +
                 ", lore=" + lore +
-                ", originGem='" + originGem + '\'' +
-                ", afterGem='" + afterGem + '\'' +
                 ", requiredAmount=" + requiredAmount +
                 ", failedAmount=" + failedAmount +
                 ", chance=" + chance +

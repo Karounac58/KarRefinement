@@ -13,10 +13,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
-import vip.mcsj.www.karrefinement.datamanager.EquipmentDataManager;
-import vip.mcsj.www.karrefinement.datamanager.LevelDataManager;
-import vip.mcsj.www.karrefinement.datamanager.PaperDataManager;
-import vip.mcsj.www.karrefinement.datamanager.StoneDataManager;
+import vip.mcsj.www.karrefinement.datamanager.*;
 import vip.mcsj.www.karrefinement.main.KarRefinement;
 import vip.mcsj.www.karrefinement.main.listener.KarEventListener;
 import vip.mcsj.www.karrefinement.object.InvItem;
@@ -233,8 +230,13 @@ public class KarRefinementGui {
         }
         double success = stone.getProbability().get(refinementLevel);
         BigDecimal decimal = BigDecimal.valueOf(KarUtils.nextDouble(100)).setScale(2, RoundingMode.HALF_UP);
-            //成功
-        if((99-success) < decimal.doubleValue()){
+        List<Object> objects = KarRefinement.pdm.queryPlayerPotionInfo(p);
+        double addSuccess = 0;
+        if(objects != null){
+            addSuccess = (double)objects.get(1) * 100;
+        }
+        //成功
+        if((99-(success + addSuccess)) < decimal.doubleValue()){
             if(equipmentManager.injuryUpStar()){
                 p.sendMessage(ChatColor.GREEN + "淬炼成功，装备上星！");
                 //Player p = (Player)e.getWhoClicked();
