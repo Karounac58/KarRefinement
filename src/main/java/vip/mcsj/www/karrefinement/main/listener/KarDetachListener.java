@@ -9,6 +9,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import vip.mcsj.www.karrefinement.datamanager.DetachDataManager;
 import vip.mcsj.www.karrefinement.datamanager.EquipmentDataManager;
+import vip.mcsj.www.karrefinement.datamanager.Message;
 import vip.mcsj.www.karrefinement.datamanager.PaperDataManager;
 import vip.mcsj.www.karrefinement.object.Detach;
 import vip.mcsj.www.karrefinement.utils.KarUtils;
@@ -45,17 +46,17 @@ public class KarDetachListener implements Listener {
                         ddm.paperDetachItemUp(detachItem, equipmentItem);
                         ItemStack protectedPaper = new PaperDataManager(paperIdentifier).createProtectedPaper();
                         p1.getInventory().addItem(protectedPaper);
-                        p1.sendMessage("§a完美卸下保护符!");
+                        p1.sendMessage(Message.messages.get("detach_success"));
                         p1.playSound(p1.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
                     }else{
                         DetachDataManager ddm = new DetachDataManager(paperIdentifier);
                         ItemStack itemStack = ddm.paperDetachItemUp(detachItem, equipmentItem);
                         p1.getInventory().addItem(itemStack);
-                        p1.sendMessage("§c在卸下保护符的过程中出现了意外！你得到了保护符碎片.");
+                        p1.sendMessage(Message.messages.get("detach_failed"));
                         p1.playSound(p1.getLocation(), Sound.BLOCK_ANVIL_BREAK, 1, 1);
                     }
                 }else{
-                    p1.sendMessage("§c此装备无保护符或保护符不可被拆卸!");
+                    p1.sendMessage(Message.messages.get("detach_disable"));
                 }
             }
         }

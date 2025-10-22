@@ -6,7 +6,7 @@
 
     <groupId>vip.mcsj.www</groupId>
     <artifactId>KarRefinement</artifactId>
-    <version>v1.2.1-snapshot</version>
+    <version>v1.2.4-SNAPSHOT</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -89,6 +89,22 @@
             <groupId>com.zaxxer</groupId>
             <artifactId>HikariCP</artifactId>
             <version>4.0.3</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.serverct.ersha</groupId>
+            <artifactId>AttributePlus</artifactId>
+            <version>3.3.3.3</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/libs/AttributePlus-3.3.3.3.jar</systemPath>
+        </dependency>
+
+        <dependency>
+            <groupId>github.saukiya.sxattribute</groupId>
+            <artifactId>SX-Attribute</artifactId>
+            <version>3.8.5</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/libs/SX-Attribute-3.8.5-all.jar</systemPath>
         </dependency>
 
     </dependencies>

@@ -1,17 +1,14 @@
 name: KarRefinement
 main: vip.mcsj.www.karrefinement.main.KarRefinement
-version: v1.2.1-snapshot
+version: v1.2.4-SNAPSHOT
 author: Karounac58
 api-version: 1.13
 commands:
   karrefinement:
     aliases:
       - "krf"
-    usage: "/karrefinement give <player-name> <item>"
-    description: ""
-    permission: "karrefinement.use"
-    permission-message: "You don't have the permission to do that"
 depend:
   - NBTAPI
   - PlaceholderAPI
   - Vault
+softdepend: [AttributePlus,SX-Attribute]

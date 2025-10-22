@@ -9,6 +9,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import vip.mcsj.www.karrefinement.datamanager.AdhesiveDataManager;
+import vip.mcsj.www.karrefinement.datamanager.Message;
 import vip.mcsj.www.karrefinement.datamanager.SpecialStoneDataManager;
 import vip.mcsj.www.karrefinement.object.Adhesive;
 import vip.mcsj.www.karrefinement.object.SpeStone;
@@ -44,13 +45,13 @@ public class AdhesiveListener implements Listener {
                     int num = ThreadLocalRandom.current().nextInt(0, 100);
                     SpeStone speStone1 = SpecialStoneDataManager.getSpeStone(nbtKey, i + 2);
                     if(speStone1 == null){
-                        e.getPlayer().sendMessage("§c§l无法合成更高级的宝石");
+                        e.getPlayer().sendMessage(Message.messages.get("adhesive_maxlevel"));
                         return;
                     }
                     SpecialStoneDataManager ssm2 = new SpecialStoneDataManager(speStone1.getIdentifier());
                     ItemStack afterGem = ssm2.createSpeStone();
                     if(afterGem == null){
-                        e.getPlayer().sendMessage("§c§l无法合成更高级的宝石");
+                        e.getPlayer().sendMessage(Message.messages.get("adhesive_maxlevel"));
                         return;
                     }
                     //成功
@@ -58,7 +59,7 @@ public class AdhesiveListener implements Listener {
                         ItemStackUtils.reducePlayerItemStack(e.getPlayer().getInventory(), speStone,adhesive.getRequiredAmount());
                         KarUtils.removeItemRefinement(itemInMainHand);
                         e.getPlayer().getInventory().addItem(afterGem);
-                        e.getPlayer().sendMessage("§a成功合成"+afterGem.getItemMeta().getDisplayName());
+                        e.getPlayer().sendMessage(Message.messages.get("adhesive_success").replace("{spestone}", afterGem.getItemMeta().getDisplayName()));
                         e.getPlayer().playSound(e.getPlayer().getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
                         //失败
                     }else{
@@ -66,7 +67,7 @@ public class AdhesiveListener implements Listener {
                         int leaves = adhesive.getRequiredAmount() -  num1 ;
                         KarUtils.removeItemRefinement(itemInMainHand);
                         ItemStackUtils.reducePlayerItemStack(e.getPlayer().getInventory(), speStone,leaves);
-                        e.getPlayer().sendMessage("§c合成失败,返还"+num1+"个宝石");
+                        e.getPlayer().sendMessage(Message.messages.get("adhesive_failed").replace("{num}",num1+""));
                         e.getPlayer().playSound(e.getPlayer().getLocation(), Sound.BLOCK_ANVIL_BREAK, 1, 1);
                     }
                     return;

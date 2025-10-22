@@ -8,6 +8,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import vip.mcsj.www.karrefinement.datamanager.Message;
 import vip.mcsj.www.karrefinement.gui.KarTakeItemGuiInvHolder;
 import vip.mcsj.www.karrefinement.object.CustomInventory;
 
@@ -87,7 +88,8 @@ public class KarTakeItemGuiListener implements Listener {
         && e.getCurrentItem() != null && e.getSlot() < 45){
             e.setCancelled(true);
             player.getInventory().addItem(e.getCurrentItem());
-            player.sendMessage("成功获得"+e.getCurrentItem().getItemMeta().getDisplayName());
+            player.sendMessage(Message.messages.get("takeitemgui_get").replace("{item}", e.getCurrentItem().getItemMeta().getDisplayName()));
+            //e.getCurrentItem().getItemMeta().getDisplayName()
         }
     }
 }

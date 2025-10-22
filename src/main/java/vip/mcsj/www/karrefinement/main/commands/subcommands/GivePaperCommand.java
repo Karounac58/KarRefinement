@@ -1,29 +1,32 @@
 package vip.mcsj.www.karrefinement.main.commands.subcommands;
 
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import vip.mcsj.www.karrefinement.main.commands.KarCmdManager;
-import vip.mcsj.www.karrefinement.main.commands.KarCommand;
+import vip.mcsj.www.karrefinement.datamanager.PaperDataManager;
+import vip.mcsj.www.karrefinement.main.commands.KarAbstractGiveCommand;
 
-public class GivePaperCommand implements KarCommand {
-    private final KarCmdManager manager;
+public class GivePaperCommand extends KarAbstractGiveCommand {
 
-    public GivePaperCommand(KarCmdManager manager) {
-        this.manager = manager;
+    public GivePaperCommand() {
+        super("givepaper", "§e/krf givepaper <玩家名> <保护符名> —— §b获取保护符");
     }
 
     @Override
-    public boolean execute(Player p, String[] args) {
-        manager.givePaper(p,args);
+    public boolean execute(CommandSender sender, String[] args) {
+        if(!checkPermission(sender)){
+            return true;
+        }
+        if(args.length < 2){
+            sender.sendMessage(usage);
+            return true;
+        }
+        Player p = getTargetPlayer(args[0]);
+        if(p == null){
+            sender.sendMessage( "§c§l找不到这个玩家！");
+            return true;
+        }
+        PaperDataManager paperDataManager = new PaperDataManager(args[1]);
+        p.getInventory().addItem(paperDataManager.createProtectedPaper());
         return true;
-    }
-
-    @Override
-    public String getUsage() {
-        return "/karrefinement givepaper <player-name> <paper-name>";
-    }
-
-    @Override
-    public String getPermission() {
-        return "karrefinement.use.givepaper";
     }
 }

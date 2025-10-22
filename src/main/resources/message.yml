@@ -1,0 +1,65 @@
+refinement_upstar: "§a§l淬炼成功，装备上星！"
+refinement_maxlevel: "§c§l此装备已经满级，无法继续淬炼"
+refinement_broadcast: "§f[§c淬炼告示§f] §a恭喜玩家 §e{player} §a用 {stone} §a将装备强化至 §6{level} 星"
+refinement_failed: "§c§l淬炼失败，装备掉{level}星"
+refinement_running: "§c请等待淬炼结束！"
+
+forge_upstar: "§a§l锻造成功！装备上星！"
+forge_disbaleitem: "§c§l此物品不能用于锻造"
+forge_disablelevel: "§c§l此等级无法锻造"
+forge_conflictlevel: "§c§l你放入的装备等级不同"
+forge_failed: "§c§l锻造失败，消耗副装备"
+forge_needitem: "§c§l请放入要锻造的装备！"
+forge_running: "§c请等待锻造结束！"
+forge_success: "§a§l成功率：§6§l{success}%"
+
+compound_upstar: "§e§l你成功合成了{stone}"
+compound_maxlevel: "§c§l无法合成更高级的淬炼石！"
+compound_failed: "§c§l合成失败，淬炼石破碎！"
+compound_confilctstone: "§c§l请放入同阶淬炼石"
+compound_success: "§a§l成功率：§b§l{success}"
+
+compoundpiece_success: "§a§l合成成功，你合成了{paper}"
+compoundpiece_failed: "§c§l合成失败，请检查是否为碎片或碎片数量！"
+
+takeitemgui_open: "§a你打开了淬炼物品菜单"
+takeitemgui_get: "成功获得{item}"
+
+transform_diableitem: "§c§l此物品不能用于移星"
+transform_zerolevel: "§c§l移星原武器淬炼等级为0"
+transform_conflictlevel: "§c§l移星武器淬炼等级大于移星原武器"
+transform_notzerolevel: "§c§l移星武器淬炼等级不为0"
+transform_notenoughmoney: "§c§l金币不足"
+transform_moneycost: "§a§l成功花费金币{money}移星"
+transform_success: "§a§l移星成功！"
+
+detach_success: "§a完美卸下保护符!"
+detach_failed: "§c在卸下保护符的过程中出现了意外！你得到了保护符碎片."
+detach_disable: "§c此装备无保护符或保护符不可被拆卸!"
+
+adhesive_maxlevel: "§c§l无法合成更高级的宝石"
+adhesive_success: "§a成功合成{spestone}"
+adhesive_failed: "§c合成失败,返还{num}个宝石"
+
+adminquerypotion_msg1: "§c§l§m  §6§l§m  §e§l§m  §a§l§m  §b§l§m  §e§l药水增幅§b§l§m  §a§l§m  §e§l§m  §6§l§m  §c§l§m  "
+adminquerypotion_msg2: "§b§l玩家：{player}"
+adminquerypotion_msg3: "§6§l增加成功率：{success}"
+adminquerypotion_msg4: "§a§l持续时间：{duration}"
+adminquerypotion_failed: "§c§l该玩家没有药水加成！"
+
+querypotion_msg1: "§c§l§m  §6§l§m  §e§l§m  §a§l§m  §b§l§m  §e§l药水增幅§b§l§m  §a§l§m  §e§l§m  §6§l§m  §c§l§m  "
+querypotion_msg2: "§6§l增加成功率：{success}"
+querypotion_msg3: "§a§l持续时间：{duration}"
+querypotion_failed: "§c§l该玩家没有药水加成！"
+
+potion_drink: "§a§l成功激活{potion}§a§l增幅效果"
+
+paper_up: "§a保护符已经成功融入这件装备"
+spestone_up: "§a宝石已经成功镶嵌进这件装备！"
+soul_up: "§a精魂已经成功融入这件装备"
+dupaper_up: "§a直升符已经成功融入这件装备"
+
+reload_success: "§a§l配置文件重载成功!"
+
+effect_start: "§a§l激活{level}§a§l套装效果！"
+effect_stop: "§a§l失去{level}§a§l套装效果！"

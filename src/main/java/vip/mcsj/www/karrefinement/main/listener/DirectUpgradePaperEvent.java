@@ -8,6 +8,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import vip.mcsj.www.karrefinement.datamanager.DUPaperDataManager;
 import vip.mcsj.www.karrefinement.datamanager.EquipmentDataManager;
+import vip.mcsj.www.karrefinement.datamanager.Message;
 import vip.mcsj.www.karrefinement.main.KarRefinement;
 import vip.mcsj.www.karrefinement.utils.KarUtils;
 
@@ -28,7 +29,7 @@ public class DirectUpgradePaperEvent implements Listener {
                 if(EquipmentDataManager.isEquipmentLegal(itemEquipment)){
                     Player p = (Player) e.getWhoClicked();
                     if(DUPaperDataManager.duPaperUp(itemDUPaper,itemEquipment,p)){
-                        p.sendMessage("§a直升符已经成功融入这件装备");
+                        p.sendMessage(Message.messages.get("dupaper_up"));
                         p.playSound(p.getLocation(), KarRefinement.cs.getSounds().get(0),1,1);
                         KarUtils.removeItemRefinement(itemDUPaper);
                     }

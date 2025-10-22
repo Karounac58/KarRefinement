@@ -1,29 +1,35 @@
 package vip.mcsj.www.karrefinement.main.commands.subcommands;
 
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import vip.mcsj.www.karrefinement.main.commands.KarCmdManager;
-import vip.mcsj.www.karrefinement.main.commands.KarCommand;
+import vip.mcsj.www.karrefinement.datamanager.InfiniteSoulManager;
+import vip.mcsj.www.karrefinement.main.commands.KarAbstractGiveCommand;
 
-public class GiveSoulCommand implements KarCommand {
-    private final KarCmdManager manager;
+public class GiveSoulCommand extends KarAbstractGiveCommand {
 
-    public GiveSoulCommand(KarCmdManager manager) {
-        this.manager = manager;
+    public GiveSoulCommand() {
+        super("givesoul", "§e/krf givesoul <玩家名> <精魂名> —— §b获取无限耐久精魂");
     }
 
     @Override
-    public boolean execute(Player p, String[] args) {
-        manager.giveSoul(p,args);
+    public boolean execute(CommandSender sender, String[] args) {
+        if(!checkPermission(sender)){
+            return true;
+        }
+
+        if(args.length < 2){
+            sender.sendMessage(usage);
+            return true;
+        }
+
+        Player p = getTargetPlayer(args[0]);
+        if(p == null){
+            sender.sendMessage( "§c§l找不到这个玩家！");
+            return true;
+        }
+
+        InfiniteSoulManager soulManager = new InfiniteSoulManager(args[1]);
+        p.getInventory().addItem(soulManager.createInfiniteSoul());
         return true;
-    }
-
-    @Override
-    public String getUsage() {
-        return "/karrefinement givesoul <player-name> <soul-name>";
-    }
-
-    @Override
-    public String getPermission() {
-        return "karrefinement.use.givesoul";
     }
 }

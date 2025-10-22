@@ -81,7 +81,7 @@ public class KarEventListener implements Listener {
                     if(PaperDataManager.protectorPaperUp(itemPaper,itemEquipment)) {
                         //System.out.println("2222");
                         Player p = (Player)e.getWhoClicked();
-                        p.sendMessage("§a保护符已经成功融入这件装备");
+                        p.sendMessage(Message.messages.get("paper_up"));
                         p.playSound(p.getLocation(), KarRefinement.cs.getSounds().get(0),1,1);
                         KarUtils.removeItemRefinement(itemPaper);
                     }
@@ -109,7 +109,7 @@ public class KarEventListener implements Listener {
                 if(SpecialStoneDataManager.isEquipmentLegal(speStone,itemEquipment)){
                     if(SpecialStoneDataManager.specialStoneUp(itemStone,itemEquipment)){
                         Player p = (Player)e.getWhoClicked();
-                        p.sendMessage("§a宝石已经成功镶嵌进这件装备！");
+                        p.sendMessage(Message.messages.get("spestone_up"));
                         p.playSound(p.getLocation(), KarRefinement.cs.getSounds().get(0),1,1);
                         KarUtils.removeItemRefinement(itemStone);
                     }
@@ -134,7 +134,7 @@ public class KarEventListener implements Listener {
                 if(EquipmentDataManager.isEquipmentLegal(itemEquipment)){
                     if(InfiniteSoulManager.infiniteSoulUp(itemSoul,itemEquipment)) {
                         Player p = (Player)e.getWhoClicked();
-                        p.sendMessage("§a精魂已经成功融入这件装备");
+                        p.sendMessage(Message.messages.get("soul_up"));
                         p.playSound(p.getLocation(), KarRefinement.cs.getSounds().get(0),1,1);
                         KarUtils.removeItemRefinement(itemSoul);
                     }
@@ -174,7 +174,7 @@ public class KarEventListener implements Listener {
         }
         //如果正在淬炼中，则不能移动物品
         if(judgeInvRefinementOrNot.get((Player)e.getWhoClicked()) != null && judgeInvRefinementOrNot.get((Player)e.getWhoClicked()) == 1){
-            e.getWhoClicked().sendMessage("§c请等待淬炼结束！");
+            e.getWhoClicked().sendMessage(Message.messages.get("refinement_running"));
             e.setCancelled(true);
             return;
         }
@@ -367,7 +367,7 @@ public class KarEventListener implements Listener {
         }
         //如果正在淬炼中，则不能移动物品
         if(judgeInvForgeOrNot.get((Player)e.getWhoClicked()) != null && judgeInvForgeOrNot.get((Player)e.getWhoClicked()) == 1){
-            e.getWhoClicked().sendMessage("§c请等待锻造结束！");
+            e.getWhoClicked().sendMessage(Message.messages.get("forge_running"));
             e.setCancelled(true);
             return;
         }
@@ -379,25 +379,25 @@ public class KarEventListener implements Listener {
             ItemStack itemEquipment1 = inv.getItem(19);
             ItemStack itemEquipment2 = inv.getItem(25);
             if(itemEquipment1 == null || itemEquipment2 == null){
-                e.getWhoClicked().sendMessage("§c§l请放入要锻造的装备！");
+                e.getWhoClicked().sendMessage(Message.messages.get("forge_needitem"));
                 return;
             }
             EquipmentDataManager manager1 = new EquipmentDataManager(itemEquipment1);
             EquipmentDataManager manager2 = new EquipmentDataManager(itemEquipment2);
 
             if(manager1.carifyEquipmentLevel() != manager2.carifyEquipmentLevel()){
-                e.getWhoClicked().sendMessage("§c§l请放入同级装备！");
+                e.getWhoClicked().sendMessage(Message.messages.get("forge_conflictlevel"));
                 return;
             }
 
             Double success = forgeSuccessList.get(manager1.carifyEquipmentLevel() + 1);
             if(success == null){
-                e.getWhoClicked().sendMessage("§c§l此淬炼等级不能锻造！");
+                e.getWhoClicked().sendMessage(Message.messages.get("forge_disablelevel"));
                 return;
             }
             ItemStack item = inv.getItem(4);
             ItemMeta itemMeta = item.getItemMeta();
-            itemMeta.setLore(Arrays.asList("§a§l成功率：§6§l"+success+"%"));
+            itemMeta.setLore(Arrays.asList(Message.messages.get("forge_success").replace("{success}",success+"")));
             item.setItemMeta(itemMeta);
         }
         if(e.getSlot() == 22 && e.getClick().equals(ClickType.LEFT)){

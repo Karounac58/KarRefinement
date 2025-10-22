@@ -10,6 +10,7 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import vip.mcsj.www.karrefinement.datamanager.EquipmentDataManager;
+import vip.mcsj.www.karrefinement.datamanager.Message;
 import vip.mcsj.www.karrefinement.main.KarRefinement;
 import vip.mcsj.www.karrefinement.object.InvItem;
 import vip.mcsj.www.karrefinement.utils.FileUtil;
@@ -87,31 +88,31 @@ public class KarTransformStarGui {
         }
 
         if (!(EquipmentDataManager.isEquipmentLegal(equipmentItem1) || EquipmentDataManager.isEquipmentLegal(equipmentItem2))) {
-            p.sendMessage("§c§l此物品不能用于移星");
+            p.sendMessage(Message.messages.get("transform_diableitem"));
             return false;
         }
 
         EquipmentDataManager itemManager1 =  new EquipmentDataManager(equipmentItem1);
         EquipmentDataManager itemManager2 =  new EquipmentDataManager(equipmentItem2);
         if(itemManager1.carifyEquipmentLevel() == 0){
-            p.sendMessage("§c§l移星原武器淬炼等级为0");
+            p.sendMessage(Message.messages.get("transform_zerolevel"));
             return false;
         }
 
         if(itemManager1.carifyEquipmentLevel() < itemManager2.carifyEquipmentLevel()){
-            p.sendMessage("§c§l移星武器淬炼等级大于移星原武器");
+            p.sendMessage(Message.messages.get("transform_conflictlevel"));
             return false;
         }
 
         if(!EquipmentDataManager.allowAfterItemIsRefinement){
             if(itemManager2.carifyEquipmentLevel() != 0){
-                p.sendMessage("§c§l移星武器淬炼等级不为0");
+                p.sendMessage(Message.messages.get("transform_notzerolevel"));
                 return false;
             }
         }
 
         if(!isEnoughMoney(p)){
-            p.sendMessage("§c§l金币不足");
+            p.sendMessage(Message.messages.get("transform_notenoughmoney"));
             return false;
         }
         return true;
@@ -127,11 +128,11 @@ public class KarTransformStarGui {
             itemManager1.removeNowItemRefinementInfo(item1Level);
             //扣钱
             KarRefinement.econ.withdrawPlayer(p,EquipmentDataManager.transformCost);
-            p.sendMessage(String.format("§a§l成功花费金币%d移星",EquipmentDataManager.transformCost));
+            p.sendMessage(Message.messages.get("transform_moneycost").replace("{money}",EquipmentDataManager.transformCost+""));
             for (int i = 0; i < item1Level - item2Level; i++) {
                 itemManager2.injuryUpStar();
             }
-            p.sendMessage("§a§l移星成功！");
+            p.sendMessage(Message.messages.get("transform_success"));
             p.playSound(p.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
         }
     }

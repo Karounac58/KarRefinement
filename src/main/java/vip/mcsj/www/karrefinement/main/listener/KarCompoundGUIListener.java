@@ -11,6 +11,7 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import vip.mcsj.www.karrefinement.datamanager.Message;
 import vip.mcsj.www.karrefinement.gui.KarCompoundStoneGui;
 import vip.mcsj.www.karrefinement.gui.KarCompoundStoneInvHolder;
 import vip.mcsj.www.karrefinement.main.KarRefinement;
@@ -98,7 +99,7 @@ public class KarCompoundGUIListener implements Listener {
                 ItemStack sign = KarRefinement.cm.getItems().get(6);
                 ItemMeta meta = sign.getItemMeta();
                 meta.setLore(Arrays.asList(
-                        "§a§l成功率：§b§l"+chance
+                        Message.messages.get("compound_success").replace("{success}",chance+"")
                 ));
                 meta.setDisplayName("§c§l提示:");
                 sign.setItemMeta(meta);

@@ -10,6 +10,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 import vip.mcsj.www.karrefinement.datamanager.EquipmentDataManager;
+import vip.mcsj.www.karrefinement.datamanager.Message;
 import vip.mcsj.www.karrefinement.main.KarRefinement;
 import vip.mcsj.www.karrefinement.main.listener.KarEventListener;
 import vip.mcsj.www.karrefinement.object.InvItem;
@@ -86,18 +87,18 @@ public class KarForgeGui {
 
 
         if (!(EquipmentDataManager.isEquipmentLegal(equipmentItem1) || EquipmentDataManager.isEquipmentLegal(equipmentItem2))) {
-            p.sendMessage("§c§l此物品不能用于锻造");
+            p.sendMessage(Message.messages.get("forge_disbaleitem"));
             return false;
         }
 
         EquipmentDataManager itemManager1 = new EquipmentDataManager(equipmentItem1);
         EquipmentDataManager itemManager2 = new EquipmentDataManager(equipmentItem2);
         if(EquipmentDataManager.forgeSuccessList.get(itemManager1.carifyEquipmentLevel()+1) == null){
-            p.sendMessage("§c§l此等级无法淬炼");
+            p.sendMessage(Message.messages.get("forge_disablelevel"));
             return false;
         }
         if(itemManager1.carifyEquipmentLevel() != itemManager2.carifyEquipmentLevel()){
-            p.sendMessage("§c§l你放入的装备等级不同");
+            p.sendMessage(Message.messages.get("forge_conflictlevel"));
             return false;
         }
         return true;
@@ -111,11 +112,11 @@ public class KarForgeGui {
             //锻造成功
             if((99-success) < decimal.doubleValue()){
                 manager1.injuryUpStar();
-                p.sendMessage("§a§l锻造成功！装备上星！");
+                p.sendMessage(Message.messages.get("forge_upstar"));
                 p.playSound(p.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
                 KarUtils.removeItemRefinement(itemEquipment2);
             }else{
-                p.sendMessage("§c§l锻造失败，消耗副装备");
+                p.sendMessage(Message.messages.get("forge_failed"));
                 p.playSound(p.getLocation(), Sound.BLOCK_ANVIL_BREAK, 1, 1);
                 KarUtils.removeItemRefinement(itemEquipment2);
             }

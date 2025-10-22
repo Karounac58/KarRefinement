@@ -1,29 +1,57 @@
 package vip.mcsj.www.karrefinement.main.commands.subcommands;
 
+import me.clip.placeholderapi.PlaceholderAPI;
+import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import vip.mcsj.www.karrefinement.main.commands.KarCmdManager;
+
+import org.bukkit.inventory.Inventory;
+import vip.mcsj.www.karrefinement.gui.KarRefinementGui;
+import vip.mcsj.www.karrefinement.gui.KarRefinementInvHolder;
+import vip.mcsj.www.karrefinement.main.commands.KarAbstractCommand;
 import vip.mcsj.www.karrefinement.main.commands.KarCommand;
 
-public class OpenGuiCommand implements KarCommand {
-    private final KarCmdManager manager;
+public class OpenGuiCommand extends KarAbstractCommand {
 
-    public OpenGuiCommand(KarCmdManager manager) {
-        this.manager = manager;
+
+    public OpenGuiCommand() {
+        super("opengui", "karrefinement.opengui", "§e/krf opengui <玩家名> —— §b打开淬炼界面", false);
     }
 
     @Override
-    public boolean execute(Player p, String[] args) {
-        manager.openGui(p);
+    public boolean execute(CommandSender sender, String[] args) {
+        if(!checkPermission(sender)){
+            return true;
+        }
+
+        if(args.length == 0){
+            sender.sendMessage(usage);
+            return true;
+        }
+
+        Player p = Bukkit.getPlayer(args[0]);
+        if(p == null){
+            sender.sendMessage( "§c§l找不到这个玩家！");
+            return true;
+        }
+        Inventory inv = Bukkit.createInventory(new KarRefinementInvHolder(), 54, PlaceholderAPI.setPlaceholders(p, KarRefinementGui.title));
+        KarRefinementGui.setInvInitial(inv,p);
+        p.openInventory(inv);
         return true;
     }
 
     @Override
     public String getUsage() {
-        return "/karrefinement opengui <player-name>";
+        return usage;
     }
 
     @Override
     public String getPermission() {
-        return "karrefinement.use.opengui";
+        return permission;
+    }
+
+    @Override
+    public boolean isPlayerOnly() {
+        return playerOnly;
     }
 }

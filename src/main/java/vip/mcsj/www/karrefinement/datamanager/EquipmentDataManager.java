@@ -289,7 +289,6 @@ public class EquipmentDataManager {
         List<String> oldMainLore = oldLevel.getMainLore();
         String oldEquipmentIdentifier = getEquipmentIdentifier(this.equipmentItem);
         List<String> oldExtractLore = oldLevel.getExtractLores().get(oldEquipmentIdentifier);
-        System.out.println("1"+oldMainLore);
         int downLevel = randomDownLevel(stone.getDownLevels());
         int realDownLevel;
         //小于0直接归0

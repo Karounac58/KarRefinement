@@ -225,7 +225,7 @@ public class KarRefinementGui {
         //装备保护符等级
         int protectPaperLevel = paperDataManager.getPaperLevel();
         if(refinementLevel == LevelDataManager.levels.size()){
-            p.sendMessage(ChatColor.RED+"此装备已经满级，无法继续淬炼");
+            p.sendMessage(Message.messages.get("refinement_maxlevel"));
             return;
         }
         double success = stone.getProbability().get(refinementLevel);
@@ -238,24 +238,25 @@ public class KarRefinementGui {
         //成功
         if((99-(success + addSuccess)) < decimal.doubleValue()){
             if(equipmentManager.injuryUpStar()){
-                p.sendMessage(ChatColor.GREEN + "淬炼成功，装备上星！");
+                p.sendMessage(Message.messages.get("refinement_upstar"));
                 //Player p = (Player)e.getWhoClicked();
                 p.playSound(p.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
                 //减去强化石
                 KarUtils.removeItemRefinement(itemStone);
                 if ((equipmentManager.carifyEquipmentLevel()) >= 6) {
-                    Bukkit.broadcastMessage("§f[§c淬炼告示§f] §a恭喜玩家 §e" + p.getName() + " §a用 "+stone.getName()+" §a将装备强化至 §6" + equipmentManager.carifyEquipmentLevel() + "星");
+//                    Bukkit.broadcastMessage("§f[§c淬炼告示§f] §a恭喜玩家 §e" + p.getName() + " §a用 "+stone.getName()+" §a将装备强化至 §6" + equipmentManager.carifyEquipmentLevel() + "星");
+                    Bukkit.broadcastMessage(Message.messages.get("refinement_broadcast").replace("{player}",p.getName()).replace("{stone}",stone.getName()).replace("{level}",equipmentManager.carifyEquipmentLevel()+""));
                 }
             }
             //失败
         }else{
             if(refinementLevel == 0){
-                p.sendMessage(ChatColor.RED + "淬炼失败，装备掉0星");
+                p.sendMessage(Message.messages.get("refinement_failed").replace("{level}",0+""));
                 KarUtils.removeItemRefinement(itemStone);
                 return;
             }
             int downLevel = equipmentManager.injuryDownStar(paperDataManager.getPaperLevel(), stone);
-            p.sendMessage(ChatColor.RED + "淬炼失败，装备掉" + downLevel + "星");
+            p.sendMessage(Message.messages.get("refinement_failed").replace("{level}",downLevel+""));
 
             p.playSound(p.getLocation(), Sound.BLOCK_ANVIL_BREAK, 1, 1);
             //减去强化石

@@ -13,6 +13,7 @@ import vip.mcsj.www.karrefinement.datamanager.database.MySQLDatabaseManager;
 import vip.mcsj.www.karrefinement.datamanager.database.SQLiteDatabaseManager;
 import vip.mcsj.www.karrefinement.effect.ParticleResource;
 import vip.mcsj.www.karrefinement.effect.ScriptRunnable;
+import vip.mcsj.www.karrefinement.effect.SyncEffectRunnable;
 import vip.mcsj.www.karrefinement.gui.*;
 import vip.mcsj.www.karrefinement.main.listener.*;
 import vip.mcsj.www.karrefinement.object.MCVersions;
@@ -48,6 +49,11 @@ public class KarRefinement extends JavaPlugin{
     public static Economy econ = null;
 
     public static DatabaseManager dm;
+
+    public static boolean ap2Enable = false;
+    public static boolean ap3Enable = false;
+
+    public static boolean sxv3Enable = false;
     @Override
     public void onEnable(){
         instance = this;
@@ -57,7 +63,8 @@ public class KarRefinement extends JavaPlugin{
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
-
+        setupAttributePlus();
+        setupSXAttribute();
 
         Bukkit.getPluginManager().registerEvents(new KarEventListener(),this);
         Bukkit.getPluginManager().registerEvents(new DirectUpgradePaperEvent(),this);
@@ -69,7 +76,7 @@ public class KarRefinement extends JavaPlugin{
         Bukkit.getPluginManager().registerEvents(new KarCompoundPieceListener(),this);
         Bukkit.getPluginManager().registerEvents(new AdhesiveListener(),this);
         Bukkit.getPluginManager().registerEvents(new KarPotionListener(),this);
-        Bukkit.getPluginCommand("karrefinement").setExecutor(new KarExecutor());
+        Bukkit.getPluginCommand("karrefinement").setExecutor(new KarCommandExecutor());
         saveDefaultConfig();
         FileUtil.initCustomFile(customPath.getPath()+"stone.yml","stone.yml");
         FileUtil.initCustomFile(customPath.getPath()+"spestone.yml","spestone.yml");
@@ -84,6 +91,7 @@ public class KarRefinement extends JavaPlugin{
         FileUtil.initCustomFile(customPath.getPath()+"chinesename.yml","chinesename.yml");
         FileUtil.initCustomFile(customPath.getPath()+"adhesive.yml","adhesive.yml");
         FileUtil.initCustomFile(customPath.getPath()+"potion.yml","potion.yml");
+        FileUtil.initCustomFile("message.yml","message.yml");
         //gui数据
         FileUtil.initCustomFile(customPath.getPath()+"gui/compoundgui.yml","gui/compoundgui.yml");
         FileUtil.initCustomFile(customPath.getPath()+"gui/compoundpiecegui.yml","gui/compoundpiecegui.yml");
@@ -113,6 +121,7 @@ public class KarRefinement extends JavaPlugin{
         DetachDataManager.init();
         AdhesiveDataManager.init();
         PotionDataManager.init();
+        Message.init();
         KarTakeItemGui.initItems();
         String storage = getConfig().getString("settings.data.storage");
         if(storage.equals("SQLite")) {
@@ -148,14 +157,15 @@ public class KarRefinement extends JavaPlugin{
 //            }
 //        }.runTaskTimer(this,0,80);
         Bukkit.getScheduler().runTaskTimerAsynchronously(this,new ScriptRunnable(),0,2);
-        new BukkitRunnable(){
-            @Override
-            public void run() {
-                for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-                    EffectDataManager.handlePlayerPotionEffect(onlinePlayer);
-                }
-            }
-        }.runTaskTimer(this,0,80);
+        Bukkit.getScheduler().runTaskTimerAsynchronously(this,new SyncEffectRunnable(),0,80);
+//        new BukkitRunnable(){
+//            @Override
+//            public void run() {
+//                for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+//                    EffectDataManager.handlePlayerPotionEffect(onlinePlayer);
+//                }
+//            }
+//        }.runTaskTimer(this,0,80);
 
         //删除过期淬炼增幅药水信息
         new BukkitRunnable(){
@@ -176,6 +186,28 @@ public class KarRefinement extends JavaPlugin{
         }
         econ = rsp.getProvider();
         return econ != null;
+    }
+
+    private void setupAttributePlus(){
+        if (this.getServer().getPluginManager().getPlugin("AttributePlus") != null) {
+            if (this.getServer().getPluginManager().getPlugin("AttributePlus").getDescription().getVersion().startsWith("2")) {
+                this.getServer().getConsoleSender().sendMessage("§7[§e" + this.getName() + "§7]§a检测到AttributePlus2插件，属性模块加载");
+                ap2Enable = true;
+            }
+            if (this.getServer().getPluginManager().getPlugin("AttributePlus").getDescription().getVersion().startsWith("3")) {
+                this.getServer().getConsoleSender().sendMessage("§7[§e" + this.getName() + "§7]§a检测到AttributePlus3插件，属性模块加载");
+                ap3Enable = true;
+            }
+        }
+    }
+
+    private void setupSXAttribute(){
+        if (this.getServer().getPluginManager().getPlugin("SX-Attribute") != null) {
+            if (this.getServer().getPluginManager().getPlugin("SX-Attribute").getDescription().getVersion().startsWith("3")) {
+                this.getServer().getConsoleSender().sendMessage("§7[§e" + this.getName() + "§7]§a检测到SX-AttributeV3.X插件，属性模块加载");
+                sxv3Enable = true;
+            }
+        }
     }
 
     public void initGuiData(){

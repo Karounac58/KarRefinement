@@ -8,6 +8,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import vip.mcsj.www.karrefinement.datamanager.Message;
 import vip.mcsj.www.karrefinement.gui.KarCompoundPieceGui;
 import vip.mcsj.www.karrefinement.gui.KarTransformStarGui;
 
@@ -29,11 +30,11 @@ public class KarCompoundPieceListener implements Listener {
             ItemStack itemPiece = inv.getItem(KarCompoundPieceGui.originSlot);
             item = KarCompoundPieceGui.karCompoundPieceMethod(itemPiece,p);
             if(item == null){
-                p.sendMessage("§c§l合成失败，请检查是否为碎片或碎片数量！");
+                p.sendMessage(Message.messages.get("compoundpiece_failed"));
                 p.playSound(p.getLocation(), Sound.BLOCK_ANVIL_BREAK, 1, 1);
             }else{
                 inv.setItem(KarCompoundPieceGui.afterSlot, item);
-                p.sendMessage("§a§l合成成功，你合成了"+item.getItemMeta().getDisplayName());
+                p.sendMessage(Message.messages.get("compoundpiece_success").replace("{paper}", item.getItemMeta().getDisplayName()));
                 p.playSound(p.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
             }
         }

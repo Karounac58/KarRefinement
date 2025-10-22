@@ -19,6 +19,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import vip.mcsj.www.karrefinement.datamanager.*;
 import vip.mcsj.www.karrefinement.gui.*;
+import vip.mcsj.www.karrefinement.main.commands.CommandFactory;
 import vip.mcsj.www.karrefinement.main.listener.KarTakeItemGuiListener;
 
 import java.sql.ResultSet;
@@ -28,6 +29,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class KarExecutor implements CommandExecutor, TabCompleter {
+    private final CommandFactory commandFactory;
+
+
+    public KarExecutor() {
+        commandFactory = new CommandFactory();
+    }
+
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
         if (args.length == 0) {
@@ -120,23 +128,18 @@ public class KarExecutor implements CommandExecutor, TabCompleter {
                     OfflinePlayer player = Bukkit.getOfflinePlayer(args[1]);
                     if(player != null){
                         PotionDataManager pdm = new PotionDataManager();
-                        try {
-                            List<Object> rs = pdm.queryPlayerPotionInfo(player);
-                            if (player.isOnline()) {
-                                Player player1 = player.getPlayer();
-                                if(rs == null){
-                                    player1.sendMessage("§c§l该玩家没有药水加成！");
-                                    return true;
-                                }
-                                player1.sendMessage("§c§l§m  §6§l§m  §e§l§m  §a§l§m  §b§l§m  §e§l药水增幅§b§l§m  §a§l§m  §e§l§m  §6§l§m  §c§l§m  ");
-                                player1.sendMessage("§6§l增加成功率："+(double)rs.get(1)*100);
-                                player1.sendMessage("§a§l持续时间："+PotionDataManager.formatTimeRemaining((Long)rs.get(0)));
+                        List<Object> rs = pdm.queryPlayerPotionInfo(player);
+                        if (player.isOnline()) {
+                            Player player1 = player.getPlayer();
+                            if(rs == null){
+                                player1.sendMessage("§c§l该玩家没有药水加成！");
+                                return true;
                             }
-                            return true;
-                        }catch (Exception e){
-                            KarRefinement.instance.getLogger().severe("查询玩家药水效果失败！" + e.getMessage());
-                            e.printStackTrace();
+                            player1.sendMessage("§c§l§m  §6§l§m  §e§l§m  §a§l§m  §b§l§m  §e§l药水增幅§b§l§m  §a§l§m  §e§l§m  §6§l§m  §c§l§m  ");
+                            player1.sendMessage("§6§l增加成功率："+(double)rs.get(1)*100);
+                            player1.sendMessage("§a§l持续时间："+PotionDataManager.formatTimeRemaining((Long)rs.get(0)));
                         }
+                        return true;
                     }else{
                         sender.sendMessage("§c§l此玩家不存在！");
                     }

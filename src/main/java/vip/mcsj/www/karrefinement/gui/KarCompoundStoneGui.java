@@ -11,6 +11,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
+import vip.mcsj.www.karrefinement.datamanager.Message;
 import vip.mcsj.www.karrefinement.datamanager.StoneDataManager;
 import vip.mcsj.www.karrefinement.main.KarRefinement;
 import vip.mcsj.www.karrefinement.object.Compound;
@@ -94,14 +95,14 @@ public class KarCompoundStoneGui{
         ItemStack second = inv.getItem(34);
         if(inv.getItem(16) == null || inv.getItem(34) == null){
             p.closeInventory();
-            p.sendMessage(ChatColor.RED+"请放入同阶淬炼石");
+            p.sendMessage(Message.messages.get("compound_confilctstone"));
             return;
         }
         NBTItem firstNBT = new NBTItem(first);
         NBTItem secondNBT = new NBTItem(second);
         if(!firstNBT.getString("refinementstone").equals(secondNBT.getString("refinementstone"))){
             p.closeInventory();
-            p.sendMessage(ChatColor.RED+"请放入同阶淬炼石");
+            p.sendMessage(Message.messages.get("compound_confilctstone"));
             return;
         }
         //开始合成
@@ -120,13 +121,13 @@ public class KarCompoundStoneGui{
                         String stoneName = StoneDataManager.stones.get(stoneKey).getName();
                         p.playSound(p.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
                         //3.播报消息
-                        p.sendMessage("§e§l你成功合成了" + stoneName);
+                        p.sendMessage(Message.messages.get("compound_upstar").replace("{stone}",stoneName));
                     }else if(stoneKey == null){
                         p.playSound(p.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 1);
-                        p.sendMessage("§c§l无法合成更高级的宝石！");
+                        p.sendMessage(Message.messages.get("compound_maxlevel"));
                     }else{
                         p.playSound(p.getLocation(), Sound.BLOCK_ANVIL_BREAK, 1, 1);
-                        p.sendMessage("§c&l合成失败，宝石破碎！");
+                        p.sendMessage(Message.messages.get("compound_failed"));
                     }
                     //4.初始化
                     initial(inv,p);
@@ -139,13 +140,13 @@ public class KarCompoundStoneGui{
                 String stoneName = StoneDataManager.stones.get(stoneKey).getName();
                 p.playSound(p.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
                 //3.播报消息
-                p.sendMessage("§e§l你成功合成了" + stoneName);
+                p.sendMessage(Message.messages.get("compound_upstar").replace("{stone}",stoneName));
             }else if(stoneKey == null){
                 p.playSound(p.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 1);
-                p.sendMessage("§c§l无法合成更高级的宝石！");
+                p.sendMessage(Message.messages.get("compound_maxlevel"));
             }else{
                 p.playSound(p.getLocation(), Sound.BLOCK_ANVIL_BREAK, 1, 1);
-                p.sendMessage("§c&l合成失败，宝石破碎！");
+                p.sendMessage(Message.messages.get("compound_failed"));
             }
             //4.初始化
             initial(inv,p);

@@ -1,30 +1,59 @@
 package vip.mcsj.www.karrefinement.main.commands.subcommands;
 
-import org.bukkit.entity.Player;
-import vip.mcsj.www.karrefinement.main.commands.KarCommand;
-import vip.mcsj.www.karrefinement.main.commands.KarCmdManager;
+import org.bukkit.command.CommandSender;
+import vip.mcsj.www.karrefinement.datamanager.*;
+import vip.mcsj.www.karrefinement.gui.KarCompoundStoneGui;
+import vip.mcsj.www.karrefinement.gui.KarTakeItemGui;
+import vip.mcsj.www.karrefinement.main.KarRefinement;
+import vip.mcsj.www.karrefinement.main.commands.KarAbstractCommand;
 
-public class ReloadCommand implements KarCommand {
-    private final KarCmdManager manager;
+public class ReloadCommand extends KarAbstractCommand {
 
-    public ReloadCommand(KarCmdManager manager) {
-        this.manager = manager;
+    public ReloadCommand() {
+        super("reload","karrefinement.reload","§e/krf reload —— §b重载配置文件",false);
     }
 
     @Override
-    public boolean execute(Player p, String[] args) {
-        manager.reload();
-        p.sendMessage("§a§l配置文件重载成功");
-        return false;
+    public boolean execute(CommandSender sender, String[] args) {
+        if(!checkPermission(sender)){
+            return true;
+        }
+        reloadConfig();
+        sender.sendMessage(Message.messages.get("reload_success"));
+        return true;
     }
 
     @Override
     public String getUsage() {
-        return "/karrefinement reload";
+        return usage;
     }
 
     @Override
     public String getPermission() {
-        return "karrefinement.use.reload";
+        return permission;
+    }
+
+    @Override
+    public boolean isPlayerOnly() {
+        return playerOnly;
+    }
+
+    public void reloadConfig(){
+        KarRefinement.instance.initGuiData();
+        StoneDataManager.init();
+        EquipmentDataManager.init();
+        EquipmentDataManager.initForgeData();
+        EquipmentDataManager.initTransformData();
+        LevelDataManager.init();
+        PaperDataManager.init();
+        SpecialStoneDataManager.init();
+        InfiniteSoulManager.init();
+        DUPaperDataManager.init();
+        KarCompoundStoneGui.initCompoundData();
+        DetachDataManager.init();
+        AdhesiveDataManager.init();
+        PotionDataManager.init();
+        Message.init();
+        KarTakeItemGui.initItems();
     }
 }
