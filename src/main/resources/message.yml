@@ -63,3 +63,11 @@ reload_success: "§a§l配置文件重载成功!"
 
 effect_start: "§a§l激活{level}§a§l套装效果！"
 effect_stop: "§a§l失去{level}§a§l套装效果！"
+
+darkchange_success: "§a§l暗改玩家淬炼概率成功！"
+darkchange_failed: "§a§l暗改玩家淬炼概率失败！"
+darkchange_clear: "§a§l清除玩家暗改淬炼概率成功！"
+darkchange_not_found: "§c§l此玩家未被暗改淬炼概率"
+darkchange_msg1: "§a§l玩家：{player}"
+darkchange_msg2: "§a§l暗改：{success}"
+darkchange_msg3: "§a§l次数：{count}"

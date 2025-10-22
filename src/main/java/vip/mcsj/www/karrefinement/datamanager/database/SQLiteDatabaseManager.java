@@ -36,6 +36,13 @@ public class SQLiteDatabaseManager implements DatabaseManager{
                         "success_rate REAL NOT NULL," +
                         "created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP" +
                         ");");
+                stmt.execute("CREATE TABLE IF NOT EXISTS refinementdarkchange_data (" +
+                        "id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                        "player_uuid TEXT UNIQUE NOT NULL," +
+                        "refining_success BOOLEAN NOT NULL," +
+                        "count INTEGER NOT NULL," +
+                        "timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP" +
+                        ");");
             }
             plugin.getLogger().info("数据库初始化完成");
         }catch(SQLException e){

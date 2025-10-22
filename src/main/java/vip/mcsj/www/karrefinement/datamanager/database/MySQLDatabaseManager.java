@@ -35,6 +35,14 @@ public class MySQLDatabaseManager implements DatabaseManager {
                     "success_rate DECIMAL(3,2) NOT NULL," +
                     "created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP" +
                     ");");
+
+            stmt.execute("CREATE TABLE IF NOT EXISTS refinementdarkchange_data (" +
+                    "id INT AUTO_INCREMENT PRIMARY KEY," +
+                    "player_uuid VARCHAR(36) NOT NULL," +
+                    "refining_success TINYINT(1) NOT NULL," +
+                    "count INT NOT NULL," +
+                    "timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP" +
+                    ");");
         }catch(SQLException e){
             plugin.getLogger().log(Level.SEVERE,"数据库初始化失败!",e);
         }

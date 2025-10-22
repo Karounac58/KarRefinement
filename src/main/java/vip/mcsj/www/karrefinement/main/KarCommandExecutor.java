@@ -71,8 +71,13 @@ public class KarCommandExecutor implements CommandExecutor, TabCompleter {
             completions.add("opencompoundpiecegui");
             completions.add("querypotion");
             completions.add("adminquerypotion");
-        }else if(strings.length == 2){
+            completions.add("darkchange");
+        }else if(strings.length == 2 && !strings[0].equals("darkchange")){
             completions.addAll(Bukkit.getOnlinePlayers().stream().map(Player::getName).collect(Collectors.toList()));
+        }else if(strings.length == 2){
+            completions.add("set");
+            completions.add("seen");
+            completions.add("clear");
         }else if(strings.length == 3){
             switch (strings[0].toLowerCase()){
                 case "set":

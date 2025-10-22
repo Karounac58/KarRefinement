@@ -230,6 +230,42 @@ public class KarRefinementGui {
         }
         double success = stone.getProbability().get(refinementLevel);
         BigDecimal decimal = BigDecimal.valueOf(KarUtils.nextDouble(100)).setScale(2, RoundingMode.HALF_UP);
+
+        List<Object> playerDarkChangeData = KarRefinement.dcdm.getPlayerDarkChangeData(p);
+
+        if(playerDarkChangeData != null) {
+            boolean isSuccess = (boolean)playerDarkChangeData.get(1);
+            int count = (int)playerDarkChangeData.get(2);
+            if (isSuccess) {
+                if (equipmentManager.injuryUpStar()) {
+                    p.sendMessage(Message.messages.get("refinement_upstar"));
+                    //Player p = (Player)e.getWhoClicked();
+                    p.playSound(p.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
+                    //减去强化石
+                    KarUtils.removeItemRefinement(itemStone);
+                    if ((equipmentManager.carifyEquipmentLevel()) >= 6) {
+//                    Bukkit.broadcastMessage("§f[§c淬炼告示§f] §a恭喜玩家 §e" + p.getName() + " §a用 "+stone.getName()+" §a将装备强化至 §6" + equipmentManager.carifyEquipmentLevel() + "星");
+                        Bukkit.broadcastMessage(Message.messages.get("refinement_broadcast").replace("{player}", p.getName()).replace("{stone}", stone.getName()).replace("{level}", equipmentManager.carifyEquipmentLevel() + ""));
+                    }
+                }
+                KarRefinement.dcdm.updatePlayerDarkChangeData(p,isSuccess,count-1);
+                return;
+            } else {
+                KarRefinement.dcdm.updatePlayerDarkChangeData(p,isSuccess,count-1);
+                if (refinementLevel == 0) {
+                    p.sendMessage(Message.messages.get("refinement_failed").replace("{level}", 0 + ""));
+                    KarUtils.removeItemRefinement(itemStone);
+                    return;
+                }
+                int downLevel = equipmentManager.injuryDownStar(paperDataManager.getPaperLevel(), stone);
+                p.sendMessage(Message.messages.get("refinement_failed").replace("{level}", downLevel + ""));
+
+                p.playSound(p.getLocation(), Sound.BLOCK_ANVIL_BREAK, 1, 1);
+                //减去强化石
+                KarUtils.removeItemRefinement(itemStone);
+                return;
+            }
+        }
         List<Object> objects = KarRefinement.pdm.queryPlayerPotionInfo(p);
         double addSuccess = 0;
         if(objects != null){

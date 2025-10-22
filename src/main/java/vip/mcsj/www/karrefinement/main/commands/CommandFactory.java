@@ -33,6 +33,7 @@ public class CommandFactory {
         register(new QueryPotionCommand());
         register(new ReloadCommand());
         register(new SetCommand());
+        register(new DarkChangeCommand());
     }
 
     private void register(KarAbstractCommand command){

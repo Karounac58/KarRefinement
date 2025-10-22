@@ -46,6 +46,8 @@ public class KarRefinement extends JavaPlugin{
 
     public static PotionDataManager pdm = new PotionDataManager();
 
+    public static DarkChangeDataManager dcdm = new DarkChangeDataManager();
+
     public static Economy econ = null;
 
     public static DatabaseManager dm;
@@ -172,6 +174,14 @@ public class KarRefinement extends JavaPlugin{
             @Override
             public void run() {
                 pdm.deleteOudatedPlayerPotionInfo();
+            }
+        }.runTaskTimerAsynchronously(this,0,20);
+
+        //删除过期暗改信息
+        new BukkitRunnable(){
+            @Override
+            public void run() {
+                dcdm.deleteOudatedPlayerDarkChangeData();
             }
         }.runTaskTimerAsynchronously(this,0,20);
     }
