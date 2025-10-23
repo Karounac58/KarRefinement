@@ -12,6 +12,7 @@ import vip.mcsj.www.karrefinement.object.Level;
 import vip.mcsj.www.karrefinement.object.Stone;
 import vip.mcsj.www.karrefinement.utils.FileUtil;
 import vip.mcsj.www.karrefinement.utils.KarUtils;
+import vip.mcsj.www.karrefinement.utils.RandomLoreUtils;
 
 import java.util.*;
 
@@ -226,12 +227,21 @@ public class EquipmentDataManager {
 
         lores.add(EquipmentDataManager.mainLore);
         lores.addAll(mainLore);
+        boolean isRandomLore = false;
+        if(RandomLoreUtils.isRandomLore(extractLore)){
+            extractLore = RandomLoreUtils.replaceWithRandom(extractLore);
+            isRandomLore = true;
+        }
         lores.addAll(extractLore);
         im.setLore(lores);
         this.equipmentItem.setItemMeta(im);
         NBT.modify(this.equipmentItem, nbt -> {
             nbt.setInteger("refinement", refinementNBTNum);
         });
+        if(isRandomLore) {
+            RandomLoreUtils.addRandomLoreWithNBT(this.equipmentItem, extractLore);
+        }
+
         judgeSoul(refinementNBTNum);
     }
 
@@ -252,18 +262,27 @@ public class EquipmentDataManager {
         }
         int j = 0;
         for (int i = 0; i < lores.size(); i++) {
-            if (lores.get(i).contains("装备淬炼")) {
-                lores.remove(i);
+            if (lores.get(i).equals(EquipmentDataManager.mainLore)) {
+                j = i;
+                break;
             }
         }
+        lores.remove(j);
         lores.removeAll(mainLore);
+
+        if(RandomLoreUtils.hasRandomLore(this.equipmentItem)){
+            extractLore = RandomLoreUtils.getRandomLore(this.equipmentItem);
+        }
+
         lores.removeAll(extractLore);
         im.setLore(lores);
         this.equipmentItem.setItemMeta(im);
         NBT.modify(equipmentItem,nbt -> {
             nbt.removeKey("refinement");
         });
-
+        NBT.modify(equipmentItem, nbt -> {
+            nbt.removeKey("randomlore");
+        });
     }
 
 
@@ -276,6 +295,9 @@ public class EquipmentDataManager {
         String newEquipmentIdentifier = getEquipmentIdentifier(this.equipmentItem);
         List<String> newMainLore = newlevel.getMainLore();
         List<String> newExtractLore = newlevel.getExtractLores().get(newEquipmentIdentifier);
+        if(RandomLoreUtils.hasRandomLore(this.equipmentItem)){
+            newExtractLore = RandomLoreUtils.getRandomLore(this.equipmentItem);
+        }
         removeNowItemRefinementInfo(newMainLore, newExtractLore, nowLevel);
     }
 

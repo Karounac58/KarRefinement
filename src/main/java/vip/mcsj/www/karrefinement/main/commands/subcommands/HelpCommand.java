@@ -36,6 +36,9 @@ public class HelpCommand extends KarAbstractCommand {
         sender.sendMessage("§e/krf opentransformgui <玩家名> —— §b打开淬炼移星界面");
         sender.sendMessage("§e/krf querypotion <玩家名> —— §b让玩家查看淬炼药水加成");
         sender.sendMessage("§e/krf adminquerypotion <玩家名> —— §b查看玩家的淬炼药水加成");
+        sender.sendMessage("§e/krf darkchange set <玩家名> true/false <次数> —— §b暗改玩家之后N次淬炼是否成功");
+        sender.sendMessage("§e/krf darkchange seen <玩家名> —— §b查看玩家暗改淬炼情况");
+        sender.sendMessage("§e/krf darkchange clear <玩家名> —— §b清除玩家暗改淬炼");
         return true;
     }
 

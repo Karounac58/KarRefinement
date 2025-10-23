@@ -18,6 +18,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 public class PotionDataManager {
     public static Map<String, RPotion> potions = new HashMap<>();
@@ -25,6 +27,7 @@ public class PotionDataManager {
     private ItemStack itemPotion;
     private Player p;
 
+    public static Map<String,List<Object>> cache = new ConcurrentHashMap<>();
     //创建物品
     public PotionDataManager(String identifier) {
         this.identifier = identifier;
@@ -168,6 +171,8 @@ public class PotionDataManager {
                     List<Object> list = new ArrayList<>();
                     list.add(rs.getLong("end_timestamp"));
                     list.add(rs.getDouble("success_rate"));
+                    //更新缓存
+                    cache.put(p.getUniqueId().toString(), list);
                     return list;
                 }
             }
@@ -179,12 +184,54 @@ public class PotionDataManager {
         }
     }
 
-    public int deleteOudatedPlayerPotionInfo(){
-        String sql = "DELETE FROM refinementpotion_data WHERE end_timestamp < ?";
+    public List<Object> queryPlayerPotionInfoCache(OfflinePlayer p){
+        //先查缓存
+        if(cache.get(p.getUniqueId().toString())!=null){
+            return cache.get(p.getUniqueId().toString());
+        }
+        //查不到就查数据库
+        List<Object> objects = queryPlayerPotionInfo(p);
+        return objects;
+    }
+
+    public List<String> queryOudatedPlayerPotionInfo(){
+        String sql = "SELECT * FROM refinementpotion_data WHERE end_timestamp < ?";
 
         try(Connection conn = KarRefinement.dm.getConnection();
+        PreparedStatement pstmt = conn.prepareStatement(sql)){
+            pstmt.setLong(1,System.currentTimeMillis());
+            try(ResultSet rs = pstmt.executeQuery()) {
+                List<String> list = new ArrayList<>();
+                while (rs.next()) {
+                    list.add(rs.getString("player_uuid"));
+                }
+                return list;
+            }
+        }catch (SQLException e){
+            KarRefinement.instance.getLogger().severe("查询玩家过期淬炼药水数据失败:" + e.getMessage());
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public int deleteOudatedPlayerPotionInfo(){
+        List<String> uuids = queryOudatedPlayerPotionInfo();
+
+        if(uuids == null) return 0;
+        if(uuids.isEmpty()) return 0;
+
+        //删除缓存
+        for (String uuid : uuids) {
+            cache.remove(uuid);
+        }
+
+        String placeholders = uuids.stream().map(uuid -> "?").collect(Collectors.joining(","));
+        String sql = "DELETE FROM refinementpotion_data WHERE player_uuid IN ("+placeholders+")";
+        try(Connection conn = KarRefinement.dm.getConnection();
             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setLong(1, System.currentTimeMillis());
+            for (int i = 0; i < uuids.size(); i++) {
+                pstmt.setString(i+1, uuids.get(i));
+            }
             return pstmt.executeUpdate();
         }catch (SQLException e){
             KarRefinement.instance.getLogger().severe("删除玩家过期淬炼药水数据失败:" + e.getMessage());

@@ -266,7 +266,7 @@ public class KarRefinementGui {
                 return;
             }
         }
-        List<Object> objects = KarRefinement.pdm.queryPlayerPotionInfo(p);
+        List<Object> objects = KarRefinement.pdm.queryPlayerPotionInfoCache(p);
         double addSuccess = 0;
         if(objects != null){
             addSuccess = (double)objects.get(1) * 100;
