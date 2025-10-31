@@ -20,7 +20,7 @@ import javax.script.*;
 
 public class ScriptRunnable implements Runnable {
 
-    public static boolean enbaleScript = true;
+    public static boolean enbaleScript;
     public static HashMap<UUID, HashMap<String, Bindings>> bindingsMap = new HashMap<>();
     public static HashMap<String, ScriptEngine> engineMap = new HashMap<>();
 

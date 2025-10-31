@@ -121,7 +121,35 @@ public class InfiniteSoulManager {
 
         if(nowLevel == 0){
             lores = equipmentMeta.getLore();
-            lores.add(infiniteSouls.get(soulIdentifier).getName());
+
+            lores.clear();
+
+            Map<String, List<String>> equipmentInfoLore = EquipmentDataManager.getEquipmentInfoLore(equipmentItem);
+            List<String> sortOrder = EquipmentDataManager.sortOrder;
+            for (String s : sortOrder) {
+                if(s.equals("{refinement}")){
+                    if(equipmentInfoLore.containsKey("refinement")){
+                        lores.addAll(equipmentInfoLore.get("refinement"));
+                    }
+                }
+
+                if(s.equals("{spestone}")){
+                    if(equipmentInfoLore.containsKey("spestone")){
+                        lores.addAll(equipmentInfoLore.get("spestone"));
+                    }
+                }
+
+                if(s.equals("{paper}")){
+                    if(equipmentInfoLore.containsKey("paper")){
+                        lores.addAll(equipmentInfoLore.get("paper"));
+                    }
+                }
+
+                if(s.equals("{soul}")){
+                    lores.add(infiniteSouls.get(soulIdentifier).getName());
+                }
+            }
+
             equipmentMeta.setLore(lores);
             equipmentItem.setItemMeta(equipmentMeta);
             NBT.modify(equipmentItem,nbt -> {
@@ -130,13 +158,41 @@ public class InfiniteSoulManager {
             return true;
         }else{
             lores = equipmentMeta.getLore();
+            lores.clear();
             if(willLevel > nowLevel){
-                for (String s : infiniteSouls.keySet()) {
-                    if(infiniteSouls.get(s).getLevel() == nowLevel){
-                        lores.remove(infiniteSouls.get(s).getName());
+
+                Map<String, List<String>> equipmentInfoLore = EquipmentDataManager.getEquipmentInfoLore(equipmentItem);
+                List<String> sortOrder = EquipmentDataManager.sortOrder;
+                for (String s : sortOrder) {
+                    if(s.equals("{refinement}")){
+                        if(equipmentInfoLore.containsKey("refinement")){
+                            lores.addAll(equipmentInfoLore.get("refinement"));
+                        }
+                    }
+
+                    if(s.equals("{spestone}")){
+                        if(equipmentInfoLore.containsKey("spestone")){
+                            lores.addAll(equipmentInfoLore.get("spestone"));
+                        }
+                    }
+
+                    if(s.equals("{paper}")){
+                        if(equipmentInfoLore.containsKey("paper")){
+                            lores.addAll(equipmentInfoLore.get("paper"));
+                        }
+                    }
+
+                    if(s.equals("{soul}")){
+                        for (String s1 : infiniteSouls.keySet()) {
+                            if(infiniteSouls.get(s1).getLevel() == nowLevel){
+                                lores.remove(infiniteSouls.get(s1).getName());
+                            }
+                        }
+                        lores.add(infiniteSouls.get(soulIdentifier).getName());
                     }
                 }
-                lores.add(infiniteSouls.get(soulIdentifier).getName());
+
+
                 equipmentMeta.setLore(lores);
                 equipmentItem.setItemMeta(equipmentMeta);
                 NBT.modify(equipmentItem,nbt -> {

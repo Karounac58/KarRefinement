@@ -102,7 +102,36 @@ public class PaperDataManager {
         //没保，且将要附上的保护符等级小于淬炼等级
         if (nowLevel == 0) {
             lores = equipmentMeta.getLore();
-            lores.add(papers.get(paperIdentifier).getName());
+
+            lores.clear();
+            Map<String, List<String>> equipmentInfoLore = EquipmentDataManager.getEquipmentInfoLore(equipmentItem);
+            List<String> sortOrder = EquipmentDataManager.sortOrder;
+            for (String s : sortOrder) {
+                if(s.equals("{refinement}")){
+                    if(equipmentInfoLore.containsKey("refinement")){
+                        lores.addAll(equipmentInfoLore.get("refinement"));
+                    }
+                }
+
+
+                if(s.equals("{spestone}")){
+                    if(equipmentInfoLore.containsKey("spestone")){
+                        lores.addAll(equipmentInfoLore.get("spestone"));
+                    }
+                }
+
+                if(s.equals("{paper}")){
+                    lores.add(papers.get(paperIdentifier).getName());
+                }
+
+                if(s.equals("{soul}")){
+                    if(equipmentInfoLore.containsKey("soul")){
+                        lores.addAll(equipmentInfoLore.get("soul"));
+                    }
+                }
+            }
+
+
             equipmentMeta.setLore(lores);
             equipmentItem.setItemMeta(equipmentMeta);
             NBT.modify(equipmentItem,nbt -> {
@@ -112,20 +141,41 @@ public class PaperDataManager {
             //有Lore有保
         } else{
             lores = equipmentMeta.getLore();
-//                nowLevel = ProtectorData.get(KarUtils.regxChinese(lores.get(3)));
-//                willLevel = ProtectorData.get(KarUtils.regxChinese(paperMeta.getDisplayName()));
+            lores.clear();
             if (willLevel > nowLevel) {
-//                for(String key:ProtectorData.keySet()){
-//                    if(ProtectorData.get(key) == nowLevel){
-//                        lores.remove("§a"+key);
-//                    }
-//                }
-                for (String s : papers.keySet()) {
-                    if(papers.get(s).getLevel() == nowLevel){
-                        lores.remove(papers.get(s).getName());
+                Map<String, List<String>> equipmentInfoLore = EquipmentDataManager.getEquipmentInfoLore(equipmentItem);
+                List<String> sortOrder = EquipmentDataManager.sortOrder;
+                for (String s : sortOrder) {
+                    if(s.equals("{refinement}")){
+                        if(equipmentInfoLore.containsKey("refinement")){
+                            lores.addAll(equipmentInfoLore.get("refinement"));
+                        }
+                    }
+
+
+                    if(s.equals("{spestone}")){
+                        if(equipmentInfoLore.containsKey("spestone")){
+                            lores.addAll(equipmentInfoLore.get("spestone"));
+                        }
+                    }
+
+                    if(s.equals("{paper}")){
+                        for (String s1 : papers.keySet()) {
+                            if(papers.get(s1).getLevel() == nowLevel){
+                                lores.remove(papers.get(s1).getName());
+                            }
+                        }
+                        lores.add(papers.get(paperIdentifier).getName());
+                    }
+
+                    if(s.equals("{soul}")){
+                        if(equipmentInfoLore.containsKey("soul")){
+                            lores.addAll(equipmentInfoLore.get("soul"));
+                        }
                     }
                 }
-                lores.add(papers.get(paperIdentifier).getName());
+
+
                 equipmentMeta.setLore(lores);
                 equipmentItem.setItemMeta(equipmentMeta);
                 NBT.modify(equipmentItem,nbt -> {

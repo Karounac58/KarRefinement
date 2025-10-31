@@ -11,6 +11,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import vip.mcsj.www.karrefinement.datamanager.DetachDataManager;
 import vip.mcsj.www.karrefinement.datamanager.EquipmentDataManager;
 import vip.mcsj.www.karrefinement.datamanager.PaperDataManager;
+import vip.mcsj.www.karrefinement.datamanager.SpecialStoneDataManager;
 import vip.mcsj.www.karrefinement.main.KarRefinement;
 import vip.mcsj.www.karrefinement.object.Detach;
 import vip.mcsj.www.karrefinement.object.InvItem;
@@ -118,6 +119,47 @@ public class KarCompoundPieceGui {
             KarUtils.removeItemRefinement(itemPieces, compound);
             PaperDataManager pdm = new PaperDataManager(paperIdentifier);
             return pdm.createProtectedPaper();
+        }
+        return null;
+    }
+
+    //宝石碎片判断
+    public static boolean judgeInventoryClickMethod2(ItemStack itemPieces, Player p){
+        if(itemPieces == null || itemPieces.getItemMeta() == null) return false;
+
+        if(!DetachDataManager.isSpeStonePieceLegal(itemPieces)) return false;
+
+        List<Object> speStonePieceInfo = DetachDataManager.getSpeStonePieceInfo(itemPieces);
+
+        int level = (int)speStonePieceInfo.get(0);
+        String speStoneIdentifier = (String)speStonePieceInfo.get(1);
+
+        Detach detach = DetachDataManager.speStoneDetachs.get(speStoneIdentifier);
+
+        if(detach == null) return false;
+
+        int compound = detach.getCompound();
+
+        if(itemPieces.getAmount() < compound) return false;
+
+        return true;
+    }
+
+    //宝石碎片合成
+    public static ItemStack karCompoundPieceMethod2(ItemStack itemPieces, Player p){
+        if(judgeInventoryClickMethod2(itemPieces, p)) {
+            List<Object> speStonePieceInfo = DetachDataManager.getSpeStonePieceInfo(itemPieces);
+
+            int level = (int)speStonePieceInfo.get(0);
+
+            String speStoneIdentifier = (String)speStonePieceInfo.get(1);
+
+            Detach detach = DetachDataManager.speStoneDetachs.get(speStoneIdentifier);
+
+            int compound = detach.getCompound();
+            KarUtils.removeItemRefinement(itemPieces, compound);
+            SpecialStoneDataManager ssdm = new SpecialStoneDataManager(speStoneIdentifier);
+            return ssdm.createSpeStone();
         }
         return null;
     }

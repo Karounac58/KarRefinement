@@ -123,11 +123,11 @@ public class SpecialStoneDataManager {
 
     /**
      * 获取装备上的所有宝石
-     * @param speStoneItem
+     * @param equipmentItem
      * @return
      */
-    public static List<SpeStone> getSpeStones(ItemStack speStoneItem){
-        NBTItem nbtItem = new NBTItem(speStoneItem);
+    public static List<SpeStone> getSpeStones(ItemStack equipmentItem){
+        NBTItem nbtItem = new NBTItem(equipmentItem);
         List<SpeStone> speStones1 = new ArrayList<>();
         for (String s : speStones.keySet()) {
             SpeStone speStone = speStones.get(s);
@@ -203,12 +203,12 @@ public class SpecialStoneDataManager {
             return true;
         //如果有宝石，但没有将要镶嵌的宝石的同类宝石
         }else if(speStoneList.size() == speStoneList2.size()){
-            removeNowItemRefinementInfo(speStoneList,equipmentItem);
+            removeNowSpeStoneInfo(speStoneList,equipmentItem);
             addItemSpeStoneInfo(speStone,speStoneList2,equipmentItem);
             return true;
         //如果有宝石，且原有同类宝石比将要镶嵌的宝石等级低
         }else if(speStoneList2.size() < speStoneList.size() && lowerThenNewStone){
-            removeNowItemRefinementInfo(speStoneList,equipmentItem);
+            removeNowSpeStoneInfo(speStoneList,equipmentItem);
             addItemSpeStoneInfo(speStone,speStoneList2,equipmentItem);
             System.out.println(speStone.getEquipmentLore());
             return true;
@@ -227,13 +227,42 @@ public class SpecialStoneDataManager {
         List<String> lores = im.getLore();
         if (lores == null) {
             lores = new ArrayList<>();
+        }else{
+            lores.clear();
         }
 
-        lores.add(EquipmentDataManager.speStoneLore);
-        lores.addAll(speStone.getEquipmentLore());
-        for (SpeStone speStone1 : originSpeStoneList) {
-            lores.addAll(speStone1.getEquipmentLore());
+        Map<String, List<String>> equipmentInfoLore = EquipmentDataManager.getEquipmentInfoLore(equipmentItem);
+
+        List<String> sortOrder = EquipmentDataManager.sortOrder;
+        for (String s : sortOrder) {
+            if(s.equals("{refinement}")){
+                if(equipmentInfoLore.containsKey("refinement")){
+                    lores.addAll(equipmentInfoLore.get("refinement"));
+                }
+            }
+
+            if(s.equals("{spestone}")){
+                lores.add(EquipmentDataManager.speStoneLore);
+                lores.addAll(speStone.getEquipmentLore());
+                for (SpeStone speStone1 : originSpeStoneList) {
+                    lores.addAll(speStone1.getEquipmentLore());
+                }
+            }
+
+            if(s.equals("{paper}")){
+                if(equipmentInfoLore.containsKey("paper")){
+                    lores.addAll(equipmentInfoLore.get("paper"));
+                }
+            }
+
+            if(s.equals("{soul}")){
+                if(equipmentInfoLore.containsKey("soul")){
+                    lores.addAll(equipmentInfoLore.get("soul"));
+                }
+            }
         }
+
+
         im.setLore(lores);
         equipmentItem.setItemMeta(im);
 
@@ -252,17 +281,30 @@ public class SpecialStoneDataManager {
      * @param originSpeStoneList 装备原有宝石列表
      * @param equipmentItem 装备
      */
-    private static void removeNowItemRefinementInfo(List<SpeStone> originSpeStoneList,ItemStack equipmentItem) {
+    private static void removeNowSpeStoneInfo(List<SpeStone> originSpeStoneList,ItemStack equipmentItem) {
         ItemMeta im = equipmentItem.getItemMeta();
         List<String> lores = im.getLore();
         if (lores == null) {
             lores = new ArrayList<>();
         }
-        for (int i = 0; i < lores.size(); i++) {
-            if (lores.get(i).contains("宝石镶嵌")) {
-                lores.remove(i);
-            }
+        Map<String, List<String>> equipmentInfoLore = EquipmentDataManager.getEquipmentInfoLore(equipmentItem);
+
+        if(equipmentInfoLore.containsKey("refinement")){
+            List<String> refinementLore = equipmentInfoLore.get("refinement");
+            lores.removeAll(refinementLore);
         }
+
+        if(equipmentInfoLore.containsKey("paper")){
+            List<String> paperLore = equipmentInfoLore.get("paper");
+            lores.removeAll(paperLore);
+        }
+
+        if(equipmentInfoLore.containsKey("soul")){
+            List<String> soulLore = equipmentInfoLore.get("soul");
+            lores.removeAll(soulLore);
+        }
+
+        lores.remove(EquipmentDataManager.speStoneLore);
         for (SpeStone speStone : originSpeStoneList) {
             lores.removeAll(speStone.getEquipmentLore());
             NBT.modify(equipmentItem,nbt -> {
@@ -272,6 +314,22 @@ public class SpecialStoneDataManager {
         im.setLore(lores);
         equipmentItem.setItemMeta(im);
     }
+
+    public static void removeNowSpeStoneLore(List<SpeStone> originSpeStoneList,ItemStack equipmentItem){
+        ItemMeta im = equipmentItem.getItemMeta();
+        List<String> lores = im.getLore();
+        if (lores == null) {
+            lores = new ArrayList<>();
+        }
+
+        lores.remove(EquipmentDataManager.speStoneLore);
+        for (SpeStone speStone : originSpeStoneList) {
+            lores.removeAll(speStone.getEquipmentLore());
+        }
+        im.setLore(lores);
+        equipmentItem.setItemMeta(im);
+    }
+
 
     public static boolean specialProtectStoneUp(ItemStack speStone,ItemStack equipmentItem){
         ItemMeta stoneMeta = speStone.getItemMeta();

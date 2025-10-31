@@ -19,7 +19,7 @@ compound_failed: "§c§l合成失败，淬炼石破碎！"
 compound_confilctstone: "§c§l请放入同阶淬炼石"
 compound_success: "§a§l成功率：§b§l{success}"
 
-compoundpiece_success: "§a§l合成成功，你合成了{paper}"
+compoundpiece_success: "§a§l合成成功，你合成了{item}"
 compoundpiece_failed: "§c§l合成失败，请检查是否为碎片或碎片数量！"
 
 takeitemgui_open: "§a你打开了淬炼物品菜单"
@@ -33,9 +33,9 @@ transform_notenoughmoney: "§c§l金币不足"
 transform_moneycost: "§a§l成功花费金币{money}移星"
 transform_success: "§a§l移星成功！"
 
-detach_success: "§a完美卸下保护符!"
-detach_failed: "§c在卸下保护符的过程中出现了意外！你得到了保护符碎片."
-detach_disable: "§c此装备无保护符或保护符不可被拆卸!"
+detach_success: "§a完美卸下道具!"
+detach_failed: "§c在卸下道具的过程中出现了意外！你得到了保护符碎片."
+detach_disable: "§c此装备无道具或道具不可被拆卸!"
 
 adhesive_maxlevel: "§c§l无法合成更高级的宝石"
 adhesive_success: "§a成功合成{spestone}"

@@ -2,6 +2,7 @@ package vip.mcsj.www.karrefinement.main.commands.subcommands;
 
 import org.bukkit.command.CommandSender;
 import vip.mcsj.www.karrefinement.datamanager.*;
+import vip.mcsj.www.karrefinement.effect.ScriptRunnable;
 import vip.mcsj.www.karrefinement.gui.KarCompoundStoneGui;
 import vip.mcsj.www.karrefinement.gui.KarTakeItemGui;
 import vip.mcsj.www.karrefinement.main.KarRefinement;
@@ -55,5 +56,6 @@ public class ReloadCommand extends KarAbstractCommand {
         PotionDataManager.init();
         Message.init();
         KarTakeItemGui.initItems();
+        ScriptRunnable.enbaleScript = KarRefinement.instance.getConfig().getBoolean("settings.enablescript");
     }
 }

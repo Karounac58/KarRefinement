@@ -74,6 +74,7 @@ public class DetachDataManager {
 
     public ItemStack createSpeStonePiece(){
         Detach detach = speStoneDetachs.get(this.identifier);
+
         DetachItem speStoneDetachItem = detach.getItem();
         ItemStack item = new ItemStack(speStoneDetachItem.getType(),1,(short) speStoneDetachItem.getData());
         ItemMeta im = item.getItemMeta();
@@ -82,6 +83,7 @@ public class DetachDataManager {
         item.setItemMeta(im);
         NBT.modify(item,nbt -> {
             nbt.setInteger("spestonepiece",speStoneDetachItem.getLevel());
+            nbt.setString("spestonepiecefrom",detach.getIdentifier());
         });
         return item;
     }
@@ -113,7 +115,6 @@ public class DetachDataManager {
 
     private static Detach initDetach(ConfigurationSection cs,String key){
         String name = cs.getString(key + ".Item.Name");
-        System.out.println(cs.getString(key + ".Item.Type"));
         Material type = Material.valueOf(cs.getString(key + ".Item.Type"));
         int data =  cs.getInt(key + ".Item.Data");
         int customModelData =  cs.getInt(key + ".Item.CustomModelData");
@@ -200,15 +201,8 @@ public class DetachDataManager {
         NBTItem nbtItem = new NBTItem(equipmentItem);
         SpeStone speStone1 = SpecialStoneDataManager.getSpeStone(equipmentItem);
         Detach speStoneDetach = speStoneDetachs.get(speStone1.getIdentifier());
-        for (String s : SpecialStoneDataManager.speStones.keySet()) {
-            SpeStone speStone = SpecialStoneDataManager.speStones.get(s);
-            //先检查有无标签
-            if(nbtItem.hasTag(speStone.getNbtKey())){
-                //再检查宝石等级
-                if(nbtItem.getInteger(speStone.getNbtKey()) == speStone.getLevel()){
-                    return false;
-                }
-            }
+        if(speStone1 == null){
+            return false;
         }
 
         if(speStoneDetach == null){
@@ -219,9 +213,8 @@ public class DetachDataManager {
     }
 
     public ItemStack paperDetachItemUp(ItemStack detachItem,ItemStack equipmentItem){
-        String paperIdentifier = PaperDataManager.getPaperIdentifier(equipmentItem);
-        Detach paperDetach = paperDetachs.get(paperIdentifier);
-        ProtectPaper protectPaper = PaperDataManager.papers.get(paperIdentifier);
+        Detach paperDetach = paperDetachs.get(this.identifier);
+        ProtectPaper protectPaper = PaperDataManager.papers.get(this.identifier);
         String equipmentLore = protectPaper.getName();
         List<Integer> numbers = paperDetach.getNumbers();
 
@@ -248,15 +241,20 @@ public class DetachDataManager {
     public ItemStack speStoneDetachItemUp(ItemStack detachItem,ItemStack equipmentItem){
         Random random = new Random();
 
-        SpeStone speStone = SpecialStoneDataManager.getSpeStone(equipmentItem);
-        Detach speStoneDetach = speStoneDetachs.get(speStone.getIdentifier());
+        List<SpeStone> speStones = SpecialStoneDataManager.getSpeStones(equipmentItem);
+
+        SpeStone speStone = SpecialStoneDataManager.speStones.get(this.identifier);
+        Detach speStoneDetach = speStoneDetachs.get(this.identifier);
         List<String> equipmentLore = speStone.getEquipmentLore();
         List<Integer> numbers = speStoneDetach.getNumbers();
 
 
         ItemMeta itemMeta = equipmentItem.getItemMeta();
         List<String> lore = itemMeta.getLore();
-        //移除物品的保护符lore
+        //移除物品的宝石lore
+        if(speStones.size() == 1){
+            lore.remove(EquipmentDataManager.speStoneLore);
+        }
         lore.removeAll(equipmentLore);
         itemMeta.setLore(lore);
         equipmentItem.setItemMeta(itemMeta);
@@ -271,5 +269,13 @@ public class DetachDataManager {
 
     public static int getPaperPieceLevel(ItemStack paperPiece){
         return new NBTItem(paperPiece).getInteger("paperpiece");
+    }
+
+    public static List<Object> getSpeStonePieceInfo(ItemStack speStonePiece){
+        List<Object> list = new ArrayList<>();
+        NBTItem nbtItem = new NBTItem(speStonePiece);
+        list.add(nbtItem.getInteger("spestonepiece"));
+        list.add(nbtItem.getString("spestonepiecefrom"));
+        return list;
     }
 }

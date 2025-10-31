@@ -26,20 +26,53 @@ public class KarCompoundPieceListener implements Listener {
 
         ItemStack item = null;
         Player p = (Player) e.getWhoClicked();
+
         if(KarCompoundPieceGui.cpItems.get("ConfirmButton").getSlots().contains(e.getSlot())){
             ItemStack itemPiece = inv.getItem(KarCompoundPieceGui.originSlot);
             item = KarCompoundPieceGui.karCompoundPieceMethod(itemPiece,p);
+            if(item != null){
+                ItemStack item1 = inv.getItem(KarCompoundPieceGui.afterSlot);
+                if(item1.isSimilar(item)){
+                    item.setAmount(item1.getAmount()+1);
+                }
+                inv.setItem(KarCompoundPieceGui.afterSlot, item);
+                p.sendMessage(Message.messages.get("compoundpiece_success").replace("{item}", item.getItemMeta().getDisplayName()));
+                p.playSound(p.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
+            }
+        }
+    }
+
+    //宝石碎片合成
+    @EventHandler
+    public void onInventoryClick2(InventoryClickEvent e){
+        Inventory inv = e.getInventory();
+        if(e.getInventory() == null || e.getClickedInventory() == null) return;
+
+        if(!(e.getClickedInventory().getHolder() instanceof KarCompoundPieceGui.KarCompoundPieceGuiInvHolder)) return;
+
+        if(!(e.getSlot() == KarCompoundPieceGui.originSlot || e.getSlot() == KarCompoundPieceGui.afterSlot)){
+            e.setCancelled(true);
+        }
+
+        ItemStack item = null;
+        Player p = (Player) e.getWhoClicked();
+
+        if(KarCompoundPieceGui.cpItems.get("ConfirmButton").getSlots().contains(e.getSlot())){
+            ItemStack itemPiece = inv.getItem(KarCompoundPieceGui.originSlot);
+            item = KarCompoundPieceGui.karCompoundPieceMethod2(itemPiece,p);
             if(item == null){
                 p.sendMessage(Message.messages.get("compoundpiece_failed"));
                 p.playSound(p.getLocation(), Sound.BLOCK_ANVIL_BREAK, 1, 1);
             }else{
+                ItemStack item1 = inv.getItem(KarCompoundPieceGui.afterSlot);
+                if(item1.isSimilar(item)){
+                    item.setAmount(item1.getAmount()+1);
+                }
                 inv.setItem(KarCompoundPieceGui.afterSlot, item);
-                p.sendMessage(Message.messages.get("compoundpiece_success").replace("{paper}", item.getItemMeta().getDisplayName()));
+                p.sendMessage(Message.messages.get("compoundpiece_success").replace("{item}", item.getItemMeta().getDisplayName()));
                 p.playSound(p.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
             }
         }
-
-
     }
 
     @EventHandler

@@ -6,7 +6,7 @@
 
     <groupId>vip.mcsj.www</groupId>
     <artifactId>KarRefinement</artifactId>
-    <version>v1.3.1-SNAPSHOT</version>
+    <version>v1.3.5-SNAPSHOT</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -39,6 +39,14 @@
             <id>placeholderapi</id>
             <url>https://repo.extendedclip.com/releases/</url>
         </repository>
+<!--        <repository>-->
+<!--            <id>taboolib-repo</id>-->
+<!--            <url>https://repo.tabooproject.org/repository/releases</url>-->
+<!--        </repository>-->
+<!--        <repository>-->
+<!--            <id>arcartx-repo</id>-->
+<!--            <url>https://seventeen-artist-maven.pkg.coding.net/repository/arcartx/public/</url>-->
+<!--        </repository>-->
     </repositories>
     <dependencies>
         <dependency>
@@ -90,6 +98,12 @@
             <artifactId>HikariCP</artifactId>
             <version>4.0.3</version>
         </dependency>
+
+<!--        <dependency>-->
+<!--            <groupId>priv.seventeen.artist.arcartx</groupId>-->
+<!--            <artifactId>ArcartX</artifactId>-->
+<!--            <version>1.8.653.23</version>-->
+<!--        </dependency>-->
 
         <dependency>
             <groupId>org.serverct.ersha</groupId>

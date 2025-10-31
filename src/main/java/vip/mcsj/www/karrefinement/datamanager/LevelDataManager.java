@@ -4,6 +4,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import vip.mcsj.www.karrefinement.effect.ScriptRunnable;
 import vip.mcsj.www.karrefinement.object.Level;
 import vip.mcsj.www.karrefinement.object.SuitEffect;
 import vip.mcsj.www.karrefinement.utils.FileUtil;
@@ -42,7 +43,19 @@ public class LevelDataManager {
 //                }
 //                level.setPotionEffects(potionEffects);
 //            }
-            level.setSuitEffect(SuitEffect.deserialize(customFileYaml,s+".SuitEffect"));
+            if(ScriptRunnable.enbaleScript) {
+                level.setSuitEffect(SuitEffect.deserialize(customFileYaml, s + ".SuitEffect"));
+            }else{
+                if (customFileYaml.get(s+".SuitEffect") != null) {
+                    List<String> names = customFileYaml.getStringList(s+".SuitEffect.Script");
+                    level.setSuitEffect(new SuitEffect(customFileYaml.getStringList(s+".SuitEffect.PotionEffect"),
+                            customFileYaml.getStringList(s+".SuitEffect.Attribute"),
+                            names));
+                }else{
+                    level.setSuitEffect(null);
+                }
+            }
+
             level.setExtractLores(extractlores);
             levels.add(level);
         }

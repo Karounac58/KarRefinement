@@ -9,6 +9,13 @@ DisplayNameInfo:
   enabled: false
   suffix: "§a§l+{level}" # 物品名后缀,{level}为淬炼等级
 settings:
+  enablescript: false
+  # 淬炼、宝石镶嵌、保护符镶嵌、精魂镶嵌后的lore顺序
+  SortOrder:
+    - "{refinement}"
+    - "{spestone}"
+    - "{paper}"
+    - "{soul}"
   data:
     # 数据存储方式：SQLite或MySQL
     storage: SQLite

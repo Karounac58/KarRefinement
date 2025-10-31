@@ -2,8 +2,14 @@ package vip.mcsj.www.karrefinement.main;
 
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.Particle;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.FurnaceRecipe;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.material.MaterialData;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -25,6 +31,8 @@ import vip.mcsj.www.karrefinement.version.CustomPath;
 import vip.mcsj.www.karrefinement.version.CustomSounds;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -51,6 +59,8 @@ public class KarRefinement extends JavaPlugin{
     public static Economy econ = null;
 
     public static DatabaseManager dm;
+
+    public static List<ItemType> types = new ArrayList<>();
 
     public static boolean ap2Enable = false;
     public static boolean ap3Enable = false;
@@ -80,11 +90,12 @@ public class KarRefinement extends JavaPlugin{
         Bukkit.getPluginManager().registerEvents(new KarPotionListener(),this);
         Bukkit.getPluginCommand("karrefinement").setExecutor(new KarCommandExecutor());
         saveDefaultConfig();
+        ScriptRunnable.enbaleScript = KarRefinement.instance.getConfig().getBoolean("settings.enablescript");
         FileUtil.initCustomFile(customPath.getPath()+"stone.yml","stone.yml");
         FileUtil.initCustomFile(customPath.getPath()+"spestone.yml","spestone.yml");
         FileUtil.initCustomFile("refinement.yml");
         FileUtil.initCustomFile(customPath.getPath()+"directupgradepaper.yml","directupgradepaper.yml");
-        FileUtil.initCustomFile("items.yml");
+        FileUtil.initCustomFile(customPath.getPath()+"items.yml","items.yml");
         FileUtil.initCustomFile(customPath.getPath()+"protectpaper.yml","protectpaper.yml");
         FileUtil.initCustomFile("forge.yml");
         FileUtil.initCustomFile(customPath.getPath()+"infinitesoul.yml","infinitesoul.yml");
@@ -125,6 +136,7 @@ public class KarRefinement extends JavaPlugin{
         PotionDataManager.init();
         Message.init();
         KarTakeItemGui.initItems();
+        setRecipe();
         String storage = getConfig().getString("settings.data.storage");
         if(storage.equals("SQLite")) {
             dm = new SQLiteDatabaseManager(this);
@@ -135,6 +147,7 @@ public class KarRefinement extends JavaPlugin{
         initThread();
 
         log.info(String.format("[%s] - 插件启动成功...",getDescription().getName()));
+
 
     }
 
@@ -226,5 +239,46 @@ public class KarRefinement extends JavaPlugin{
         KarTransformStarGui.init();
         KarCompoundStoneGui.init();
         KarCompoundPieceGui.init();
+    }
+
+    public void setRecipe(){
+        for (ItemType type : types) {
+            FurnaceRecipe recipe = new FurnaceRecipe(type.toItemStack(), type.mData);
+            for (int durability = 0; durability <= type.type.getMaxDurability(); durability++) {
+                recipe.setInput(type.type, durability);
+                try {
+                    instance.getServer().addRecipe(recipe);
+                } catch (IllegalStateException ex) {
+                }
+            }
+        }
+    }
+
+    public static class ItemType{
+
+        public String typeInBag;
+        public String baseType;
+        public Material type;
+        public MaterialData mData;
+
+        public ItemType(String typeInBag, String baseType) {
+            this.typeInBag = typeInBag;
+            this.baseType = baseType;
+            if (baseType.contains(":")) {
+                String[] args = baseType.split(":");
+                String strType = args[0];
+                String strData = args[1];
+                type = Material.valueOf(strType);
+                int data = Integer.parseInt(strData);
+                mData = new MaterialData(type, (byte) data);
+            } else {
+                type = Material.getMaterial(baseType);
+                mData = new MaterialData(type);
+            }
+        }
+
+        public ItemStack toItemStack() {
+            return mData.toItemStack(1);
+        }
     }
 }

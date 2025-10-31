@@ -9,6 +9,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import vip.mcsj.www.karrefinement.main.KarRefinement;
 import vip.mcsj.www.karrefinement.object.Level;
+import vip.mcsj.www.karrefinement.object.ProtectPaper;
+import vip.mcsj.www.karrefinement.object.SpeStone;
 import vip.mcsj.www.karrefinement.object.Stone;
 import vip.mcsj.www.karrefinement.utils.FileUtil;
 import vip.mcsj.www.karrefinement.utils.KarUtils;
@@ -35,6 +37,8 @@ public class EquipmentDataManager {
     public static String mainLore = "";
     public static String speStoneLore = "";
 
+    public static List<String> sortOrder =  new ArrayList<>();
+
     public static boolean enableDisplayNameInfo = true;
     public static String displayNameSuffix = "";
     private ItemStack equipmentItem;
@@ -58,22 +62,32 @@ public class EquipmentDataManager {
             chinesenames.clear();
         }
         YamlConfiguration customFileYaml = FileUtil.getCustomFileYaml("items.yml");
-        List<String> hand = customFileYaml.getStringList("Hand");
-        List<String> helmet = customFileYaml.getStringList("Helmet");
-        List<String> chestPlate = customFileYaml.getStringList("Chestplate");
-        List<String> leggings = customFileYaml.getStringList("Leggings");
-        List<String> boots = customFileYaml.getStringList("Boots");
-
-        canRefinementEquipment.put("Hand", hand);
-        canRefinementEquipment.put("Helmet", helmet);
-        canRefinementEquipment.put("Chestplate", chestPlate);
-        canRefinementEquipment.put("Leggings", leggings);
-        canRefinementEquipment.put("Boots", boots);
+//        List<String> hand = customFileYaml.getStringList("Hand");
+//        List<String> helmet = customFileYaml.getStringList("Helmet");
+//        List<String> chestPlate = customFileYaml.getStringList("Chestplate");
+//        List<String> leggings = customFileYaml.getStringList("Leggings");
+//        List<String> boots = customFileYaml.getStringList("Boots");
+//
+//        canRefinementEquipment.put("Hand", hand);
+//        canRefinementEquipment.put("Helmet", helmet);
+//        canRefinementEquipment.put("Chestplate", chestPlate);
+//        canRefinementEquipment.put("Leggings", leggings);
+//        canRefinementEquipment.put("Boots", boots);
+        Set<String> keys = customFileYaml.getKeys(false);
+        for (String key : keys) {
+            List<String> stringList = customFileYaml.getStringList(key);
+            canRefinementEquipment.put(key, stringList);
+            for (String s : stringList) {
+                KarRefinement.ItemType type = new KarRefinement.ItemType(key,s);
+                KarRefinement.types.add(type);
+            }
+        }
         KarRefinement.instance.reloadConfig();
         mainLore = KarRefinement.instance.getConfig().getString("mainLore");
         speStoneLore = KarRefinement.instance.getConfig().getString("speStoneLore");
         enableDisplayNameInfo = KarRefinement.instance.getConfig().getBoolean("DisplayNameInfo.enabled");
         displayNameSuffix = KarRefinement.instance.getConfig().getString("DisplayNameInfo.suffix");
+        sortOrder = KarRefinement.instance.getConfig().getStringList("settings.SortOrder");
 
         YamlConfiguration chineseNameYaml = FileUtil.getCustomFileYaml("chinesename.yml");
         chineseNameYaml.getKeys(false).forEach(key -> {
@@ -108,6 +122,10 @@ public class EquipmentDataManager {
         //ItemMeta im = this.equipmentItem.getItemMeta();
 //        int refinementLevel = NBT.get(this.equipmentItem,nbt -> nbt.getInteger("refinement"));
         return new NBTItem(this.equipmentItem).getInteger("refinement");
+    }
+
+    public static int carifyEquipmentLevel(ItemStack equipmentItem) {
+        return new NBTItem(equipmentItem).getInteger("refinement");
     }
 
     public static int getEquipmentLevel(ItemStack item) {
@@ -220,19 +238,80 @@ public class EquipmentDataManager {
             displayName +=  displayNameSuffix.replace("{level}",refinementNBTNum+"");
             im.setDisplayName(displayName);
         }
+        //获取淬炼lore
         List<String> lores = im.getLore();
         if (lores == null) {
             lores = new ArrayList<>();
+        }else{
+            lores.clear();
         }
 
-        lores.add(EquipmentDataManager.mainLore);
-        lores.addAll(mainLore);
+
         boolean isRandomLore = false;
         if(RandomLoreUtils.isRandomLore(extractLore)){
             extractLore = RandomLoreUtils.replaceWithRandom(extractLore);
             isRandomLore = true;
         }
-        lores.addAll(extractLore);
+
+//        //获取宝石lore
+//        List<SpeStone> speStones = SpecialStoneDataManager.getSpeStones(equipmentItem);
+//        List<String> speStoneLore = new ArrayList<>();
+//        if(!speStones.isEmpty()){
+//            speStoneLore.add(this.speStoneLore);
+//            for (SpeStone speStone : speStones) {
+//                speStoneLore.addAll(speStone.getEquipmentLore());
+//            }
+//        }
+//
+//
+//        //获取保护符lore
+//        String paperIdentifier = PaperDataManager.getPaperIdentifier(equipmentItem);
+//        String paperLore = "";
+//        if(paperIdentifier != null){
+//            ProtectPaper protectPaper = PaperDataManager.papers.get(paperIdentifier);
+//            paperLore = protectPaper.getName();
+//        }
+//
+//        //获取精魂lore
+//        String soulName = InfiniteSoulManager.getSoulName(equipmentItem);
+//        String soulLore = "";
+//        if(soulName != null){
+//            soulLore = soulName;
+//        }
+
+        Map<String, List<String>> equipmentInfoLore = getEquipmentInfoLore(this.equipmentItem);
+
+
+        //排序
+        for (String s : sortOrder) {
+            if(s.equals("{refinement}")){
+                //添加淬炼lore
+                lores.add(EquipmentDataManager.mainLore);
+                lores.addAll(mainLore);
+                lores.addAll(extractLore);
+            }
+
+            if(s.equals("{spestone}")){
+                if(equipmentInfoLore.containsKey("spestone")){
+                    lores.addAll(equipmentInfoLore.get("spestone"));
+                }
+            }
+
+            if(s.equals("{paper}")){
+                if(equipmentInfoLore.containsKey("paper")) {
+                    lores.addAll(equipmentInfoLore.get("paper"));
+                }
+            }
+
+            if(s.equals("{soul}")){
+                if(equipmentInfoLore.containsKey("soul")){
+                    lores.addAll(equipmentInfoLore.get("soul"));
+                }
+            }
+        }
+
+
+
         im.setLore(lores);
         this.equipmentItem.setItemMeta(im);
         NBT.modify(this.equipmentItem, nbt -> {
@@ -245,6 +324,53 @@ public class EquipmentDataManager {
         judgeSoul(refinementNBTNum);
     }
 
+    public static Map<String,List<String>> getEquipmentInfoLore(ItemStack equipmentItem){
+
+        Map<String,List<String>> map = new HashMap<>();
+        NBTItem nbt = new NBTItem(equipmentItem);
+        //获取淬炼lore
+        List<String> refineLore = new ArrayList<>();
+        int refinementLevel = carifyEquipmentLevel(equipmentItem);
+        if(refinementLevel != 0){
+            refineLore.add(EquipmentDataManager.mainLore);
+            Level level = LevelDataManager.levels.get(refinementLevel - 1);
+            refineLore.addAll(level.getMainLore());
+            String equipmentIdentifier = getEquipmentIdentifier(equipmentItem);
+            if(nbt.hasKey("randomlore")){
+                refineLore.addAll(RandomLoreUtils.getRandomLore(equipmentItem));
+            }else {
+                refineLore.addAll(level.getExtractLores().get(equipmentIdentifier));
+            }
+            map.put("refinement",refineLore);
+        }
+
+        //获取宝石lore
+        List<SpeStone> speStones = SpecialStoneDataManager.getSpeStones(equipmentItem);
+        List<String> speStoneLore = new ArrayList<>();
+        if(!speStones.isEmpty()){
+            speStoneLore.add(EquipmentDataManager.speStoneLore);
+            for (SpeStone speStone : speStones) {
+                speStoneLore.addAll(speStone.getEquipmentLore());
+            }
+            map.put("spestone",speStoneLore);
+        }
+
+        //获取保护符lore
+        String paperIdentifier = PaperDataManager.getPaperIdentifier(equipmentItem);
+        String paperLore = "";
+        if(paperIdentifier != null){
+            paperLore = PaperDataManager.papers.get(paperIdentifier).getName();
+            map.put("paper",Arrays.asList(paperLore));
+        }
+
+        String soulName = InfiniteSoulManager.getSoulName(equipmentItem);
+        if(soulName != null){
+            map.put("soul",Arrays.asList(soulName));
+        }
+
+
+        return map;
+    }
     /**
      * 移除原淬炼信息方法，为装备上星方法的辅助方法(先移除，再上星)
      */
@@ -256,6 +382,7 @@ public class EquipmentDataManager {
             displayName = displayName.replace(suffix,"");
             im.setDisplayName(displayName);
         }
+        //移除淬炼lore
         List<String> lores = im.getLore();
         if (lores == null) {
             lores = new ArrayList<>();
@@ -275,8 +402,61 @@ public class EquipmentDataManager {
         }
 
         lores.removeAll(extractLore);
+
+        Map<String, List<String>> equipmentInfoLore = getEquipmentInfoLore(this.equipmentItem);
+        if(equipmentInfoLore.containsKey("spestone")) {
+            List<String> speStoneLore = equipmentInfoLore.get("spestone");
+            for (String s : speStoneLore) {
+                lores.remove(s);
+            }
+        }
+
+        if(equipmentInfoLore.containsKey("paper")) {
+            List<String> paperLore = equipmentInfoLore.get("paper");
+            lores.removeAll(paperLore);
+        }
+
+        if(equipmentInfoLore.containsKey("soul")) {
+            List<String> soulLore = equipmentInfoLore.get("soul");
+            lores.removeAll(soulLore);
+        }
+
+
         im.setLore(lores);
         this.equipmentItem.setItemMeta(im);
+
+
+
+//        //移除宝石lore
+//        List<SpeStone> speStones = SpecialStoneDataManager.getSpeStones(equipmentItem);
+//        if(!speStones.isEmpty()){
+//            SpecialStoneDataManager.removeNowSpeStoneLore(speStones,equipmentItem);
+//        }
+//
+//        //移除保护符lore
+//        String paperIdentifier = PaperDataManager.getPaperIdentifier(equipmentItem);
+//        if(paperIdentifier != null){
+//            ProtectPaper protectPaper = PaperDataManager.papers.get(paperIdentifier);
+//            ItemMeta im2 = equipmentItem.getItemMeta();
+//            List<String> lore = im2.getLore();
+//            lore.remove(protectPaper.getName());
+//            im2.setLore(lore);
+//            this.equipmentItem.setItemMeta(im2);
+//        }
+//
+//        //无限耐久精魂lore
+//        String soulName = InfiniteSoulManager.getSoulName(equipmentItem);
+//        if(soulName != null){
+//            ItemMeta im3 = equipmentItem.getItemMeta();
+//            List<String> lore = im3.getLore();
+//            lore.remove(soulName);
+//            im3.setLore(lore);
+//            this.equipmentItem.setItemMeta(im3);
+//        }
+
+
+
+
         NBT.modify(equipmentItem,nbt -> {
             nbt.removeKey("refinement");
         });
@@ -577,7 +757,7 @@ public class EquipmentDataManager {
             }
         }
         //装备
-        int minLevel = 18;
+        int minLevel = 100000;
         for (ItemStack armor : armors) {
             EquipmentDataManager manager = new EquipmentDataManager(armor);
             int equipmentLevel = manager.carifyEquipmentLevel();
