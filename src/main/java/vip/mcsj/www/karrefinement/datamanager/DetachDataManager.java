@@ -107,6 +107,7 @@ public class DetachDataManager {
         im.setDisplayName(speStoneDetachItem.getName());
         im.setLore(speStoneDetachItem.getLore());
         item.setItemMeta(im);
+        ReflectionUtils.setCustomModelData(item,speStoneDetachItem.getCmd());
         NBT.modify(item,nbt -> {
             nbt.setInteger("spestonedetachitem",1);
         });
@@ -258,7 +259,9 @@ public class DetachDataManager {
         lore.removeAll(equipmentLore);
         itemMeta.setLore(lore);
         equipmentItem.setItemMeta(itemMeta);
-
+        NBT.modify(equipmentItem,nbt -> {
+            nbt.removeKey(speStone.getNbtKey());
+        });
         KarUtils.removeItemRefinement(detachItem);
 
         ItemStack speStonePiece = createSpeStonePiece();

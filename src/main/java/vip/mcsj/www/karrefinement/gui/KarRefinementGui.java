@@ -211,10 +211,7 @@ public class KarRefinementGui {
         if (!EquipmentDataManager.isEquipmentLegal(itemEquipment)) {
             return;
         }
-        if(itemEquipment.getEnchantments().containsKey(Enchantment.THORNS)){
-            p.sendMessage("§c带有荆棘附魔的装备无法淬炼！");
-            return;
-        }
+
         String equipmentIdentifier = EquipmentDataManager.getEquipmentIdentifier(itemEquipment);
         Stone stone = StoneDataManager.getStone(itemStone);
         EquipmentDataManager equipmentManager = new EquipmentDataManager(itemEquipment,p);

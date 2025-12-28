@@ -120,13 +120,22 @@ public class InfiniteSoulManager {
         }
 
         if(nowLevel == 0){
-            lores = equipmentMeta.getLore();
+            lores = new ArrayList<>();
+            List<String> metaLore = equipmentMeta.getLore();
 
-            lores.clear();
 
             Map<String, List<String>> equipmentInfoLore = EquipmentDataManager.getEquipmentInfoLore(equipmentItem);
+
+            for (String s : equipmentInfoLore.keySet()) {
+                List<String> strList = equipmentInfoLore.get(s);
+                metaLore.removeAll(strList);
+            }
+
             List<String> sortOrder = EquipmentDataManager.sortOrder;
             for (String s : sortOrder) {
+                if(s.equals("{lore}")){
+                    lores.addAll(metaLore);
+                }
                 if(s.equals("{refinement}")){
                     if(equipmentInfoLore.containsKey("refinement")){
                         lores.addAll(equipmentInfoLore.get("refinement"));

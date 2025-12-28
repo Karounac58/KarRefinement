@@ -224,17 +224,27 @@ public class SpecialStoneDataManager {
      */
     private static void addItemSpeStoneInfo(SpeStone speStone,List<SpeStone> originSpeStoneList,ItemStack equipmentItem) {
         ItemMeta im = equipmentItem.getItemMeta();
-        List<String> lores = im.getLore();
-        if (lores == null) {
-            lores = new ArrayList<>();
-        }else{
-            lores.clear();
+        //获取淬炼lore
+        List<String> lores = new ArrayList<>();
+        List<String> metaLore = im.getLore();
+        if (metaLore == null) {
+            metaLore = new ArrayList<>();
         }
 
         Map<String, List<String>> equipmentInfoLore = EquipmentDataManager.getEquipmentInfoLore(equipmentItem);
 
+        for (String s : equipmentInfoLore.keySet()) {
+            List<String> strList = equipmentInfoLore.get(s);
+            metaLore.removeAll(strList);
+        }
+
         List<String> sortOrder = EquipmentDataManager.sortOrder;
         for (String s : sortOrder) {
+
+            if(s.equals("{lore}")){
+                lores.addAll(metaLore);
+            }
+
             if(s.equals("{refinement}")){
                 if(equipmentInfoLore.containsKey("refinement")){
                     lores.addAll(equipmentInfoLore.get("refinement"));

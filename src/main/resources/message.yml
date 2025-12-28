@@ -38,6 +38,7 @@ detach_failed: "§c在卸下道具的过程中出现了意外！你得到了保�
 detach_disable: "§c此装备无道具或道具不可被拆卸!"
 
 adhesive_maxlevel: "§c§l无法合成更高级的宝石"
+adhesive_notenoughnum: "§c§l宝石数量不够"
 adhesive_success: "§a成功合成{spestone}"
 adhesive_failed: "§c合成失败,返还{num}个宝石"
 

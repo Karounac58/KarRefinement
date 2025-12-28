@@ -1,5 +1,7 @@
 package vip.mcsj.www.karrefinement.main.listener;
 
+import de.tr7zw.nbtapi.NBTItem;
+import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -29,11 +31,12 @@ public class KarCompoundPieceListener implements Listener {
 
         if(KarCompoundPieceGui.cpItems.get("ConfirmButton").getSlots().contains(e.getSlot())){
             ItemStack itemPiece = inv.getItem(KarCompoundPieceGui.originSlot);
-            item = KarCompoundPieceGui.karCompoundPieceMethod(itemPiece,p);
-            if(item != null){
+
+            if(KarCompoundPieceGui.judgeInventoryClickMethod(itemPiece,p)){
+                item = KarCompoundPieceGui.karCompoundPieceMethod(itemPiece,p);
                 ItemStack item1 = inv.getItem(KarCompoundPieceGui.afterSlot);
-                if(item1.isSimilar(item)){
-                    item.setAmount(item1.getAmount()+1);
+                if (item1 != null && item1.isSimilar(item)) {
+                    item.setAmount(item1.getAmount() + 1);
                 }
                 inv.setItem(KarCompoundPieceGui.afterSlot, item);
                 p.sendMessage(Message.messages.get("compoundpiece_success").replace("{item}", item.getItemMeta().getDisplayName()));
@@ -59,14 +62,15 @@ public class KarCompoundPieceListener implements Listener {
 
         if(KarCompoundPieceGui.cpItems.get("ConfirmButton").getSlots().contains(e.getSlot())){
             ItemStack itemPiece = inv.getItem(KarCompoundPieceGui.originSlot);
-            item = KarCompoundPieceGui.karCompoundPieceMethod2(itemPiece,p);
-            if(item == null){
+
+            if(!KarCompoundPieceGui.judgeInventoryClickMethod2(itemPiece,p) && !KarCompoundPieceGui.judgeInventoryClickMethod(itemPiece,p)){
                 p.sendMessage(Message.messages.get("compoundpiece_failed"));
                 p.playSound(p.getLocation(), Sound.BLOCK_ANVIL_BREAK, 1, 1);
-            }else{
+            }else if(KarCompoundPieceGui.judgeInventoryClickMethod2(itemPiece,p)){
+                item = KarCompoundPieceGui.karCompoundPieceMethod2(itemPiece,p);
                 ItemStack item1 = inv.getItem(KarCompoundPieceGui.afterSlot);
-                if(item1.isSimilar(item)){
-                    item.setAmount(item1.getAmount()+1);
+                if (item1 != null && item1.isSimilar(item)) {
+                    item.setAmount(item1.getAmount() + 1);
                 }
                 inv.setItem(KarCompoundPieceGui.afterSlot, item);
                 p.sendMessage(Message.messages.get("compoundpiece_success").replace("{item}", item.getItemMeta().getDisplayName()));

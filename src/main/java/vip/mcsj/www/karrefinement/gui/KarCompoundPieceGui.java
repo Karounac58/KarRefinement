@@ -108,19 +108,16 @@ public class KarCompoundPieceGui {
 
 
     public static ItemStack karCompoundPieceMethod(ItemStack itemPieces, Player p){
-        if(judgeInventoryClickMethod(itemPieces, p)) {
-            int level = DetachDataManager.getPaperPieceLevel(itemPieces);
+        int level = DetachDataManager.getPaperPieceLevel(itemPieces);
 
-            String paperIdentifier = PaperDataManager.getPaperIdentifier(level);
+        String paperIdentifier = PaperDataManager.getPaperIdentifier(level);
 
-            Detach detach = DetachDataManager.paperDetachs.get(paperIdentifier);
+        Detach detach = DetachDataManager.paperDetachs.get(paperIdentifier);
 
-            int compound = detach.getCompound();
-            KarUtils.removeItemRefinement(itemPieces, compound);
-            PaperDataManager pdm = new PaperDataManager(paperIdentifier);
-            return pdm.createProtectedPaper();
-        }
-        return null;
+        int compound = detach.getCompound();
+        KarUtils.removeItemRefinement(itemPieces, compound);
+        PaperDataManager pdm = new PaperDataManager(paperIdentifier);
+        return pdm.createProtectedPaper();
     }
 
     //宝石碎片判断
@@ -147,21 +144,18 @@ public class KarCompoundPieceGui {
 
     //宝石碎片合成
     public static ItemStack karCompoundPieceMethod2(ItemStack itemPieces, Player p){
-        if(judgeInventoryClickMethod2(itemPieces, p)) {
-            List<Object> speStonePieceInfo = DetachDataManager.getSpeStonePieceInfo(itemPieces);
+        List<Object> speStonePieceInfo = DetachDataManager.getSpeStonePieceInfo(itemPieces);
 
-            int level = (int)speStonePieceInfo.get(0);
+        int level = (int)speStonePieceInfo.get(0);
 
-            String speStoneIdentifier = (String)speStonePieceInfo.get(1);
+        String speStoneIdentifier = (String)speStonePieceInfo.get(1);
 
-            Detach detach = DetachDataManager.speStoneDetachs.get(speStoneIdentifier);
+        Detach detach = DetachDataManager.speStoneDetachs.get(speStoneIdentifier);
 
-            int compound = detach.getCompound();
-            KarUtils.removeItemRefinement(itemPieces, compound);
-            SpecialStoneDataManager ssdm = new SpecialStoneDataManager(speStoneIdentifier);
-            return ssdm.createSpeStone();
-        }
-        return null;
+        int compound = detach.getCompound();
+        KarUtils.removeItemRefinement(itemPieces, compound);
+        SpecialStoneDataManager ssdm = new SpecialStoneDataManager(speStoneIdentifier);
+        return ssdm.createSpeStone();
     }
 
     public static class KarCompoundPieceGuiInvHolder implements InventoryHolder {

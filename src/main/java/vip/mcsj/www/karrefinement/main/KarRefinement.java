@@ -1,10 +1,7 @@
 package vip.mcsj.www.karrefinement.main;
 
 import net.milkbowl.vault.economy.Economy;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.Particle;
+import org.bukkit.*;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.FurnaceRecipe;
@@ -30,13 +27,14 @@ import vip.mcsj.www.karrefinement.version.CustomParticle;
 import vip.mcsj.www.karrefinement.version.CustomPath;
 import vip.mcsj.www.karrefinement.version.CustomSounds;
 
+import java.lang.reflect.Constructor;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class KarRefinement extends JavaPlugin{
+public class KarRefinement extends JavaPlugin {
     private static final Logger log = Logger.getLogger("Minecraft");
     public static KarRefinement instance;
     //12星淬炼特效
@@ -67,8 +65,10 @@ public class KarRefinement extends JavaPlugin{
 
     public static boolean sxv3Enable = false;
     @Override
-    public void onEnable(){
+    public void onEnable() {
         instance = this;
+
+
         log.info(String.format("[%s] - 插件启动中...",getDescription().getName()));
         if (!setupEconomy() ) {
             log.severe(String.format("[%s] - 未找到Vault依赖！停止运行.", getDescription().getName()));
@@ -88,6 +88,7 @@ public class KarRefinement extends JavaPlugin{
         Bukkit.getPluginManager().registerEvents(new KarCompoundPieceListener(),this);
         Bukkit.getPluginManager().registerEvents(new AdhesiveListener(),this);
         Bukkit.getPluginManager().registerEvents(new KarPotionListener(),this);
+        Bukkit.getPluginManager().registerEvents(new JoinMessageListener(),this);
         Bukkit.getPluginCommand("karrefinement").setExecutor(new KarCommandExecutor());
         saveDefaultConfig();
         ScriptRunnable.enbaleScript = KarRefinement.instance.getConfig().getBoolean("settings.enablescript");
@@ -241,44 +242,118 @@ public class KarRefinement extends JavaPlugin{
         KarCompoundPieceGui.init();
     }
 
-    public void setRecipe(){
+    public void setRecipe() {
+        int index = 0; // 添加索引确保唯一
         for (ItemType type : types) {
-            FurnaceRecipe recipe = new FurnaceRecipe(type.toItemStack(), type.mData);
-            for (int durability = 0; durability <= type.type.getMaxDurability(); durability++) {
-                recipe.setInput(type.type, durability);
+            ItemStack result = type.toItemStack();
+
+            FurnaceRecipe recipe = createFurnaceRecipe(type, index);
+            if (recipe == null) continue;
+
+            if (isLegacyVersion()) {
+                for (int durability = 0; durability <= type.type.getMaxDurability(); durability++) {
+                    recipe.setInput(type.type, durability);
+                    try {
+                        instance.getServer().addRecipe(recipe);
+                    } catch (IllegalStateException ex) {
+                    }
+                }
+            } else {
                 try {
                     instance.getServer().addRecipe(recipe);
                 } catch (IllegalStateException ex) {
+                    // 忽略重复配方警告
                 }
+            }
+            index++;
+        }
+    }
+
+    @SuppressWarnings({"deprecation", "unchecked", "rawtypes"})
+    private FurnaceRecipe createFurnaceRecipe(ItemType type, int index) {
+        ItemStack result = type.toItemStack();
+
+        if (isLegacyVersion()) {
+            return new FurnaceRecipe(result, type.type);
+        } else {
+            try {
+                Class<?> namespacedKeyClass = Class.forName("org.bukkit.NamespacedKey");
+
+                Constructor<?> keyConstructor = namespacedKeyClass.getConstructor(
+                        org.bukkit.plugin.Plugin.class,
+                        String.class
+                );
+
+                // 使用 材料名 + typeInBag + 索引 确保唯一
+                String uniqueId = "smelt_" + type.type.name().toLowerCase() + "_" + type.typeInBag.toLowerCase() + "_" + index;
+                Object key = keyConstructor.newInstance(instance, uniqueId);
+
+                Constructor<FurnaceRecipe> recipeConstructor = FurnaceRecipe.class.getConstructor(
+                        namespacedKeyClass,
+                        ItemStack.class,
+                        Material.class,
+                        float.class,
+                        int.class
+                );
+
+                return recipeConstructor.newInstance(key, result, type.type, 0.1f, 200);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
             }
         }
     }
 
-    public static class ItemType{
+    private static Boolean legacy = null;
+
+    private boolean isLegacyVersion() {
+        if (legacy == null) {
+            try {
+                // NamespacedKey 在 1.12 存在但 FurnaceRecipe 的新构造函数在 1.13+ 才有
+                FurnaceRecipe.class.getConstructor(
+                        NamespacedKey.class,
+                        ItemStack.class,
+                        Material.class,
+                        float.class,
+                        int.class
+                );
+                legacy = false;
+            } catch (NoSuchMethodException e) {
+                legacy = true;
+            }
+        }
+        return legacy;
+    }
+
+    public static class ItemType {
 
         public String typeInBag;
         public String baseType;
         public Material type;
-        public MaterialData mData;
+        private byte data = 0;
 
         public ItemType(String typeInBag, String baseType) {
             this.typeInBag = typeInBag;
             this.baseType = baseType;
+
             if (baseType.contains(":")) {
                 String[] args = baseType.split(":");
                 String strType = args[0];
                 String strData = args[1];
-                type = Material.valueOf(strType);
-                int data = Integer.parseInt(strData);
-                mData = new MaterialData(type, (byte) data);
+                type = Material.matchMaterial(strType);
+                data = (byte) Integer.parseInt(strData);
             } else {
-                type = Material.getMaterial(baseType);
-                mData = new MaterialData(type);
+                type = Material.matchMaterial(baseType);
             }
         }
 
+        @SuppressWarnings("deprecation")
         public ItemStack toItemStack() {
-            return mData.toItemStack(1);
+            ItemStack item = new ItemStack(type, 1);
+            if (data != 0) {
+                item.setDurability(data);
+            }
+            return item;
         }
     }
 }

@@ -1,4 +1,3 @@
-#主lore中必须包含"装备淬炼"这四个字
 mainLore: "§c§l§m  §6§l§m  §e§l§m  §a§l§m  §b§l§m  §e§l装备淬炼§b§l§m  §a§l§m  §e§l§m  §6§l§m  §c§l§m  "
 speStoneLore: "§c§l§m  §6§l§m  §e§l§m  §a§l§m  §b§l§m  §e§l宝石镶嵌§b§l§m  §a§l§m  §e§l§m  §6§l§m  §c§l§m  "
 # 是否开启物品名+几的等级信息
@@ -9,13 +8,29 @@ DisplayNameInfo:
   enabled: false
   suffix: "§a§l+{level}" # 物品名后缀,{level}为淬炼等级
 settings:
-  enablescript: false
+  enablescript: true
   # 淬炼、宝石镶嵌、保护符镶嵌、精魂镶嵌后的lore顺序
   SortOrder:
+    - "{lore}"
     - "{refinement}"
     - "{spestone}"
     - "{paper}"
     - "{soul}"
+  JoinMessage:
+    1:
+      permission: "karrefinement.joinmessage.1"
+      #支持placeholderapi
+      msg:
+        - "§c§l§m  §6§l§m  §e§l§m  §a§l§m  §b§l§m  §e§l欢迎消息§b§l§m  §a§l§m  §e§l§m  §6§l§m  §c§l§m  "
+        - "§c§l尊贵的一星套装拥有者{player}加入了游戏!"
+        - "§c§l§m  §6§l§m  §e§l§m  §a§l§m  §b§l§m  §e§l欢迎消息§b§l§m  §a§l§m  §e§l§m  §6§l§m  §c§l§m  "
+    15:
+      permission: "karrefinement.joinmessage.15"
+      #支持placeholderapi
+      msg:
+        - "§c§l§m  §6§l§m  §e§l§m  §a§l§m  §b§l§m  §e§l欢迎消息§b§l§m  §a§l§m  §e§l§m  §6§l§m  §c§l§m  "
+        - "§c§l尊贵的十五星套装拥有者{player}加入了游戏!"
+        - "§c§l§m  §6§l§m  §e§l§m  §a§l§m  §b§l§m  §e§l欢迎消息§b§l§m  §a§l§m  §e§l§m  §6§l§m  §c§l§m  "
   data:
     # 数据存储方式：SQLite或MySQL
     storage: SQLite

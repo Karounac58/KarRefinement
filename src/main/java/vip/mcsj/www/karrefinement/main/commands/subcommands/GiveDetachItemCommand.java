@@ -33,6 +33,8 @@ public class GiveDetachItemCommand extends KarAbstractGiveCommand {
         }
         if(args[1].equalsIgnoreCase("保护符拆卸工具")){
             p.getInventory().addItem(DetachDataManager.createPaperDetachItem());
+        }else if(args[1].equalsIgnoreCase("宝石拆卸工具")){
+            p.getInventory().addItem(DetachDataManager.createSpeStoneDetachItem());
         }
 
         return true;

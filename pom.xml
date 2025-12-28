@@ -6,7 +6,7 @@
 
     <groupId>vip.mcsj.www</groupId>
     <artifactId>KarRefinement</artifactId>
-    <version>v1.3.5-SNAPSHOT</version>
+    <version>v1.3.10-SNAPSHOT</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -120,7 +120,6 @@
             <scope>system</scope>
             <systemPath>${basedir}/libs/SX-Attribute-3.8.5-all.jar</systemPath>
         </dependency>
-
     </dependencies>
 
     <build>

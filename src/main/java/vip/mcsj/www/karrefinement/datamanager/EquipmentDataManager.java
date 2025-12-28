@@ -3,15 +3,14 @@ package vip.mcsj.www.karrefinement.datamanager;
 import de.tr7zw.nbtapi.NBT;
 import de.tr7zw.nbtapi.NBTItem;
 import org.bukkit.Material;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import vip.mcsj.www.karrefinement.main.KarRefinement;
-import vip.mcsj.www.karrefinement.object.Level;
-import vip.mcsj.www.karrefinement.object.ProtectPaper;
-import vip.mcsj.www.karrefinement.object.SpeStone;
-import vip.mcsj.www.karrefinement.object.Stone;
+import vip.mcsj.www.karrefinement.object.*;
 import vip.mcsj.www.karrefinement.utils.FileUtil;
 import vip.mcsj.www.karrefinement.utils.KarUtils;
 import vip.mcsj.www.karrefinement.utils.RandomLoreUtils;
@@ -38,6 +37,8 @@ public class EquipmentDataManager {
     public static String speStoneLore = "";
 
     public static List<String> sortOrder =  new ArrayList<>();
+
+    public static Map<String, JoinMessage>  joinMessage = new HashMap<>();
 
     public static boolean enableDisplayNameInfo = true;
     public static String displayNameSuffix = "";
@@ -88,7 +89,13 @@ public class EquipmentDataManager {
         enableDisplayNameInfo = KarRefinement.instance.getConfig().getBoolean("DisplayNameInfo.enabled");
         displayNameSuffix = KarRefinement.instance.getConfig().getString("DisplayNameInfo.suffix");
         sortOrder = KarRefinement.instance.getConfig().getStringList("settings.SortOrder");
-
+        ConfigurationSection jmCS = KarRefinement.instance.getConfig().getConfigurationSection("settings.JoinMessage");
+        Set<String> keys1 = jmCS.getKeys(false);
+        for (String key : keys1) {
+            String permission =  jmCS.getString(key+".permission");
+            List<String> message = jmCS.getStringList(key+".msg");
+            joinMessage.put(key,new JoinMessage(permission,message));
+        }
         YamlConfiguration chineseNameYaml = FileUtil.getCustomFileYaml("chinesename.yml");
         chineseNameYaml.getKeys(false).forEach(key -> {
             chinesenames.put(key,chineseNameYaml.getString(key));
@@ -239,11 +246,10 @@ public class EquipmentDataManager {
             im.setDisplayName(displayName);
         }
         //获取淬炼lore
-        List<String> lores = im.getLore();
-        if (lores == null) {
-            lores = new ArrayList<>();
-        }else{
-            lores.clear();
+        List<String> lores = new ArrayList<>();
+        List<String> metaLore = im.getLore();
+        if (metaLore == null) {
+            metaLore = new ArrayList<>();
         }
 
 
@@ -253,37 +259,17 @@ public class EquipmentDataManager {
             isRandomLore = true;
         }
 
-//        //获取宝石lore
-//        List<SpeStone> speStones = SpecialStoneDataManager.getSpeStones(equipmentItem);
-//        List<String> speStoneLore = new ArrayList<>();
-//        if(!speStones.isEmpty()){
-//            speStoneLore.add(this.speStoneLore);
-//            for (SpeStone speStone : speStones) {
-//                speStoneLore.addAll(speStone.getEquipmentLore());
-//            }
-//        }
-//
-//
-//        //获取保护符lore
-//        String paperIdentifier = PaperDataManager.getPaperIdentifier(equipmentItem);
-//        String paperLore = "";
-//        if(paperIdentifier != null){
-//            ProtectPaper protectPaper = PaperDataManager.papers.get(paperIdentifier);
-//            paperLore = protectPaper.getName();
-//        }
-//
-//        //获取精魂lore
-//        String soulName = InfiniteSoulManager.getSoulName(equipmentItem);
-//        String soulLore = "";
-//        if(soulName != null){
-//            soulLore = soulName;
-//        }
-
         Map<String, List<String>> equipmentInfoLore = getEquipmentInfoLore(this.equipmentItem);
-
+        for (String s : equipmentInfoLore.keySet()) {
+            List<String> strList = equipmentInfoLore.get(s);
+            metaLore.removeAll(strList);
+        }
 
         //排序
         for (String s : sortOrder) {
+            if(s.equals("{lore}")){
+                lores.addAll(metaLore);
+            }
             if(s.equals("{refinement}")){
                 //添加淬炼lore
                 lores.add(EquipmentDataManager.mainLore);

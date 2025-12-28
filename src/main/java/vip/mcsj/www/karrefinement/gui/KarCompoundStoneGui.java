@@ -194,7 +194,12 @@ public class KarCompoundStoneGui{
                 p.playSound(p.getLocation(), KarRefinement.cs.getSounds().get(0), 1, 1);
                 inv.setItem(16,subtractItemAmount(inv.getItem(16)));
                 inv.setItem(34,subtractItemAmount(inv.getItem(34)));
-                inv.setItem(19,sdm.createStone());
+                ItemStack item = inv.getItem(19);
+                ItemStack stone = sdm.createStone();
+                if(item != null && item.isSimilar(stone)){
+                    stone.setAmount(item.getAmount() + 1);
+                }
+                inv.setItem(19,stone);
                 return com.getHigherStoneKey();
             }
         }else{

@@ -56,6 +56,7 @@ public class ReloadCommand extends KarAbstractCommand {
         PotionDataManager.init();
         Message.init();
         KarTakeItemGui.initItems();
+        KarRefinement.instance.reloadConfig();
         ScriptRunnable.enbaleScript = KarRefinement.instance.getConfig().getBoolean("settings.enablescript");
     }
 }
