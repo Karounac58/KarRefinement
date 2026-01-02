@@ -35,6 +35,7 @@ public class CommandFactory {
         register(new SetCommand());
         register(new DarkChangeCommand());
         register(new GetNbtCommand());
+        register(new GiveFurnaceCommand());
     }
 
     private void register(KarAbstractCommand command){

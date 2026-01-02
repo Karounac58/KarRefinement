@@ -297,6 +297,7 @@ public class KarExecutor implements CommandExecutor, TabCompleter {
             completions.add("giveadhesive");
             completions.add("givedetachitem");
             completions.add("givepotion");
+            completions.add("givefurnace");
             completions.add("setnbt");
             completions.add("opengui");
             completions.add("openforgegui");
@@ -331,6 +332,9 @@ public class KarExecutor implements CommandExecutor, TabCompleter {
                     break;
                 case "givesoul":
                     completions.add("<精魂名>");
+                    break;
+                case "givefurnace":
+                    completions.add("<熔炉名>");
                     break;
                 case "setnbt":
                     completions.add("<nbt键名> <nbt值>");

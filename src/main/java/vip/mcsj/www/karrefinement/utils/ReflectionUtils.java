@@ -1,6 +1,7 @@
 package vip.mcsj.www.karrefinement.utils;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import vip.mcsj.www.karrefinement.object.MCVersions;
@@ -45,20 +46,32 @@ public class ReflectionUtils {
         return null;
     }
 
-    public static ItemStack setCustomModelData(ItemStack item,int cmd){
-        ItemMeta itemMeta = item.getItemMeta();
-        if(getSpigotVersion()[1] < 14){
+    public static ItemStack setCustomModelData(ItemStack item, int cmd) {
+        if (item == null || item.getType() == Material.AIR) {
             return item;
         }
+
+        int[] version = getSpigotVersion();
+        if (version[1] < 14) {
+            return item;
+        }
+
+        ItemMeta itemMeta = item.getItemMeta();
+        if (itemMeta == null) {
+            return item;
+        }
+
         try {
-            Class<?> aClass = itemMeta.getClass();
-            Method setCustomModelData = aClass.getMethod("setCustomModelData", Integer.class);
-            setCustomModelData.setAccessible(true);
-            setCustomModelData.invoke(itemMeta,cmd);
+            // 从 ItemMeta 接口获取方法，而非实现类
+            Method setCustomModelData = ItemMeta.class.getMethod("setCustomModelData", Integer.class);
+            setCustomModelData.invoke(itemMeta, cmd);
             item.setItemMeta(itemMeta);
-        }catch (Exception e){
+        } catch (NoSuchMethodException e) {
+            // 1.14 以下版本没有此方法，忽略
+        } catch (Exception e) {
             e.printStackTrace();
         }
+
         return item;
     }
 

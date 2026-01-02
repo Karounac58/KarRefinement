@@ -88,8 +88,8 @@ public class KarRefinementGui {
         ItemMeta itemMeta = furance.getItemMeta();
         itemMeta.setDisplayName(PlaceholderAPI.setPlaceholders(p,invItem.getName()));
         itemMeta.setLore(PlaceholderAPI.setPlaceholders(p,invItem.getLore()));
-        ReflectionUtils.setCustomModelData(furance, invItem.getCustomModelData());
         furance.setItemMeta(itemMeta);
+        ReflectionUtils.setCustomModelData(furance, invItem.getCustomModelData());
         if(KarRefinement.pv.equals(MCVersions.v1122)){
             if(furance.getType() == Material.valueOf("STAINED_GLASS_PANE")){
                 KarUtils.createColorPane(furance,invItem.getData());
@@ -161,7 +161,7 @@ public class KarRefinementGui {
                         e.printStackTrace();
                     }
                     if (i == size - 1) {
-                        KarRefinementMethod(itemStone, itemEquipment, p);
+                        KarRefinementMethod(itemStone, itemEquipment, p,0.0);
                         setInvInitial(inv,p);
                         //标识已淬炼完毕
                         KarEventListener.judgeInvRefinementOrNot.put(p, 0);
@@ -200,7 +200,7 @@ public class KarRefinementGui {
      * @param itemEquipment
      * @param
      */
-    public static void KarRefinementMethod(ItemStack itemStone, ItemStack itemEquipment, Player p) {
+    public static void KarRefinementMethod(ItemStack itemStone, ItemStack itemEquipment, Player p,double addProb) {
         Random rand = new Random();
 
         //如果石头不合法，返回
@@ -240,9 +240,9 @@ public class KarRefinementGui {
                     p.playSound(p.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
                     //减去强化石
                     KarUtils.removeItemRefinement(itemStone);
-                    if ((equipmentManager.carifyEquipmentLevel()) >= 6) {
+                    if ((equipmentManager.carifyEquipmentLevel()) >= EquipmentDataManager.broadcastLevel) {
 //                    Bukkit.broadcastMessage("§f[§c淬炼告示§f] §a恭喜玩家 §e" + p.getName() + " §a用 "+stone.getName()+" §a将装备强化至 §6" + equipmentManager.carifyEquipmentLevel() + "星");
-                        Bukkit.broadcastMessage(Message.messages.get("refinement_broadcast").replace("{player}", p.getName()).replace("{stone}", stone.getName()).replace("{level}", equipmentManager.carifyEquipmentLevel() + ""));
+                        Bukkit.broadcastMessage(PlaceholderAPI.setPlaceholders(p,Message.messages.get("refinement_broadcast").replace("{player}", p.getName()).replace("{stone}", stone.getName()).replace("{level}", equipmentManager.carifyEquipmentLevel() + "")));
                     }
                 }
                 KarRefinement.dcdm.updatePlayerDarkChangeData(p,isSuccess,count-1);
@@ -269,16 +269,16 @@ public class KarRefinementGui {
             addSuccess = (double)objects.get(1) * 100;
         }
         //成功
-        if((99-(success + addSuccess)) < decimal.doubleValue()){
+        if((99-(success + addSuccess + addProb)) < decimal.doubleValue()){
             if(equipmentManager.injuryUpStar()){
                 p.sendMessage(Message.messages.get("refinement_upstar"));
                 //Player p = (Player)e.getWhoClicked();
                 p.playSound(p.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
                 //减去强化石
                 KarUtils.removeItemRefinement(itemStone);
-                if ((equipmentManager.carifyEquipmentLevel()) >= 6) {
+                if ((equipmentManager.carifyEquipmentLevel()) >= EquipmentDataManager.broadcastLevel) {
 //                    Bukkit.broadcastMessage("§f[§c淬炼告示§f] §a恭喜玩家 §e" + p.getName() + " §a用 "+stone.getName()+" §a将装备强化至 §6" + equipmentManager.carifyEquipmentLevel() + "星");
-                    Bukkit.broadcastMessage(Message.messages.get("refinement_broadcast").replace("{player}",p.getName()).replace("{stone}",stone.getName()).replace("{level}",equipmentManager.carifyEquipmentLevel()+""));
+                    Bukkit.broadcastMessage(PlaceholderAPI.setPlaceholders(p,Message.messages.get("refinement_broadcast").replace("{player}",p.getName()).replace("{stone}",stone.getName()).replace("{level}",equipmentManager.carifyEquipmentLevel()+"")));
                 }
             }
             //失败

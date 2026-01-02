@@ -202,7 +202,7 @@ public class KarEventListener implements Listener {
 
             Player p1 = (Player)e.getWhoClicked();
             if (KarRefinementGui.judgeInventoryClickMethod(itemStone,itemEquipment,p1)) {
-                KarRefinementGui.KarRefinementMethod(itemStone,itemEquipment,p1);
+                KarRefinementGui.KarRefinementMethod(itemStone,itemEquipment,p1,0.0);
                 closeItems.put(p1,new ItemStack[]{itemStone,itemEquipment});
             }
         }

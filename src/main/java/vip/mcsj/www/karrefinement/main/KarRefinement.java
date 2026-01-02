@@ -106,6 +106,7 @@ public class KarRefinement extends JavaPlugin {
         FileUtil.initCustomFile(customPath.getPath()+"adhesive.yml","adhesive.yml");
         FileUtil.initCustomFile(customPath.getPath()+"potion.yml","potion.yml");
         FileUtil.initCustomFile("message.yml","message.yml");
+        FileUtil.initCustomFile("furnace.yml","furnace.yml");
         //gui数据
         FileUtil.initCustomFile(customPath.getPath()+"gui/compoundgui.yml","gui/compoundgui.yml");
         FileUtil.initCustomFile(customPath.getPath()+"gui/compoundpiecegui.yml","gui/compoundpiecegui.yml");
@@ -137,6 +138,7 @@ public class KarRefinement extends JavaPlugin {
         PotionDataManager.init();
         Message.init();
         KarTakeItemGui.initItems();
+        FurnaceDataManager.init();
         setRecipe();
         String storage = getConfig().getString("settings.data.storage");
         if(storage.equals("SQLite")) {

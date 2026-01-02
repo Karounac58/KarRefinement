@@ -40,6 +40,7 @@ public class ReloadCommand extends KarAbstractCommand {
     }
 
     public void reloadConfig(){
+        KarRefinement.instance.reloadConfig();
         KarRefinement.instance.initGuiData();
         StoneDataManager.init();
         EquipmentDataManager.init();
@@ -56,7 +57,7 @@ public class ReloadCommand extends KarAbstractCommand {
         PotionDataManager.init();
         Message.init();
         KarTakeItemGui.initItems();
-        KarRefinement.instance.reloadConfig();
+        FurnaceDataManager.init();
         ScriptRunnable.enbaleScript = KarRefinement.instance.getConfig().getBoolean("settings.enablescript");
     }
 }

@@ -1,13 +1,21 @@
 package vip.mcsj.www.karrefinement.main.listener;
 
+import de.tr7zw.nbtapi.NBTBlock;
+import de.tr7zw.nbtapi.NBTCompound;
+import de.tr7zw.nbtapi.NBTItem;
+import de.tr7zw.nbtapi.NBTTileEntity;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
 import org.bukkit.block.Furnace;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.inventory.FurnaceBurnEvent;
 import org.bukkit.event.inventory.FurnaceSmeltEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -17,6 +25,7 @@ import org.bukkit.inventory.FurnaceInventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 import vip.mcsj.www.karrefinement.datamanager.EquipmentDataManager;
+import vip.mcsj.www.karrefinement.datamanager.FurnaceDataManager;
 import vip.mcsj.www.karrefinement.datamanager.StoneDataManager;
 import vip.mcsj.www.karrefinement.gui.KarRefinementGui;
 import vip.mcsj.www.karrefinement.main.KarRefinement;
@@ -60,12 +69,22 @@ public class FurnaceListener implements Listener {
         ItemStack smelt = e.getSource();
         Furnace furnace = (Furnace) e.getBlock().getState();
         if (furnace.hasMetadata("FurnaceFuel")) {
+            NBTBlock nbtBlock = new NBTBlock(e.getBlock());
+            double addSuccess = 0.0;
+            if(nbtBlock.getData().hasTag("karfurnace")){
+                int equipmentLevel = EquipmentDataManager.getEquipmentLevel(smelt);
+                String key = nbtBlock.getData().getString("karfurnace");
+                vip.mcsj.www.karrefinement.object.Furnace furnace1 = FurnaceDataManager.furnaces.get(key);
+                if(equipmentLevel >= furnace1.getMinLevel() && equipmentLevel <= furnace1.getMaxLevel()) {
+                    addSuccess = furnace1.getSuccess();
+                }
+            }
             ItemStack stone = (ItemStack) furnace.getMetadata("FurnaceFuel").get(0).value();
             String name = furnace.hasMetadata("FurnaceOwner") ? furnace.getMetadata("FurnaceOwner").get(0).asString() : "";
             Player p = Bukkit.getPlayer(name);
             smelt.setAmount(1);
             ItemStack stone1 = stone.clone();
-            KarRefinementGui.KarRefinementMethod(stone1, smelt, p);
+            KarRefinementGui.KarRefinementMethod(stone1, smelt, p,addSuccess);
             e.setResult(smelt);
             furnace.removeMetadata("FurnaceFuel", KarRefinement.instance);
         } else if (smelt != null && EquipmentDataManager.isEquipmentLegal(smelt)) {
@@ -83,5 +102,45 @@ public class FurnaceListener implements Listener {
                 e.setCancelled(true);
             }
         }
+    }
+
+
+    @EventHandler
+    public void onFurnacePlace(BlockPlaceEvent e) {
+        if(!(e.getBlock().getType().equals(Material.FURNACE))){
+            return;
+        }
+
+        Block block = e.getBlock();
+        ItemStack itemStack = e.getPlayer().getInventory().getItemInMainHand();
+        NBTItem nbtItem = new NBTItem(itemStack);
+        if(!(nbtItem.hasTag("karfurnace"))){
+            return;
+        }
+        String karfurnace = nbtItem.getString("karfurnace");
+
+        BlockState state = block.getState();
+
+        new NBTBlock(block).getData().setString("karfurnace", karfurnace);
+
+        state.update();
+    }
+
+    @EventHandler
+    public void onFurnaceBreak(BlockBreakEvent e) {
+        if(!(e.getBlock().getType().equals(Material.FURNACE))){
+            return;
+        }
+        NBTBlock nbtBlock = new NBTBlock(e.getBlock());
+        if(nbtBlock.getData().hasTag("karfurnace")){
+            String karfurnace = nbtBlock.getData().getString("karfurnace");
+            e.setDropItems(false);
+            e.getPlayer().getInventory().addItem(FurnaceDataManager.createFurnace(karfurnace));
+            nbtBlock.getData().removeKey("karfurnace");
+        }
+
+
+
+
     }
 }

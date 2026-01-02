@@ -7,6 +7,8 @@ speStoneLore: "§c§l§m  §6§l§m  §e§l§m  §a§l§m  §b§l§m  §e§l宝�
 DisplayNameInfo:
   enabled: false
   suffix: "§a§l+{level}" # 物品名后缀,{level}为淬炼等级
+# 淬炼到达多少星时触发全服播报
+broadcastlevel: 6
 settings:
   enablescript: true
   # 淬炼、宝石镶嵌、保护符镶嵌、精魂镶嵌后的lore顺序

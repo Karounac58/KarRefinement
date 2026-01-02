@@ -42,6 +42,9 @@ public class EquipmentDataManager {
 
     public static boolean enableDisplayNameInfo = true;
     public static String displayNameSuffix = "";
+
+    public static int broadcastLevel = 6;
+
     private ItemStack equipmentItem;
 
     private Player p;
@@ -89,6 +92,7 @@ public class EquipmentDataManager {
         enableDisplayNameInfo = KarRefinement.instance.getConfig().getBoolean("DisplayNameInfo.enabled");
         displayNameSuffix = KarRefinement.instance.getConfig().getString("DisplayNameInfo.suffix");
         sortOrder = KarRefinement.instance.getConfig().getStringList("settings.SortOrder");
+        broadcastLevel = KarRefinement.instance.getConfig().getInt("broadcastlevel");
         ConfigurationSection jmCS = KarRefinement.instance.getConfig().getConfigurationSection("settings.JoinMessage");
         Set<String> keys1 = jmCS.getKeys(false);
         for (String key : keys1) {

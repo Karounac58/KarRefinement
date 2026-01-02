@@ -29,6 +29,7 @@ public class HelpCommand extends KarAbstractCommand {
         sender.sendMessage("§e/krf givedetachitem <玩家名> 保护符拆卸工具 —— §b获取保护符拆卸工具");
         sender.sendMessage("§e/krf giveadhesive <玩家名> <粘合剂名> —— §b获取宝石粘合剂");
         sender.sendMessage("§e/krf givepotion <玩家名> <淬炼药水名> —— §b获取淬炼药水");
+        sender.sendMessage("§e/krf givefurnace <玩家名> <熔炉名> —— §b获取淬炼熔炉");
         sender.sendMessage("§e/krf opengui <玩家名> —— §b打开淬炼界面");
         sender.sendMessage("§e/krf openforgegui <玩家名> —— §b打开锻造界面");
         sender.sendMessage("§e/krf opencompoundgui <玩家名> —— §b打开宝石合石界面");
