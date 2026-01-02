@@ -69,14 +69,17 @@ public class FurnaceListener implements Listener {
         ItemStack smelt = e.getSource();
         Furnace furnace = (Furnace) e.getBlock().getState();
         if (furnace.hasMetadata("FurnaceFuel")) {
-            NBTBlock nbtBlock = new NBTBlock(e.getBlock());
             double addSuccess = 0.0;
-            if(nbtBlock.getData().hasTag("karfurnace")){
-                int equipmentLevel = EquipmentDataManager.getEquipmentLevel(smelt);
-                String key = nbtBlock.getData().getString("karfurnace");
-                vip.mcsj.www.karrefinement.object.Furnace furnace1 = FurnaceDataManager.furnaces.get(key);
-                if(equipmentLevel >= furnace1.getMinLevel() && equipmentLevel <= furnace1.getMaxLevel()) {
-                    addSuccess = furnace1.getSuccess();
+            if(FurnaceDataManager.furnaceEnabled){
+                NBTBlock nbtBlock = new NBTBlock(e.getBlock());
+
+                if(nbtBlock.getData().hasTag("karfurnace")){
+                    int equipmentLevel = EquipmentDataManager.getEquipmentLevel(smelt);
+                    String key = nbtBlock.getData().getString("karfurnace");
+                    vip.mcsj.www.karrefinement.object.Furnace furnace1 = FurnaceDataManager.furnaces.get(key);
+                    if(equipmentLevel >= furnace1.getMinLevel() && equipmentLevel <= furnace1.getMaxLevel()) {
+                        addSuccess = furnace1.getSuccess();
+                    }
                 }
             }
             ItemStack stone = (ItemStack) furnace.getMetadata("FurnaceFuel").get(0).value();
@@ -107,9 +110,14 @@ public class FurnaceListener implements Listener {
 
     @EventHandler
     public void onFurnacePlace(BlockPlaceEvent e) {
+        if(!FurnaceDataManager.furnaceEnabled){
+            return;
+        }
         if(!(e.getBlock().getType().equals(Material.FURNACE))){
             return;
         }
+
+
 
         Block block = e.getBlock();
         ItemStack itemStack = e.getPlayer().getInventory().getItemInMainHand();
@@ -128,6 +136,9 @@ public class FurnaceListener implements Listener {
 
     @EventHandler
     public void onFurnaceBreak(BlockBreakEvent e) {
+        if(!FurnaceDataManager.furnaceEnabled){
+            return;
+        }
         if(!(e.getBlock().getType().equals(Material.FURNACE))){
             return;
         }
@@ -138,9 +149,5 @@ public class FurnaceListener implements Listener {
             e.getPlayer().getInventory().addItem(FurnaceDataManager.createFurnace(karfurnace));
             nbtBlock.getData().removeKey("karfurnace");
         }
-
-
-
-
     }
 }

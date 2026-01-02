@@ -15,13 +15,19 @@ import java.util.Map;
 
 public class FurnaceDataManager {
     public static Map<String, Furnace> furnaces = new HashMap<>();
+    public static boolean furnaceEnabled = true;
 
     public static void init(){
         if(!furnaces.isEmpty()){
             furnaces.clear();
         }
         YamlConfiguration yaml = FileUtil.getCustomFileYaml("furnace.yml");
+        furnaceEnabled = yaml.getBoolean("enabled");
+        
         for (String key : yaml.getKeys(false)) {
+            if(key.equals("enabled")){
+                continue;
+            }
             String name = yaml.getString(key+".Name");
             String guiName = yaml.getString(key + ".GuiName");
             int cmd = yaml.getInt(key + ".CustomModelData");

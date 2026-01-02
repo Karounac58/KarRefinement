@@ -2,3 +2,5 @@
 allowAfterItemIsRefinement: true
 # 移星花费,不想耗费则填0
 money: 1000000
+# 允许移星后同时移动宝石和保护符，关闭则会清除
+allowTransformOther: true

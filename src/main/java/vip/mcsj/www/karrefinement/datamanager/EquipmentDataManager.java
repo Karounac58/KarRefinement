@@ -33,6 +33,8 @@ public class EquipmentDataManager {
 
     public static int transformCost = 1000000;
 
+    public static boolean allowTransformOther = true;
+
     public static String mainLore = "";
     public static String speStoneLore = "";
 
@@ -122,6 +124,7 @@ public class EquipmentDataManager {
         YamlConfiguration customFileYaml = FileUtil.getCustomFileYaml("transform.yml");
         allowAfterItemIsRefinement =  customFileYaml.getBoolean("allowAfterItemIsRefinement");
         transformCost = customFileYaml.getInt("money");
+        allowTransformOther =  customFileYaml.getBoolean("allowTransformOther");
     }
 
     /**
@@ -211,6 +214,48 @@ public class EquipmentDataManager {
         removeNowItemRefinementInfo(oldMainLore, oldExtractLore, oldLevelNum);
 
         addItemRefinementInfo(newMainLore, newExtractLore, level);
+
+        return true;
+
+    }
+
+    //
+    public boolean setRefinementLevel(int level,Map<String,List<String>> map,int paperLevel,List<SpeStone> speStones,int soulLevel) {
+        if(level > LevelDataManager.levels.size()) {
+            return false;
+        }
+
+        int oldLevelNum = carifyEquipmentLevel();
+
+        if(oldLevelNum == level) {
+            return false;
+        }
+
+
+        if(level == 0){
+            Level oldLevel = LevelDataManager.levels.get(oldLevelNum - 1);
+            String newEquipmentIdentifier = getEquipmentIdentifier(equipmentItem);
+            List<String> oldMainLore = oldLevel.getMainLore();
+            List<String> oldExtractLore = oldLevel.getExtractLores().get(newEquipmentIdentifier);
+            removeNowItemRefinementInfo(oldMainLore, oldExtractLore, oldLevelNum);
+            return true;
+        }
+        Level newLevel =  LevelDataManager.levels.get(level - 1);
+        String newEquipmentIdentifier = getEquipmentIdentifier(equipmentItem);
+        List<String> newMainLore = newLevel.getMainLore();
+        List<String> newExtractLore = newLevel.getExtractLores().get(newEquipmentIdentifier);
+
+        if(oldLevelNum == 0) {
+            addItemRefinementInfo(newMainLore, newExtractLore, level,map,paperLevel,speStones,soulLevel);
+            return true;
+        }
+        Level oldLevel = LevelDataManager.levels.get(oldLevelNum - 1);
+        List<String> oldMainLore = oldLevel.getMainLore();
+        List<String> oldExtractLore = oldLevel.getExtractLores().get(newEquipmentIdentifier);
+
+        removeNowItemRefinementInfo(oldMainLore, oldExtractLore, oldLevelNum,true);
+
+        addItemRefinementInfo(newMainLore, newExtractLore, level,map,paperLevel,speStones,soulLevel);
 
         return true;
 
@@ -314,6 +359,91 @@ public class EquipmentDataManager {
         judgeSoul(refinementNBTNum);
     }
 
+    private void addItemRefinementInfo(List<String> mainLore, List<String> extractLore, int refinementNBTNum,Map<String,List<String>> map,int paperLevel,List<SpeStone> speStones,int soulLevel) {
+        ItemMeta im = equipmentItem.getItemMeta();
+        if(enableDisplayNameInfo){
+            String displayName = im.hasDisplayName() ? im.getDisplayName() : chinesenames.get(equipmentItem.getType().name());
+            displayName +=  displayNameSuffix.replace("{level}",refinementNBTNum+"");
+            im.setDisplayName(displayName);
+        }
+        //获取淬炼lore
+        List<String> lores = new ArrayList<>();
+        List<String> metaLore = im.getLore();
+        if (metaLore == null) {
+            metaLore = new ArrayList<>();
+        }
+
+
+        boolean isRandomLore = false;
+        if(RandomLoreUtils.isRandomLore(extractLore)){
+            extractLore = RandomLoreUtils.replaceWithRandom(extractLore);
+            isRandomLore = true;
+        }
+
+        Map<String, List<String>> equipmentInfoLore = map;
+        for (String s : equipmentInfoLore.keySet()) {
+            List<String> strList = equipmentInfoLore.get(s);
+            metaLore.removeAll(strList);
+        }
+
+        //排序
+        for (String s : sortOrder) {
+            if(s.equals("{lore}")){
+                lores.addAll(metaLore);
+            }
+            if(s.equals("{refinement}")){
+                //添加淬炼lore
+                lores.add(EquipmentDataManager.mainLore);
+                lores.addAll(mainLore);
+                lores.addAll(extractLore);
+            }
+
+            if(s.equals("{spestone}")){
+                if(equipmentInfoLore.containsKey("spestone")){
+                    lores.addAll(equipmentInfoLore.get("spestone"));
+                }
+            }
+
+            if(s.equals("{paper}")){
+                if(equipmentInfoLore.containsKey("paper")) {
+                    lores.addAll(equipmentInfoLore.get("paper"));
+                }
+            }
+
+            if(s.equals("{soul}")){
+                if(equipmentInfoLore.containsKey("soul")){
+                    lores.addAll(equipmentInfoLore.get("soul"));
+                }
+            }
+        }
+
+
+
+        im.setLore(lores);
+        this.equipmentItem.setItemMeta(im);
+        NBT.modify(this.equipmentItem, nbt -> {
+            nbt.setInteger("refinement", refinementNBTNum);
+        });
+        if(isRandomLore) {
+            RandomLoreUtils.addRandomLoreWithNBT(this.equipmentItem, extractLore);
+        }
+        NBT.modify(this.equipmentItem, nbt -> {
+            nbt.setInteger("protector", paperLevel);
+        });
+
+        for (SpeStone speStone : speStones) {
+            NBT.modify(this.equipmentItem, nbt -> {
+                nbt.setInteger(speStone.getNbtKey(),speStone.getLevel());
+            });
+        }
+
+        NBT.modify(this.equipmentItem, nbt -> {
+            nbt.setInteger("infinite",soulLevel);
+        });
+
+        judgeSoul(refinementNBTNum);
+    }
+
     public static Map<String,List<String>> getEquipmentInfoLore(ItemStack equipmentItem){
 
         Map<String,List<String>> map = new HashMap<>();
@@ -364,7 +494,7 @@ public class EquipmentDataManager {
     /**
      * 移除原淬炼信息方法，为装备上星方法的辅助方法(先移除，再上星)
      */
-    private void removeNowItemRefinementInfo(List<String> mainLore, List<String> extractLore, int refinementNBTNum) {
+    private Map<String,List<String>> removeNowItemRefinementInfo(List<String> mainLore, List<String> extractLore, int refinementNBTNum) {
         ItemMeta im = equipmentItem.getItemMeta();
         if(enableDisplayNameInfo){
             String displayName = im.getDisplayName();
@@ -453,14 +583,123 @@ public class EquipmentDataManager {
         NBT.modify(equipmentItem, nbt -> {
             nbt.removeKey("randomlore");
         });
+
+        return equipmentInfoLore;
     }
 
+    private Map<String,List<String>> removeNowItemRefinementInfo(List<String> mainLore, List<String> extractLore, int refinementNBTNum,boolean isTransform) {
+        ItemMeta im = equipmentItem.getItemMeta();
+        if(enableDisplayNameInfo){
+            String displayName = im.getDisplayName();
+            String suffix = displayNameSuffix.replace("{level}",refinementNBTNum+"");
+            displayName = displayName.replace(suffix,"");
+            im.setDisplayName(displayName);
+        }
+        //移除淬炼lore
+        List<String> lores = im.getLore();
+        if (lores == null) {
+            lores = new ArrayList<>();
+        }
+        int j = 0;
+        for (int i = 0; i < lores.size(); i++) {
+            if (lores.get(i).equals(EquipmentDataManager.mainLore)) {
+                j = i;
+                break;
+            }
+        }
+        lores.remove(j);
+        lores.removeAll(mainLore);
 
+        if(RandomLoreUtils.hasRandomLore(this.equipmentItem)){
+            extractLore = RandomLoreUtils.getRandomLore(this.equipmentItem);
+        }
+
+        lores.removeAll(extractLore);
+
+        Map<String, List<String>> equipmentInfoLore = getEquipmentInfoLore(this.equipmentItem);
+        if(equipmentInfoLore.containsKey("spestone")) {
+            List<String> speStoneLore = equipmentInfoLore.get("spestone");
+            for (String s : speStoneLore) {
+                lores.remove(s);
+            }
+        }
+
+        if(equipmentInfoLore.containsKey("paper")) {
+            List<String> paperLore = equipmentInfoLore.get("paper");
+            lores.removeAll(paperLore);
+        }
+
+        if(equipmentInfoLore.containsKey("soul")) {
+            List<String> soulLore = equipmentInfoLore.get("soul");
+            lores.removeAll(soulLore);
+        }
+
+
+        im.setLore(lores);
+        this.equipmentItem.setItemMeta(im);
+
+
+
+//        //移除宝石lore
+//        List<SpeStone> speStones = SpecialStoneDataManager.getSpeStones(equipmentItem);
+//        if(!speStones.isEmpty()){
+//            SpecialStoneDataManager.removeNowSpeStoneLore(speStones,equipmentItem);
+//        }
+//
+//        //移除保护符lore
+//        String paperIdentifier = PaperDataManager.getPaperIdentifier(equipmentItem);
+//        if(paperIdentifier != null){
+//            ProtectPaper protectPaper = PaperDataManager.papers.get(paperIdentifier);
+//            ItemMeta im2 = equipmentItem.getItemMeta();
+//            List<String> lore = im2.getLore();
+//            lore.remove(protectPaper.getName());
+//            im2.setLore(lore);
+//            this.equipmentItem.setItemMeta(im2);
+//        }
+//
+//        //无限耐久精魂lore
+//        String soulName = InfiniteSoulManager.getSoulName(equipmentItem);
+//        if(soulName != null){
+//            ItemMeta im3 = equipmentItem.getItemMeta();
+//            List<String> lore = im3.getLore();
+//            lore.remove(soulName);
+//            im3.setLore(lore);
+//            this.equipmentItem.setItemMeta(im3);
+//        }
+
+
+
+
+        NBT.modify(equipmentItem,nbt -> {
+            nbt.removeKey("refinement");
+        });
+        NBT.modify(equipmentItem, nbt -> {
+            nbt.removeKey("randomlore");
+        });
+        List<SpeStone> speStones = SpecialStoneDataManager.getSpeStones(equipmentItem);
+        for (SpeStone speStone : speStones) {
+            NBT.modify(equipmentItem, nbt -> {
+                nbt.removeKey(speStone.getNbtKey());
+            });
+        }
+
+
+
+        NBT.modify(equipmentItem, nbt -> {
+           nbt.removeKey("protector");
+        });
+
+        NBT.modify(equipmentItem, nbt -> {
+            nbt.removeKey("infinite");
+        });
+
+        return equipmentInfoLore;
+    }
     /**
      * 根据等级直接去除淬炼信息
      * @param nowLevel
      */
-    public void removeNowItemRefinementInfo(int nowLevel){
+    public Map<String,List<String>> removeNowItemRefinementInfo(int nowLevel){
         Level newlevel = LevelDataManager.levels.get(nowLevel-1);
         String newEquipmentIdentifier = getEquipmentIdentifier(this.equipmentItem);
         List<String> newMainLore = newlevel.getMainLore();
@@ -468,7 +707,7 @@ public class EquipmentDataManager {
         if(RandomLoreUtils.hasRandomLore(this.equipmentItem)){
             newExtractLore = RandomLoreUtils.getRandomLore(this.equipmentItem);
         }
-        removeNowItemRefinementInfo(newMainLore, newExtractLore, nowLevel);
+        return removeNowItemRefinementInfo(newMainLore, newExtractLore, nowLevel,true);
     }
 
 

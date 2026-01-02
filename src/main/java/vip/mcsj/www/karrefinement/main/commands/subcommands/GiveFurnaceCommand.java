@@ -17,6 +17,11 @@ public class GiveFurnaceCommand extends KarAbstractGiveCommand {
             return false;
         }
 
+        if(!FurnaceDataManager.furnaceEnabled){
+            sender.sendMessage( "§c§l淬炼熔炉功能未启用！");
+            return true;
+        }
+
         if(args.length < 2){
             sender.sendMessage(usage);
         }

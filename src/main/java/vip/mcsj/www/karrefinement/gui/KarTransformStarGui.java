@@ -9,10 +9,10 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import vip.mcsj.www.karrefinement.datamanager.EquipmentDataManager;
-import vip.mcsj.www.karrefinement.datamanager.Message;
+import vip.mcsj.www.karrefinement.datamanager.*;
 import vip.mcsj.www.karrefinement.main.KarRefinement;
 import vip.mcsj.www.karrefinement.object.InvItem;
+import vip.mcsj.www.karrefinement.object.SpeStone;
 import vip.mcsj.www.karrefinement.utils.FileUtil;
 
 import java.util.*;
@@ -124,13 +124,26 @@ public class KarTransformStarGui {
             EquipmentDataManager itemManager2 =  new EquipmentDataManager(equipmentItem2);
             int item1Level = itemManager1.carifyEquipmentLevel();
             int item2Level = itemManager2.carifyEquipmentLevel();
+            PaperDataManager pdm = new PaperDataManager(equipmentItem1);
+            int paperLevel = pdm.getPaperLevel();
+
+            List<SpeStone> speStones = SpecialStoneDataManager.getSpeStones(equipmentItem1);
+
+            InfiniteSoulManager ism = new InfiniteSoulManager(equipmentItem1);
+            int soulLevel = ism.getSoulLevel();
+
             //移除淬炼信息
+            Map<String, List<String>> stringListMap = EquipmentDataManager.getEquipmentInfoLore(equipmentItem1);
             itemManager1.removeNowItemRefinementInfo(item1Level);
             //扣钱
             KarRefinement.econ.withdrawPlayer(p,EquipmentDataManager.transformCost);
             p.sendMessage(Message.messages.get("transform_moneycost").replace("{money}",EquipmentDataManager.transformCost+""));
-            for (int i = 0; i < item1Level - item2Level; i++) {
-                itemManager2.injuryUpStar();
+            if(EquipmentDataManager.allowTransformOther){
+                itemManager2.setRefinementLevel(item1Level,stringListMap,paperLevel,speStones,soulLevel);
+            }else {
+                for (int i = 0; i < item1Level - item2Level; i++) {
+                    itemManager2.injuryUpStar();
+                }
             }
             p.sendMessage(Message.messages.get("transform_success"));
             p.playSound(p.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
