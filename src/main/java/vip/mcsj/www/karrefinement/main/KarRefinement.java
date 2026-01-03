@@ -19,6 +19,7 @@ import vip.mcsj.www.karrefinement.effect.ScriptRunnable;
 import vip.mcsj.www.karrefinement.effect.SyncEffectRunnable;
 import vip.mcsj.www.karrefinement.gui.*;
 import vip.mcsj.www.karrefinement.main.listener.*;
+import vip.mcsj.www.karrefinement.object.EquipmentMaterial;
 import vip.mcsj.www.karrefinement.object.MCVersions;
 import vip.mcsj.www.karrefinement.utils.FileUtil;
 import vip.mcsj.www.karrefinement.utils.ReflectionUtils;
@@ -58,12 +59,16 @@ public class KarRefinement extends JavaPlugin {
 
     public static DatabaseManager dm;
 
-    public static List<ItemType> types = new ArrayList<>();
+//    public static List<ItemType> types = new ArrayList<>();
+
+    public static final List<EquipmentMaterial> types = new ArrayList<>();
 
     public static boolean ap2Enable = false;
     public static boolean ap3Enable = false;
 
     public static boolean sxv3Enable = false;
+
+    public static boolean caEnabled = false;
     @Override
     public void onEnable() {
         instance = this;
@@ -77,6 +82,7 @@ public class KarRefinement extends JavaPlugin {
         }
         setupAttributePlus();
         setupSXAttribute();
+        setupCraneAttribute();
 
         Bukkit.getPluginManager().registerEvents(new KarEventListener(),this);
         Bukkit.getPluginManager().registerEvents(new DirectUpgradePaperEvent(),this);
@@ -236,6 +242,13 @@ public class KarRefinement extends JavaPlugin {
         }
     }
 
+    private void setupCraneAttribute(){
+        if(this.getServer().getPluginManager().getPlugin("CraneAttribute") != null) {
+            this.getServer().getConsoleSender().sendMessage("§7[§e" + this.getName() + "§7]§a检测到CraneAttribute插件，属性模块加载");
+            caEnabled = true;
+        }
+    }
+
     public void initGuiData(){
         KarRefinementGui.init();
         KarForgeGui.init();
@@ -246,15 +259,15 @@ public class KarRefinement extends JavaPlugin {
 
     public void setRecipe() {
         int index = 0; // 添加索引确保唯一
-        for (ItemType type : types) {
+        for (EquipmentMaterial type : types) {
             ItemStack result = type.toItemStack();
 
             FurnaceRecipe recipe = createFurnaceRecipe(type, index);
             if (recipe == null) continue;
 
             if (isLegacyVersion()) {
-                for (int durability = 0; durability <= type.type.getMaxDurability(); durability++) {
-                    recipe.setInput(type.type, durability);
+                for (int durability = 0; durability <= type.getMaterial().getMaxDurability(); durability++) {
+                    recipe.setInput(type.getMaterial(), durability);
                     try {
                         instance.getServer().addRecipe(recipe);
                     } catch (IllegalStateException ex) {
@@ -272,11 +285,11 @@ public class KarRefinement extends JavaPlugin {
     }
 
     @SuppressWarnings({"deprecation", "unchecked", "rawtypes"})
-    private FurnaceRecipe createFurnaceRecipe(ItemType type, int index) {
+    private FurnaceRecipe createFurnaceRecipe(EquipmentMaterial type, int index) {
         ItemStack result = type.toItemStack();
 
         if (isLegacyVersion()) {
-            return new FurnaceRecipe(result, type.type);
+            return new FurnaceRecipe(result, type.getMaterial());
         } else {
             try {
                 Class<?> namespacedKeyClass = Class.forName("org.bukkit.NamespacedKey");
@@ -287,7 +300,7 @@ public class KarRefinement extends JavaPlugin {
                 );
 
                 // 使用 材料名 + typeInBag + 索引 确保唯一
-                String uniqueId = "smelt_" + type.type.name().toLowerCase() + "_" + type.typeInBag.toLowerCase() + "_" + index;
+                String uniqueId = "smelt_" + type.getMaterial().name().toLowerCase() + "_" + index;
                 Object key = keyConstructor.newInstance(instance, uniqueId);
 
                 Constructor<FurnaceRecipe> recipeConstructor = FurnaceRecipe.class.getConstructor(
@@ -298,7 +311,7 @@ public class KarRefinement extends JavaPlugin {
                         int.class
                 );
 
-                return recipeConstructor.newInstance(key, result, type.type, 0.1f, 200);
+                return recipeConstructor.newInstance(key, result, type.getMaterial(), 0.1f, 200);
             } catch (Exception e) {
                 e.printStackTrace();
                 return null;
@@ -351,7 +364,7 @@ public class KarRefinement extends JavaPlugin {
 
         @SuppressWarnings("deprecation")
         public ItemStack toItemStack() {
-            ItemStack item = new ItemStack(type, 1);
+            ItemStack item = new ItemStack(type);
             if (data != 0) {
                 item.setDurability(data);
             }

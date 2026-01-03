@@ -1,6 +1,7 @@
 package vip.mcsj.www.karrefinement.effect;
 
 
+import cn.org.bukkit.craneattribute.CraneAttribute;
 import github.saukiya.sxattribute.SXAttribute;
 import github.saukiya.sxattribute.data.attribute.SXAttributeData;
 import java.util.ArrayList;
@@ -69,6 +70,12 @@ public class SyncEffectRunnable implements Runnable {
                 SXAttributeData data = SXAttribute.getApi().loadListData(minLevel.suitEffect.attribute);
                 SXAttribute.getApi().setEntityAPIData(SyncEffectRunnable.class, le.getUniqueId(), data);
             }
+
+            if(KarRefinement.caEnabled){
+                cn.org.bukkit.craneattribute.api.attribute.data.AttributeData attrData = cn.org.bukkit.craneattribute.api.AttributeAPI.getAttrData(le);
+                cn.org.bukkit.craneattribute.api.AttributeAPI.addAttributeSource(attrData,"KarRefinement", minLevel.suitEffect.attribute);
+            }
+
             if (!tmpMap.containsKey(le.getUniqueId())) {
                 le.sendMessage(Message.messages.get("effect_start").replace("{level}",minLevel.getMainLore().get(0)));
                 tmpMap.put(le.getUniqueId(), minLevel);

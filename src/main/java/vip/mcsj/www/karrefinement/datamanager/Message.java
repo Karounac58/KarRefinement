@@ -1,5 +1,6 @@
 package vip.mcsj.www.karrefinement.datamanager;
 
+import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.YamlConfiguration;
 import vip.mcsj.www.karrefinement.utils.FileUtil;
 
@@ -17,7 +18,7 @@ public class Message {
         YamlConfiguration customFileYaml = FileUtil.getCustomFileYaml("message.yml");
         Set<String> keys = customFileYaml.getKeys(false);
         for (String key : keys) {
-            messages.put(key,customFileYaml.getString(key));
+            messages.put(key, ChatColor.translateAlternateColorCodes('&',customFileYaml.getString(key)));
         }
     }
 }

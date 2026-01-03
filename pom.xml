@@ -6,7 +6,7 @@
 
     <groupId>vip.mcsj.www</groupId>
     <artifactId>KarRefinement</artifactId>
-    <version>v1.4.0.3-SNAPSHOT</version>
+    <version>v1.4.0.5-SNAPSHOT</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -119,6 +119,14 @@
             <version>3.8.5</version>
             <scope>system</scope>
             <systemPath>${basedir}/libs/SX-Attribute-3.8.5-all.jar</systemPath>
+        </dependency>
+
+        <dependency>
+            <groupId>cn.org.bukkit.craneattribute</groupId>
+            <artifactId>CraneAttribute</artifactId>
+            <version>0.0.9.2-dev</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/libs/CraneAttribute-0.0.9.2-dev.jar</systemPath>
         </dependency>
     </dependencies>
 

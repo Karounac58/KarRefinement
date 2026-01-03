@@ -67,27 +67,29 @@ public class EquipmentDataManager {
         if(!chinesenames.isEmpty()) {
             chinesenames.clear();
         }
-        YamlConfiguration customFileYaml = FileUtil.getCustomFileYaml("items.yml");
-//        List<String> hand = customFileYaml.getStringList("Hand");
-//        List<String> helmet = customFileYaml.getStringList("Helmet");
-//        List<String> chestPlate = customFileYaml.getStringList("Chestplate");
-//        List<String> leggings = customFileYaml.getStringList("Leggings");
-//        List<String> boots = customFileYaml.getStringList("Boots");
-//
-//        canRefinementEquipment.put("Hand", hand);
-//        canRefinementEquipment.put("Helmet", helmet);
-//        canRefinementEquipment.put("Chestplate", chestPlate);
-//        canRefinementEquipment.put("Leggings", leggings);
-//        canRefinementEquipment.put("Boots", boots);
-        Set<String> keys = customFileYaml.getKeys(false);
-        for (String key : keys) {
-            List<String> stringList = customFileYaml.getStringList(key);
-            canRefinementEquipment.put(key, stringList);
-            for (String s : stringList) {
-                KarRefinement.ItemType type = new KarRefinement.ItemType(key,s);
-                KarRefinement.types.add(type);
-            }
-        }
+//        YamlConfiguration customFileYaml = FileUtil.getCustomFileYaml("items.yml");
+////        List<String> hand = customFileYaml.getStringList("Hand");
+////        List<String> helmet = customFileYaml.getStringList("Helmet");
+////        List<String> chestPlate = customFileYaml.getStringList("Chestplate");
+////        List<String> leggings = customFileYaml.getStringList("Leggings");
+////        List<String> boots = customFileYaml.getStringList("Boots");
+////
+////        canRefinementEquipment.put("Hand", hand);
+////        canRefinementEquipment.put("Helmet", helmet);
+////        canRefinementEquipment.put("Chestplate", chestPlate);
+////        canRefinementEquipment.put("Leggings", leggings);
+////        canRefinementEquipment.put("Boots", boots);
+//        Set<String> keys = customFileYaml.getKeys(false);
+//        for (String key : keys) {
+//            List<String> stringList = customFileYaml.getStringList(key);
+//            canRefinementEquipment.put(key, stringList);
+//            for (String s : stringList) {
+//                KarRefinement.ItemType type = new KarRefinement.ItemType(key,s);
+//                KarRefinement.types.add(type);
+//            }
+//        }
+        EquipmentTypeManager.init();
+
         KarRefinement.instance.reloadConfig();
         mainLore = KarRefinement.instance.getConfig().getString("mainLore");
         speStoneLore = KarRefinement.instance.getConfig().getString("speStoneLore");
@@ -303,7 +305,7 @@ public class EquipmentDataManager {
 
 
         boolean isRandomLore = false;
-        if(RandomLoreUtils.isRandomLore(extractLore)){
+        if(RandomLoreUtils.isRandomLore(extractLore) && extractLore != null){
             extractLore = RandomLoreUtils.replaceWithRandom(extractLore);
             isRandomLore = true;
         }
@@ -427,20 +429,22 @@ public class EquipmentDataManager {
         if(isRandomLore) {
             RandomLoreUtils.addRandomLoreWithNBT(this.equipmentItem, extractLore);
         }
-        NBT.modify(this.equipmentItem, nbt -> {
-            nbt.setInteger("protector", paperLevel);
-        });
+        if(paperLevel != 0) {
+            NBT.modify(this.equipmentItem, nbt -> {
+                nbt.setInteger("protector", paperLevel);
+            });
+        }
 
         for (SpeStone speStone : speStones) {
             NBT.modify(this.equipmentItem, nbt -> {
                 nbt.setInteger(speStone.getNbtKey(),speStone.getLevel());
             });
         }
-
-        NBT.modify(this.equipmentItem, nbt -> {
-            nbt.setInteger("infinite",soulLevel);
-        });
-
+        if(soulLevel != 0) {
+            NBT.modify(this.equipmentItem, nbt -> {
+                nbt.setInteger("infinite", soulLevel);
+            });
+        }
         judgeSoul(refinementNBTNum);
     }
 
@@ -524,23 +528,116 @@ public class EquipmentDataManager {
         lores.removeAll(extractLore);
 
         Map<String, List<String>> equipmentInfoLore = getEquipmentInfoLore(this.equipmentItem);
-        if(equipmentInfoLore.containsKey("spestone")) {
-            List<String> speStoneLore = equipmentInfoLore.get("spestone");
-            for (String s : speStoneLore) {
-                lores.remove(s);
+            if (equipmentInfoLore.containsKey("spestone")) {
+                List<String> speStoneLore = equipmentInfoLore.get("spestone");
+                for (String s : speStoneLore) {
+                    lores.remove(s);
+                }
+            }
+
+            if (equipmentInfoLore.containsKey("paper")) {
+                List<String> paperLore = equipmentInfoLore.get("paper");
+                lores.removeAll(paperLore);
+            }
+
+            if (equipmentInfoLore.containsKey("soul")) {
+                List<String> soulLore = equipmentInfoLore.get("soul");
+                lores.removeAll(soulLore);
+            }
+
+        im.setLore(lores);
+        this.equipmentItem.setItemMeta(im);
+
+
+
+//        //移除宝石lore
+//        List<SpeStone> speStones = SpecialStoneDataManager.getSpeStones(equipmentItem);
+//        if(!speStones.isEmpty()){
+//            SpecialStoneDataManager.removeNowSpeStoneLore(speStones,equipmentItem);
+//        }
+//
+//        //移除保护符lore
+//        String paperIdentifier = PaperDataManager.getPaperIdentifier(equipmentItem);
+//        if(paperIdentifier != null){
+//            ProtectPaper protectPaper = PaperDataManager.papers.get(paperIdentifier);
+//            ItemMeta im2 = equipmentItem.getItemMeta();
+//            List<String> lore = im2.getLore();
+//            lore.remove(protectPaper.getName());
+//            im2.setLore(lore);
+//            this.equipmentItem.setItemMeta(im2);
+//        }
+//
+//        //无限耐久精魂lore
+//        String soulName = InfiniteSoulManager.getSoulName(equipmentItem);
+//        if(soulName != null){
+//            ItemMeta im3 = equipmentItem.getItemMeta();
+//            List<String> lore = im3.getLore();
+//            lore.remove(soulName);
+//            im3.setLore(lore);
+//            this.equipmentItem.setItemMeta(im3);
+//        }
+
+
+
+
+        NBT.modify(equipmentItem,nbt -> {
+            nbt.removeKey("refinement");
+        });
+        NBT.modify(equipmentItem, nbt -> {
+            nbt.removeKey("randomlore");
+        });
+
+        return equipmentInfoLore;
+    }
+
+    private Map<String,List<String>> removeNowItemRefinementInfo(List<String> mainLore, List<String> extractLore, int refinementNBTNum,int downLevel) {
+        ItemMeta im = equipmentItem.getItemMeta();
+        if(enableDisplayNameInfo){
+            String displayName = im.getDisplayName();
+            String suffix = displayNameSuffix.replace("{level}",refinementNBTNum+"");
+            displayName = displayName.replace(suffix,"");
+            im.setDisplayName(displayName);
+        }
+        //移除淬炼lore
+        List<String> lores = im.getLore();
+        if (lores == null) {
+            lores = new ArrayList<>();
+        }
+        int j = 0;
+        for (int i = 0; i < lores.size(); i++) {
+            if (lores.get(i).equals(EquipmentDataManager.mainLore)) {
+                j = i;
+                break;
             }
         }
+        lores.remove(j);
+        lores.removeAll(mainLore);
 
-        if(equipmentInfoLore.containsKey("paper")) {
-            List<String> paperLore = equipmentInfoLore.get("paper");
-            lores.removeAll(paperLore);
+        if(RandomLoreUtils.hasRandomLore(this.equipmentItem)){
+            extractLore = RandomLoreUtils.getRandomLore(this.equipmentItem);
         }
 
-        if(equipmentInfoLore.containsKey("soul")) {
-            List<String> soulLore = equipmentInfoLore.get("soul");
-            lores.removeAll(soulLore);
-        }
+        lores.removeAll(extractLore);
 
+        Map<String, List<String>> equipmentInfoLore = getEquipmentInfoLore(this.equipmentItem);
+        if(refinementNBTNum - downLevel > 0) {
+            if (equipmentInfoLore.containsKey("spestone")) {
+                List<String> speStoneLore = equipmentInfoLore.get("spestone");
+                for (String s : speStoneLore) {
+                    lores.remove(s);
+                }
+            }
+
+            if (equipmentInfoLore.containsKey("paper")) {
+                List<String> paperLore = equipmentInfoLore.get("paper");
+                lores.removeAll(paperLore);
+            }
+
+            if (equipmentInfoLore.containsKey("soul")) {
+                List<String> soulLore = equipmentInfoLore.get("soul");
+                lores.removeAll(soulLore);
+            }
+        }
 
         im.setLore(lores);
         this.equipmentItem.setItemMeta(im);
@@ -724,8 +821,8 @@ public class EquipmentDataManager {
         int realDownLevel;
         //小于0直接归0
         if (oldRefinementNBTNum - downLevel < 0) {
-            removeNowItemRefinementInfo(oldMainLore, oldExtractLore, oldRefinementNBTNum);
-
+            removeNowItemRefinementInfo(oldMainLore, oldExtractLore, oldRefinementNBTNum,downLevel);
+//            addItemRefinementInfo(null,null,0);
             return oldRefinementNBTNum;
 
         } else if (oldRefinementNBTNum - downLevel == 0) {
@@ -734,7 +831,8 @@ public class EquipmentDataManager {
                 return 0;
                 //无保护符时
             } else {
-                removeNowItemRefinementInfo(oldMainLore, oldExtractLore, oldRefinementNBTNum);
+                removeNowItemRefinementInfo(oldMainLore, oldExtractLore, oldRefinementNBTNum,downLevel);
+//                addItemRefinementInfo(null,null,0);
                 return downLevel;
             }
         }
