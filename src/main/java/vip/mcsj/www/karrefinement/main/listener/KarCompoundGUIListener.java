@@ -2,6 +2,8 @@ package vip.mcsj.www.karrefinement.main.listener;
 
 import de.tr7zw.nbtapi.NBTItem;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -88,23 +90,25 @@ public class KarCompoundGUIListener implements Listener {
         if (!(inv.getHolder() instanceof KarCompoundStoneInvHolder)) {
             return;
         }
-        if(e.getClickedInventory().getItem(16) != null && e.getClickedInventory().getItem(34) != null ){
-            NBTItem firstNBT = new NBTItem(e.getClickedInventory().getItem(16));
-            NBTItem secondNBT = new NBTItem(e.getClickedInventory().getItem(34));
-            if(firstNBT.getString("refinementstone").equals(secondNBT.getString("refinementstone"))){
-                if(KarCompoundStoneGui.compoundMap.get(firstNBT.getString("refinementstone")) == null){
-                    return;
+        Bukkit.getScheduler().runTaskLater(KarRefinement.instance, () -> {
+            if(e.getClickedInventory().getItem(16) != null && e.getClickedInventory().getItem(34) != null ){
+                NBTItem firstNBT = new NBTItem(e.getClickedInventory().getItem(16));
+                NBTItem secondNBT = new NBTItem(e.getClickedInventory().getItem(34));
+                if(firstNBT.getString("refinementstone").equals(secondNBT.getString("refinementstone"))){
+                    if(KarCompoundStoneGui.compoundMap.get(firstNBT.getString("refinementstone")) == null){
+                        return;
+                    }
+                    double chance = KarCompoundStoneGui.compoundMap.get(firstNBT.getString("refinementstone")).getChance();
+                    ItemStack sign = KarRefinement.cm.getItems().get(6);
+                    ItemMeta meta = sign.getItemMeta();
+                    meta.setLore(Arrays.asList(
+                            Message.messages.get("compound_success").replace("{success}",chance+"")
+                    ));
+                    meta.setDisplayName("§c§l提示:");
+                    sign.setItemMeta(meta);
+                    inv.setItem(4,sign);
                 }
-                double chance = KarCompoundStoneGui.compoundMap.get(firstNBT.getString("refinementstone")).getChance();
-                ItemStack sign = KarRefinement.cm.getItems().get(6);
-                ItemMeta meta = sign.getItemMeta();
-                meta.setLore(Arrays.asList(
-                        Message.messages.get("compound_success").replace("{success}",chance+"")
-                ));
-                meta.setDisplayName("§c§l提示:");
-                sign.setItemMeta(meta);
-                inv.setItem(4,sign);
             }
-        }
+        },1L);
     }
 }

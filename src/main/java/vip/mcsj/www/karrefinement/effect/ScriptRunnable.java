@@ -1,9 +1,7 @@
 package vip.mcsj.www.karrefinement.effect;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 //import jdk.nashorn.api.scripting.NashornScriptEngineFactory;
 import org.bukkit.Bukkit;
@@ -21,6 +19,10 @@ import javax.script.*;
 public class ScriptRunnable implements Runnable {
 
     public static boolean enbaleScript;
+    public static Map<UUID,Boolean> playerScriptSituation = new ConcurrentHashMap<>();
+    /**
+     * HashMap<玩家UUID,玩家脚本表<脚本原内容,脚本变化内容>>
+     */
     public static HashMap<UUID, HashMap<String, Bindings>> bindingsMap = new HashMap<>();
     public static HashMap<String, ScriptEngine> engineMap = new HashMap<>();
 
@@ -35,7 +37,8 @@ public class ScriptRunnable implements Runnable {
     public void sync(LivingEntity le) {
         UUID uuid = le.getUniqueId();
         Level minLevel = LevelDataManager.getMinLevel((Player) le);
-        if (minLevel != null && minLevel.suitEffect != null) {
+        playerScriptSituation.putIfAbsent(uuid, true);
+        if (minLevel != null && minLevel.suitEffect != null && playerScriptSituation.get(uuid)) {
             try {
                 if (enbaleScript) {
                     for (String script : minLevel.suitEffect.script) {
@@ -44,11 +47,16 @@ public class ScriptRunnable implements Runnable {
                         }
                         ScriptEngine engine = engineMap.get(script);
                         bindingsMap.putIfAbsent(uuid, new HashMap<>());
+                        //1. 从BindingsMap获取玩家之前的执行状态
                         if (bindingsMap.get(uuid).containsKey(script)) {
                             engine.setBindings(bindingsMap.get(uuid).get(script), ScriptContext.ENGINE_SCOPE);
                         }
                         Invocable invocable = (Invocable) engine;
+
+                        //2.执行脚本函数(可能会修改Bingdings中的内容)
                         invocable.invokeFunction("onEffectTick", le);
+
+                        //3.保存更新后的状态供下次使用
                         bindingsMap.get(uuid).put(script, engine.getBindings(ScriptContext.ENGINE_SCOPE));
                     }
                 }

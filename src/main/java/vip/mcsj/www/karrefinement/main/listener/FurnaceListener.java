@@ -39,6 +39,9 @@ public class FurnaceListener implements Listener {
 
     @EventHandler(priority =  EventPriority.MONITOR)
     public void PlayerInteractEvent(PlayerInteractEvent e){
+        if(!KarRefinement.instance.getConfig().getBoolean("settings.enablefurnace")) {
+            return;
+        }
         if(e.getAction().equals(Action.RIGHT_CLICK_BLOCK) && e.hasBlock() && e.getClickedBlock().getType().equals(Material.FURNACE)){
             Player p = e.getPlayer();
             Furnace furnace = (Furnace) e.getClickedBlock().getState();
@@ -48,6 +51,9 @@ public class FurnaceListener implements Listener {
 
     @EventHandler(priority =  EventPriority.MONITOR)
     public void FurnaceBurnEvent(FurnaceBurnEvent e) {
+        if(!KarRefinement.instance.getConfig().getBoolean("settings.enablefurnace")) {
+            return;
+        }
         Furnace furnace = (Furnace) e.getBlock().getState();
         ItemStack fuel = e.getFuel().clone();
         ItemStack smelt = furnace.getInventory().getSmelting();
@@ -66,6 +72,9 @@ public class FurnaceListener implements Listener {
 
     @EventHandler(priority =  EventPriority.MONITOR)
     public void FurnaceSmeltEvent(FurnaceSmeltEvent e) {
+        if(!KarRefinement.instance.getConfig().getBoolean("settings.enablefurnace")) {
+            return;
+        }
         ItemStack smelt = e.getSource();
         Furnace furnace = (Furnace) e.getBlock().getState();
         if (furnace.hasMetadata("FurnaceFuel")) {
@@ -98,6 +107,9 @@ public class FurnaceListener implements Listener {
 
     @EventHandler(priority =  EventPriority.MONITOR)
     public void InventoryClickEvent(InventoryClickEvent e){
+        if(!KarRefinement.instance.getConfig().getBoolean("settings.enablefurnace")) {
+            return;
+        }
         if (e.getInventory().getType() == InventoryType.FURNACE) {
             Furnace furnace = (Furnace) e.getInventory().getHolder();
             ItemStack smelting = furnace.getInventory().getSmelting();
@@ -110,6 +122,9 @@ public class FurnaceListener implements Listener {
 
     @EventHandler
     public void onFurnacePlace(BlockPlaceEvent e) {
+        if(!KarRefinement.instance.getConfig().getBoolean("settings.enablefurnace")) {
+            return;
+        }
         if(!FurnaceDataManager.furnaceEnabled){
             return;
         }
@@ -136,6 +151,9 @@ public class FurnaceListener implements Listener {
 
     @EventHandler
     public void onFurnaceBreak(BlockBreakEvent e) {
+        if(!KarRefinement.instance.getConfig().getBoolean("settings.enablefurnace")) {
+            return;
+        }
         if(!FurnaceDataManager.furnaceEnabled){
             return;
         }

@@ -26,26 +26,6 @@ public class ReflectionUtils {
         }
     }
 
-    public static Method getSpigotMethod(String className,String methodName,Class<?>...classes){
-        try {
-            Class<?> class1 = Class.forName(className);
-            return class1.getMethod(methodName,classes);
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    public static Field getSpigotField(String className,String fieldName){
-        try {
-            Class<?> class1 = Class.forName(className);
-            return class1.getField(fieldName);
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-        return null;
-    }
-
     public static ItemStack setCustomModelData(ItemStack item, int cmd) {
         if (item == null || item.getType() == Material.AIR) {
             return item;

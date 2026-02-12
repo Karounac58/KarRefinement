@@ -65,6 +65,7 @@ public class KarCommandExecutor implements CommandExecutor, TabCompleter {
             completions.add("adminup");
             completions.add("set");
             completions.add("reload");
+            completions.add("script");
             completions.add("getnbt");
             completions.add("clearlore");
             completions.add("openitemgui");

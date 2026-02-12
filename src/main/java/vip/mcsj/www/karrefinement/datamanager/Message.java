@@ -4,12 +4,12 @@ import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.YamlConfiguration;
 import vip.mcsj.www.karrefinement.utils.FileUtil;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class Message {
     public static Map<String,String> messages = new HashMap<>();
+
+    public static List<String> showStoneChance = new ArrayList<>();
 
     public static void init(){
         if(!messages.isEmpty()) {
@@ -18,6 +18,10 @@ public class Message {
         YamlConfiguration customFileYaml = FileUtil.getCustomFileYaml("message.yml");
         Set<String> keys = customFileYaml.getKeys(false);
         for (String key : keys) {
+            if(key.equals("stone_interact_show_chance")){
+                showStoneChance = customFileYaml.getStringList(key);
+                continue;
+            }
             messages.put(key, ChatColor.translateAlternateColorCodes('&',customFileYaml.getString(key)));
         }
     }

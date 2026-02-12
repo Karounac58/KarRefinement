@@ -10,7 +10,12 @@ DisplayNameInfo:
 # 淬炼到达多少星时触发全服播报
 broadcastlevel: 6
 settings:
+  # 是否开启淬炼特效功能
   enablescript: true
+  # 是否开启熔炉淬炼功能
+  enablefurnace: true
+  # 是否开启右键宝石显示概率功能
+  enablestonechance: true
   # 淬炼、宝石镶嵌、保护符镶嵌、精魂镶嵌后的lore顺序
   SortOrder:
     - "{lore}"

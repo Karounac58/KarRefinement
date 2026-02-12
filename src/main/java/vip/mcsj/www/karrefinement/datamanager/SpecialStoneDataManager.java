@@ -210,7 +210,7 @@ public class SpecialStoneDataManager {
         }else if(speStoneList2.size() < speStoneList.size() && lowerThenNewStone){
             removeNowSpeStoneInfo(speStoneList,equipmentItem);
             addItemSpeStoneInfo(speStone,speStoneList2,equipmentItem);
-            System.out.println(speStone.getEquipmentLore());
+//            System.out.println(speStone.getEquipmentLore());
             return true;
         }
         return false;

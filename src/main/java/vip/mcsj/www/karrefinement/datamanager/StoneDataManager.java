@@ -4,9 +4,11 @@ import de.tr7zw.nbtapi.NBT;
 import de.tr7zw.nbtapi.NBTItem;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import vip.mcsj.www.karrefinement.main.KarRefinement;
 import vip.mcsj.www.karrefinement.object.Stone;
 import vip.mcsj.www.karrefinement.utils.FileUtil;
 import vip.mcsj.www.karrefinement.utils.ReflectionUtils;
@@ -23,6 +25,8 @@ public class StoneDataManager {
     public static Map<String, Stone> stones = new HashMap<>();
     public String stoneNbt;
 
+    public static boolean enableStoneChnace = false;
+
     public StoneDataManager(String name){
         this.stoneNbt = name;
     }
@@ -34,6 +38,10 @@ public class StoneDataManager {
         if(!stones.isEmpty()){
             stones.clear();
         }
+
+        FileConfiguration config = KarRefinement.instance.getConfig();
+        enableStoneChnace = config.getBoolean("settings.enablestonechance");
+
         Set<String> stoneNameList = FileUtil.getDataFileKeys("stone.yml",false);
         YamlConfiguration file = FileUtil.getCustomFileYaml("stone.yml");
         for (String s : stoneNameList) {
@@ -93,5 +101,10 @@ public class StoneDataManager {
     public static Stone getStone(ItemStack itemStone){
         NBTItem nbtItemStone = new NBTItem(itemStone);
         return stones.get(nbtItemStone.getString("refinementstone"));
+    }
+
+    public static List<Double> getStoneChance(ItemStack itemStone){
+        Stone stone = getStone(itemStone);
+        return stone.getProbability();
     }
 }

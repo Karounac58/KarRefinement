@@ -128,7 +128,8 @@ public class KarTransformStarGui {
             int paperLevel = pdm.getPaperLevel();
 
             List<SpeStone> speStones = SpecialStoneDataManager.getSpeStones(equipmentItem1);
-
+            speStones.removeIf(speStone -> !SpecialStoneDataManager.isEquipmentLegal(speStone, equipmentItem2));
+//            System.out.println(b);
             InfiniteSoulManager ism = new InfiniteSoulManager(equipmentItem1);
             int soulLevel = ism.getSoulLevel();
 

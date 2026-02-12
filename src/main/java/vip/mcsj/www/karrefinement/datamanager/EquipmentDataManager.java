@@ -13,9 +13,12 @@ import vip.mcsj.www.karrefinement.main.KarRefinement;
 import vip.mcsj.www.karrefinement.object.*;
 import vip.mcsj.www.karrefinement.utils.FileUtil;
 import vip.mcsj.www.karrefinement.utils.KarUtils;
+import vip.mcsj.www.karrefinement.utils.ListUtils;
 import vip.mcsj.www.karrefinement.utils.RandomLoreUtils;
 
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 
 /**
@@ -34,6 +37,8 @@ public class EquipmentDataManager {
     public static int transformCost = 1000000;
 
     public static boolean allowTransformOther = true;
+
+    public static boolean allowTransformSpeStoneConflict = false;
 
     public static String mainLore = "";
     public static String speStoneLore = "";
@@ -127,6 +132,7 @@ public class EquipmentDataManager {
         allowAfterItemIsRefinement =  customFileYaml.getBoolean("allowAfterItemIsRefinement");
         transformCost = customFileYaml.getInt("money");
         allowTransformOther =  customFileYaml.getBoolean("allowTransformOther");
+        allowTransformSpeStoneConflict = customFileYaml.getBoolean("allowTransformSpeStoneConflict");
     }
 
     /**
@@ -401,8 +407,29 @@ public class EquipmentDataManager {
             }
 
             if(s.equals("{spestone}")){
-                if(equipmentInfoLore.containsKey("spestone")){
-                    lores.addAll(equipmentInfoLore.get("spestone"));
+//                if(equipmentInfoLore.containsKey("spestone")){
+//                    List<String> spestoneLore = equipmentInfoLore.get("spestone");
+//
+//                    List<String> spestoneLoreWithoutHeader = spestoneLore.subList(1, spestoneLore.size());
+//
+//                    List<List<String>> speStoneLore2 = speStones.stream().map(SpeStone::getEquipmentLore).collect(Collectors.toList());
+//
+//                    List<List<String>> lists = ListUtils.filterStrictMatch(spestoneLoreWithoutHeader, speStoneLore2);
+//
+//                    for (int i = 0; i < lists.size(); i++) {
+//                        if(i == 0) {
+//                            lores.add(EquipmentDataManager.speStoneLore);
+//                        }
+//                        lores.addAll(lists.get(i));
+//                    }
+////                    lores.addAll(equipmentInfoLore.get("spestone"));
+//                }
+                // 不再依赖 equipmentInfoLore，直接用传入的 speStones
+                if(speStones != null && !speStones.isEmpty()){
+                    lores.add(EquipmentDataManager.speStoneLore);
+                    for (SpeStone speStone : speStones) {
+                        lores.addAll(speStone.getEquipmentLore());
+                    }
                 }
             }
 

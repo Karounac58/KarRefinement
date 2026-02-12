@@ -4,3 +4,5 @@ allowAfterItemIsRefinement: true
 money: 1000000
 # 允许移星后同时移动宝石和保护符，关闭则会清除
 allowTransformOther: true
+# 是否允许宝石转移时转移到不适配的装备上,true则允许,false转移时不会转移不适配的宝石
+allowTransformSpeStoneConflict: false

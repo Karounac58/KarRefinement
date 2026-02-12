@@ -21,6 +21,7 @@ import vip.mcsj.www.karrefinement.gui.*;
 import vip.mcsj.www.karrefinement.main.listener.*;
 import vip.mcsj.www.karrefinement.object.EquipmentMaterial;
 import vip.mcsj.www.karrefinement.object.MCVersions;
+import vip.mcsj.www.karrefinement.object.Stone;
 import vip.mcsj.www.karrefinement.utils.FileUtil;
 import vip.mcsj.www.karrefinement.utils.ReflectionUtils;
 import vip.mcsj.www.karrefinement.version.CustomMaterial;
@@ -95,6 +96,7 @@ public class KarRefinement extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new AdhesiveListener(),this);
         Bukkit.getPluginManager().registerEvents(new KarPotionListener(),this);
         Bukkit.getPluginManager().registerEvents(new JoinMessageListener(),this);
+        Bukkit.getPluginManager().registerEvents(new StoneInteractProbListener(),this);
         Bukkit.getPluginCommand("karrefinement").setExecutor(new KarCommandExecutor());
         saveDefaultConfig();
         ScriptRunnable.enbaleScript = KarRefinement.instance.getConfig().getBoolean("settings.enablescript");
@@ -145,7 +147,9 @@ public class KarRefinement extends JavaPlugin {
         Message.init();
         KarTakeItemGui.initItems();
         FurnaceDataManager.init();
-        setRecipe();
+        if(getConfig().getBoolean("settings.enablefurnace")) {
+            setRecipe();
+        }
         String storage = getConfig().getString("settings.data.storage");
         if(storage.equals("SQLite")) {
             dm = new SQLiteDatabaseManager(this);

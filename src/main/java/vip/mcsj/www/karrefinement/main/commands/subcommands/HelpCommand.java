@@ -20,6 +20,7 @@ public class HelpCommand extends KarAbstractCommand {
         sender.sendMessage("§e/krf adminup —— §b为手上物品升星");
         sender.sendMessage("§e/krf set <等级> —— §b为手上物品设置淬炼等级");
         sender.sendMessage("§e/krf reload —— §b重载配置文件");
+        sender.sendMessage("§e/krf script —— §b开启/关闭淬炼特效");
         sender.sendMessage("§e/krf openitemgui —— §b打开淬炼物品菜单");
         sender.sendMessage("§e/krf givestone <玩家名> <淬炼石名> <数量> —— §b获取淬炼石");
         sender.sendMessage("§e/krf givepaper <玩家名> <保护符名> —— §b获取保护符");
