@@ -97,6 +97,7 @@ public class KarRefinement extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new KarPotionListener(),this);
         Bukkit.getPluginManager().registerEvents(new JoinMessageListener(),this);
         Bukkit.getPluginManager().registerEvents(new StoneInteractProbListener(),this);
+        Bukkit.getPluginManager().registerEvents(new KarRefinementGuiListener(),this);
         Bukkit.getPluginCommand("karrefinement").setExecutor(new KarCommandExecutor());
         saveDefaultConfig();
         ScriptRunnable.enbaleScript = KarRefinement.instance.getConfig().getBoolean("settings.enablescript");

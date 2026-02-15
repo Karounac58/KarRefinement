@@ -197,10 +197,15 @@ public class KarEventListener implements Listener {
                 closeItems.put(p1,new ItemStack[]{itemStone,itemEquipment});
             }
         }else if(e.getSlot() == 49 && e.getClick().equals(ClickType.RIGHT)){
+            Player p1 = (Player)e.getWhoClicked();
+            if(!KarRefinementGui.enableFastRefine){
+                p1.sendMessage(Message.messages.get("refinement_fast_off"));
+                return;
+            }
             ItemStack itemStone = inv.getItem(29);
             ItemStack itemEquipment = inv.getItem(33);
 
-            Player p1 = (Player)e.getWhoClicked();
+
             if (KarRefinementGui.judgeInventoryClickMethod(itemStone,itemEquipment,p1)) {
                 KarRefinementGui.KarRefinementMethod(itemStone,itemEquipment,p1,0.0);
                 closeItems.put(p1,new ItemStack[]{itemStone,itemEquipment});

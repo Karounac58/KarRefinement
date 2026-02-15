@@ -91,6 +91,9 @@ public class StoneDataManager {
     public static boolean isStoneLegal(ItemStack itemStone){
         for (String s : stones.keySet()) {
             NBTItem nbtItemStone = new NBTItem(itemStone);
+            if(!nbtItemStone.hasTag("refinementstone")){
+                break;
+            }
             if(nbtItemStone.getString("refinementstone").equals(s)){
                 return true;
             }

@@ -21,6 +21,7 @@ Item:
       - "§e- §a左边放淬炼石，右边放待淬炼装备"
       - "§e- §a进行淬炼时请§c不要退出界面或拿出物品，"
       - "§e- §a否则有概率会造成淬炼石或装备丢失！"
+      - "§e- 成功率: {chance}"
   ForgeButton:
     Name: "§c锻造界面"
     Material: ANVIL

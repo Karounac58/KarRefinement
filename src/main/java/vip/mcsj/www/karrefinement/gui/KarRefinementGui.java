@@ -26,10 +26,13 @@ import vip.mcsj.www.karrefinement.utils.ReflectionUtils;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class KarRefinementGui {
     public static Map<String, InvItem> rItems = new HashMap<>();
     public static String title = "";
+
+    public static Boolean enableFastRefine = true;
 
     public static void init(){
         if(!rItems.isEmpty()){
@@ -47,6 +50,8 @@ public class KarRefinementGui {
             List<String> lore = fileCS.getStringList(key + ".Lore");
             rItems.put(key,new InvItem(name, material, data, customModelData, lore));
         }
+
+        enableFastRefine = KarRefinement.instance.getConfig().getBoolean("settings.enablefastrefine");
     }
     public static void setInvInitial(Inventory inv,Player p) {
         List<Integer> indexs = Arrays.asList(0, 1, 2, 3, 4, 5, 6, 7, 45, 46, 47, 48, 50, 51, 52, 53);
@@ -70,6 +75,12 @@ public class KarRefinementGui {
             } else if (i == 49) {
                 InvItem confirmButton = rItems.get("ConfirmButton");
                 ItemStack invItem = createInvItem(confirmButton,p);
+                ItemMeta im = invItem.getItemMeta();
+                List<String> lore = im.getLore();
+                lore = lore.stream().map(s -> s.replace("{chance}",Message.messages.get("refinement_gui_chance_msg")))
+                        .collect(Collectors.toList());
+                im.setLore(lore);
+                invItem.setItemMeta(im);
                 inv.setItem(49, invItem);
             } else if (indexs.contains(i)) {
                 InvItem barrier = rItems.get("Barrier");

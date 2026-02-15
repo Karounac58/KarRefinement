@@ -1,5 +1,6 @@
 package vip.mcsj.www.karrefinement.main.listener;
 
+import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
@@ -21,7 +22,7 @@ public class StoneInteractProbListener implements Listener {
             return;
         }
 
-        if(!e.hasItem()){
+        if(e.getPlayer().getInventory().getItemInMainHand() == null || e.getPlayer().getInventory().getItemInMainHand().getType() == Material.AIR){
             return;
         }
 
