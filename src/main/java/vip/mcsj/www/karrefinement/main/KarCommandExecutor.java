@@ -107,8 +107,10 @@ public class KarCommandExecutor implements CommandExecutor, TabCompleter {
                     break;
                 case "givepotion":
                     completions.add("<玩家名> <淬炼药水名>");
+                    break;
                 case "givedetachitem":
                     completions.add("<玩家名> 保护符拆卸工具/宝石拆卸工具");
+                    break;
                 case "querypotion":
                     completions.add("<玩家名>");
                     break;

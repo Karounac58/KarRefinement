@@ -53,16 +53,7 @@ public class CrownEffect5 extends BukkitRunnable {
             cancel();
         }
 
-//        //第一种特效，圆在头上画圈圈
-//        Location playerLocation = player.getLocation();
-//        double radians = Math.toRadians(degree);
-//
-//        Location playEffectLocation = playerLocation.clone().add(0.3 * Math.cos(radians), 2D, 0.3 * Math.sin(radians));
-////        ParticleEffect.REDSTONE.display(new ParticleEffect.OrdinaryColor(Color.ORANGE), playEffectLocation, 50);
-//        playEffectLocation.getWorld().spawnParticle(Particle.WHITE_ASH,playEffectLocation,50);
-
         Location playerLocation = player.getLocation().add(0,0D,0);
-        Location loc2 = player.getLocation().clone();
         double radians = Math.toRadians(degree);
         double x1 = Math.sin(radians);
         double y1 = Math.sin(radians);
@@ -89,28 +80,6 @@ public class CrownEffect5 extends BukkitRunnable {
         }catch (Exception e){
             e.printStackTrace();
         }
-//        loc2.setPitch(0.0F);
-//        Location locc1 = loc2.clone();
-//        Location locc2 = loc2.clone();
-//        Location locc3 = loc2.clone();
-//        loc2.setYaw(45.0F);
-//        loc2.add(loc2.getDirection().multiply(1));
-//        locc1.setYaw(-45.0F);
-//        locc1.add(locc1.getDirection().multiply(1));
-//        locc2.setYaw(135.0F);
-//        locc2.add(locc2.getDirection().multiply(1));
-//        locc3.setYaw(-135.0F);
-//        locc3.add(locc3.getDirection().multiply(1));
-//        for (int i = 0; i < 5; i++) {
-//            float shit = KarUtils.nextFloat(359);
-//            int rgb = java.awt.Color.HSBtoRGB(shit, 1.0f, 1.0f);
-//            Color color = Color.fromRGB((rgb >> 16) & 0xFF, (rgb >> 8) & 0xFF, rgb & 0xFF);
-//            Particle.DustOptions options = new Particle.DustOptions(color,1.0F);
-//            loc2.getWorld().spawnParticle(KarRefinement.particles[1],loc2,1,0.3,0,0.3,options);
-//            locc1.getWorld().spawnParticle(KarRefinement.particles[1],locc1,1,0.3,0,0.3,options);
-//            locc2.getWorld().spawnParticle(KarRefinement.particles[1],locc2,1,0.3,0,0.3,options);
-//            locc3.getWorld().spawnParticle(KarRefinement.particles[1],locc3,1,0.3,0,0.3,options);
-//        }
         Location pLoc = player.getLocation();
         //18星特效
         for (int i = a.length - 1; i >= 0; i--) {

@@ -4,6 +4,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import vip.mcsj.www.karrefinement.core.Service;
 import vip.mcsj.www.karrefinement.effect.ScriptRunnable;
 import vip.mcsj.www.karrefinement.object.Level;
 import vip.mcsj.www.karrefinement.object.SuitEffect;
@@ -12,8 +13,13 @@ import vip.mcsj.www.karrefinement.utils.FileUtil;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class LevelDataManager {
+public class LevelDataManager implements Service {
     public static List<Level> levels = new ArrayList<>();
+
+    @Override
+    public void initialize() {
+        init();
+    }
 
     public static void init(){
         if(!levels.isEmpty()){

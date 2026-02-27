@@ -6,6 +6,7 @@ import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import vip.mcsj.www.karrefinement.core.Service;
 import vip.mcsj.www.karrefinement.object.Adhesive;
 import vip.mcsj.www.karrefinement.utils.FileUtil;
 import vip.mcsj.www.karrefinement.utils.ReflectionUtils;
@@ -15,8 +16,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class AdhesiveDataManager {
+public class AdhesiveDataManager implements Service {
     public static Map<String, Adhesive> adhesives = new HashMap<>();
+
+    @Override
+    public void initialize() {
+        init();
+    }
 
     public static void init(){
         if(!adhesives.isEmpty()){

@@ -68,7 +68,8 @@ public class KarEventListener implements Listener {
         ItemStack itemEquipment;
         if(e.getAction().equals(InventoryAction.SWAP_WITH_CURSOR)) {
             Player p1 = (Player) e.getWhoClicked();
-            if(judgeInvRefinementOrNot.get(p1) == 1){
+            Integer refinementState = judgeInvRefinementOrNot.get(p1);
+            if(refinementState != null && refinementState == 1){
                 return;
             }
             //获取点击前在光标上的物品(保护符)
@@ -77,9 +78,7 @@ public class KarEventListener implements Listener {
             itemEquipment = e.getCurrentItem();
             if(PaperDataManager.isPaperLegal(itemPaper)){
                 if(EquipmentDataManager.isEquipmentLegal(itemEquipment)){
-                    //System.out.println("11111");
                     if(PaperDataManager.protectorPaperUp(itemPaper,itemEquipment)) {
-                        //System.out.println("2222");
                         Player p = (Player)e.getWhoClicked();
                         p.sendMessage(Message.messages.get("paper_up"));
                         p.playSound(p.getLocation(), KarRefinement.cs.getSounds().get(0),1,1);
@@ -97,7 +96,8 @@ public class KarEventListener implements Listener {
         ItemStack itemEquipment;
         if(e.getAction().equals(InventoryAction.SWAP_WITH_CURSOR)){
             Player p1 = (Player) e.getWhoClicked();
-            if(judgeInvRefinementOrNot.get(p1) == 1){
+            Integer refinementState = judgeInvRefinementOrNot.get(p1);
+            if(refinementState != null && refinementState == 1){
                 return;
             }
             itemStone = e.getCursor();
@@ -124,7 +124,8 @@ public class KarEventListener implements Listener {
         ItemStack itemEquipment;
         if(e.getAction().equals(InventoryAction.SWAP_WITH_CURSOR)){
             Player p1 = (Player) e.getWhoClicked();
-            if(judgeInvRefinementOrNot.get(p1) == 1){
+            Integer refinementState = judgeInvRefinementOrNot.get(p1);
+            if(refinementState != null && refinementState == 1){
                 return;
             }
             itemSoul = e.getCursor();
@@ -169,17 +170,16 @@ public class KarEventListener implements Listener {
             return;
         }
         if(!(e.getClickedInventory().getHolder() instanceof KarRefinementInvHolder)){
-            //System.out.println("1");
             return;
         }
         //如果正在淬炼中，则不能移动物品
-        if(judgeInvRefinementOrNot.get((Player)e.getWhoClicked()) != null && judgeInvRefinementOrNot.get((Player)e.getWhoClicked()) == 1){
+        Integer refinementRunning = judgeInvRefinementOrNot.get((Player)e.getWhoClicked());
+        if(refinementRunning != null && refinementRunning == 1){
             e.getWhoClicked().sendMessage(Message.messages.get("refinement_running"));
             e.setCancelled(true);
             return;
         }
         if(!(e.getSlot() == 29 || e.getSlot() == 33)){
-            //System.out.println("2");
             e.setCancelled(true);
         }
         if(e.getSlot() == 8){
@@ -246,6 +246,7 @@ public class KarEventListener implements Listener {
                     break;
                 case 5:
                     victim.setFireTicks(50*20);
+                    break;
             }
         }
     }
@@ -272,14 +273,13 @@ public class KarEventListener implements Listener {
     @EventHandler
     public void onKarInventoryCloseEvent(InventoryCloseEvent e){
         if(e.getInventory().getHolder() instanceof KarRefinementInvHolder) {
-            if(judgeInvRefinementOrNot.get((Player) e.getPlayer()) == 1){
+            Integer refinementState = judgeInvRefinementOrNot.get((Player) e.getPlayer());
+            if(refinementState != null && refinementState == 1){
                 Bukkit.getScheduler().runTaskLater(KarRefinement.instance,()-> e.getPlayer().openInventory(invs.get(e.getPlayer())),1L);
                 return;
             }
             ItemStack itemStone = e.getInventory().getItem(29);
-//            e.getInventory().setItem(29,null);
             ItemStack itemEquipment = e.getInventory().getItem(33);
-//            e.getInventory().setItem(33,null);
             Player p = (Player) e.getPlayer();
             if(itemStone != null) {
                 p.getInventory().addItem(itemStone);
@@ -303,8 +303,12 @@ public class KarEventListener implements Listener {
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent e){
         Player p = e.getPlayer();
-        if(judgeInvRefinementOrNot.get(p) == 1){
-            p.getInventory().addItem(closeItems.get(p));
+        Integer refinementState = judgeInvRefinementOrNot.get(p);
+        if(refinementState != null && refinementState == 1){
+            ItemStack[] items = closeItems.get(p);
+            if(items != null && items.length > 0){
+                p.getInventory().addItem(items);
+            }
         }
         judgeInvRefinementOrNot.remove(p);
         judgeInvCloseOrNot.remove(p);
@@ -367,17 +371,16 @@ public class KarEventListener implements Listener {
             return;
         }
         if(!(e.getClickedInventory().getHolder() instanceof KarForgeInvHolder)){
-            //System.out.println("1");
             return;
         }
         //如果正在淬炼中，则不能移动物品
-        if(judgeInvForgeOrNot.get((Player)e.getWhoClicked()) != null && judgeInvForgeOrNot.get((Player)e.getWhoClicked()) == 1){
+        Integer forgeRunning = judgeInvForgeOrNot.get((Player)e.getWhoClicked());
+        if(forgeRunning != null && forgeRunning == 1){
             e.getWhoClicked().sendMessage(Message.messages.get("forge_running"));
             e.setCancelled(true);
             return;
         }
         if(!(e.getSlot() == 19 || e.getSlot() == 25)){
-            //System.out.println("2");
             e.setCancelled(true);
         }
         if(e.getSlot() == 4 && e.getClick().equals(ClickType.LEFT)){
@@ -424,14 +427,13 @@ public class KarEventListener implements Listener {
     @EventHandler
     public void onKarForgeGUICloseEvent(InventoryCloseEvent e){
         if(e.getInventory().getHolder() instanceof KarForgeInvHolder) {
-            if(judgeInvForgeOrNot.get((Player) e.getPlayer()) == 1){
+            Integer forgeState = judgeInvForgeOrNot.get((Player) e.getPlayer());
+            if(forgeState != null && forgeState == 1){
                 Bukkit.getScheduler().runTaskLater(KarRefinement.instance,()-> e.getPlayer().openInventory(forgeInvs.get(e.getPlayer())),1L);
                 return;
             }
             ItemStack itemEquipment1 = e.getInventory().getItem(19);
-//            e.getInventory().setItem(29,null);
             ItemStack itemEquipment2 = e.getInventory().getItem(25);
-//            e.getInventory().setItem(33,null);
             Player p = (Player) e.getPlayer();
             if(itemEquipment1 != null) {
                 p.getInventory().addItem(itemEquipment1);

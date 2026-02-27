@@ -8,6 +8,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import vip.mcsj.www.karrefinement.core.Service;
 import vip.mcsj.www.karrefinement.main.KarRefinement;
 import vip.mcsj.www.karrefinement.object.RPotion;
 import vip.mcsj.www.karrefinement.utils.FileUtil;
@@ -21,7 +22,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
-public class PotionDataManager {
+public class PotionDataManager implements Service {
     public static Map<String, RPotion> potions = new HashMap<>();
     private String identifier;
     private ItemStack itemPotion;
@@ -40,6 +41,11 @@ public class PotionDataManager {
     //查询
     public PotionDataManager() {
 
+    }
+
+    @Override
+    public void initialize() {
+        init();
     }
 
     public static void init(){

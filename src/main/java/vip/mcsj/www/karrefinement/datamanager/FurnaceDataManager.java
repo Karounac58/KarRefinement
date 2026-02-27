@@ -5,6 +5,7 @@ import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import vip.mcsj.www.karrefinement.core.Service;
 import vip.mcsj.www.karrefinement.object.Furnace;
 import vip.mcsj.www.karrefinement.utils.FileUtil;
 import vip.mcsj.www.karrefinement.utils.ReflectionUtils;
@@ -13,9 +14,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class FurnaceDataManager {
+public class FurnaceDataManager implements Service {
     public static Map<String, Furnace> furnaces = new HashMap<>();
     public static boolean furnaceEnabled = true;
+
+    @Override
+    public void initialize() {
+        init();
+    }
 
     public static void init(){
         if(!furnaces.isEmpty()){

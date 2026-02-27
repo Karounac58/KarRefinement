@@ -2,7 +2,6 @@ package vip.mcsj.www.karrefinement.main;
 
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.*;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.FurnaceRecipe;
 import org.bukkit.inventory.ItemStack;
@@ -10,6 +9,8 @@ import org.bukkit.material.MaterialData;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
+import vip.mcsj.www.karrefinement.core.PluginContext;
+import vip.mcsj.www.karrefinement.core.ServiceRegistry;
 import vip.mcsj.www.karrefinement.datamanager.*;
 import vip.mcsj.www.karrefinement.datamanager.database.DatabaseManager;
 import vip.mcsj.www.karrefinement.datamanager.database.MySQLDatabaseManager;
@@ -22,6 +23,8 @@ import vip.mcsj.www.karrefinement.main.listener.*;
 import vip.mcsj.www.karrefinement.object.EquipmentMaterial;
 import vip.mcsj.www.karrefinement.object.MCVersions;
 import vip.mcsj.www.karrefinement.object.Stone;
+import vip.mcsj.www.karrefinement.service.ConfigurationService;
+import vip.mcsj.www.karrefinement.service.EquipmentRepository;
 import vip.mcsj.www.karrefinement.utils.FileUtil;
 import vip.mcsj.www.karrefinement.utils.ReflectionUtils;
 import vip.mcsj.www.karrefinement.version.CustomMaterial;
@@ -39,41 +42,45 @@ import java.util.logging.Logger;
 public class KarRefinement extends JavaPlugin {
     private static final Logger log = Logger.getLogger("Minecraft");
     public static KarRefinement instance;
-    //12星淬炼特效
+
+    // PluginContext: 新的集中式状态管理
+    private static PluginContext context;
+
+    /**
+     * 获取插件上下文（新架构入口）
+     */
+    public static PluginContext getContext() {
+        return context;
+    }
+
+    // === 以下静态字段保留用于向后兼容，后续阶段逐步迁移 ===
     public static Particle[] particles = new Particle[3];
-
     public static CustomMaterial cm = new GuiResource().getMaterial();
-
     public static CustomSounds cs = new GuiResource().getSound();
-
     public static CustomParticle cp = new ParticleResource().get();
-
     public static CustomPath customPath = new GuiResource().getPath();
-
     public static MCVersions pv = ReflectionUtils.judgeVersion();
-
     public static PotionDataManager pdm = new PotionDataManager();
-
     public static DarkChangeDataManager dcdm = new DarkChangeDataManager();
-
     public static Economy econ = null;
-
     public static DatabaseManager dm;
-
-//    public static List<ItemType> types = new ArrayList<>();
-
     public static final List<EquipmentMaterial> types = new ArrayList<>();
-
     public static boolean ap2Enable = false;
     public static boolean ap3Enable = false;
-
     public static boolean sxv3Enable = false;
-
     public static boolean caEnabled = false;
     @Override
     public void onEnable() {
         instance = this;
 
+        // 初始化 PluginContext 和 ServiceRegistry
+        context = new PluginContext(this);
+        context.setCustomMaterial(cm);
+        context.setCustomParticle(cp);
+        context.setCustomSounds(cs);
+        context.setCustomPath(customPath);
+        context.setVersion(pv);
+        context.setParticles(particles);
 
         log.info(String.format("[%s] - 插件启动中...",getDescription().getName()));
         if (!setupEconomy() ) {
@@ -81,9 +88,14 @@ public class KarRefinement extends JavaPlugin {
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
+        context.setEconomy(econ);
         setupAttributePlus();
         setupSXAttribute();
         setupCraneAttribute();
+        context.setAp2Enable(ap2Enable);
+        context.setAp3Enable(ap3Enable);
+        context.setSxv3Enable(sxv3Enable);
+        context.setCaEnabled(caEnabled);
         
         // 注册PlaceholderAPI扩展
         setupPlaceholderAPI();
@@ -165,6 +177,29 @@ public class KarRefinement extends JavaPlugin {
             dm = new MySQLDatabaseManager(this);
         }
         dm.initialize();
+        context.setDatabaseManager(dm);
+
+        // 注册所有服务到 ServiceRegistry（生命周期管理）
+        ServiceRegistry registry = context.getRegistry();
+        registry.register(ConfigurationService.class, new ConfigurationService(context));
+        registry.register(EquipmentRepository.class, new EquipmentRepository(context));
+        registry.register(StoneDataManager.class, new StoneDataManager());
+        registry.register(LevelDataManager.class, new LevelDataManager());
+        registry.register(PaperDataManager.class, new PaperDataManager());
+        registry.register(SpecialStoneDataManager.class, new SpecialStoneDataManager());
+        registry.register(InfiniteSoulManager.class, new InfiniteSoulManager());
+        registry.register(DUPaperDataManager.class, new DUPaperDataManager());
+        registry.register(DetachDataManager.class, new DetachDataManager());
+        registry.register(AdhesiveDataManager.class, new AdhesiveDataManager());
+        registry.register(PotionDataManager.class, new PotionDataManager());
+        registry.register(Message.class, new Message());
+        registry.register(FurnaceDataManager.class, new FurnaceDataManager());
+        registry.register(LoreUpdateManager.class, new LoreUpdateManager());
+        registry.register(EffectDataManager.class, new EffectDataManager());
+        registry.register(PlayerStatsDataManager.class, new PlayerStatsDataManager());
+        registry.register(EquipmentTypeManager.class, new EquipmentTypeManager());
+        registry.register(DarkChangeDataManager.class, dcdm);
+
         initThread();
 
         log.info(String.format("[%s] - 插件启动成功...",getDescription().getName()));
@@ -174,8 +209,12 @@ public class KarRefinement extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        // 关闭所有服务
+        if (context != null && context.getRegistry() != null) {
+            context.getRegistry().shutdownAll();
+        }
         try{
-            if(dm.getDataSource() != null && dm.getDataSource().isClosed()){
+            if(dm != null && dm.getDataSource() != null && !dm.getDataSource().isClosed()){
                 dm.close();
             }
         }catch (SQLException e){

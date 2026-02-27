@@ -8,6 +8,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.yaml.snakeyaml.Yaml;
+import vip.mcsj.www.karrefinement.core.Service;
 import vip.mcsj.www.karrefinement.object.Detach;
 import vip.mcsj.www.karrefinement.object.DetachItem;
 import vip.mcsj.www.karrefinement.object.ProtectPaper;
@@ -21,7 +22,7 @@ import java.math.RoundingMode;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class DetachDataManager {
+public class DetachDataManager implements Service {
     public static Map<String, Detach> paperDetachs = new HashMap<>();
     public static Map<String, Detach> speStoneDetachs = new HashMap<>();
     public static DetachItem paperDetachItem;
@@ -31,6 +32,15 @@ public class DetachDataManager {
     private String identifier;
     public DetachDataManager(String identifier) {
         this.identifier = identifier;
+    }
+
+    public DetachDataManager() {
+        this.identifier = null;
+    }
+
+    @Override
+    public void initialize() {
+        init();
     }
 
     public static void init(){

@@ -8,6 +8,7 @@ import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitTask;
+import vip.mcsj.www.karrefinement.core.Service;
 import vip.mcsj.www.karrefinement.effect.*;
 import vip.mcsj.www.karrefinement.main.KarRefinement;
 import vip.mcsj.www.karrefinement.object.Level;
@@ -20,8 +21,24 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class EffectDataManager {
+public class EffectDataManager implements Service {
     private static Map<String, BukkitTask> taskMap = new ConcurrentHashMap<>();
+
+    @Override
+    public void initialize() {
+        // EffectDataManager 没有配置加载，仅管理运行时任务
+    }
+
+    @Override
+    public void shutdown() {
+        // 关闭所有正在运行的任务
+        for (BukkitTask task : taskMap.values()) {
+            if (task != null) {
+                task.cancel();
+            }
+        }
+        taskMap.clear();
+    }
 
     public static void removeTaskFromMap(String name) {
         taskMap.remove(name);
