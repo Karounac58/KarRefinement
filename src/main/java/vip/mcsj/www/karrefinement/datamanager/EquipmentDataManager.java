@@ -365,6 +365,11 @@ public class EquipmentDataManager {
         }
 
         judgeSoul(refinementNBTNum);
+        
+        // 设置lore版本号用于动态更新检测
+        NBT.modify(this.equipmentItem, nbt -> {
+            nbt.setString("loreversion", LoreUpdateManager.getCurrentLoreVersion());
+        });
     }
 
     private void addItemRefinementInfo(List<String> mainLore, List<String> extractLore, int refinementNBTNum,Map<String,List<String>> map,int paperLevel,List<SpeStone> speStones,int soulLevel) {
@@ -473,6 +478,11 @@ public class EquipmentDataManager {
             });
         }
         judgeSoul(refinementNBTNum);
+        
+        // 设置lore版本号用于动态更新检测
+        NBT.modify(this.equipmentItem, nbt -> {
+            nbt.setString("loreversion", LoreUpdateManager.getCurrentLoreVersion());
+        });
     }
 
     public static Map<String,List<String>> getEquipmentInfoLore(ItemStack equipmentItem){

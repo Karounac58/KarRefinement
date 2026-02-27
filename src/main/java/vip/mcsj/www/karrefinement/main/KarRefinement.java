@@ -84,6 +84,9 @@ public class KarRefinement extends JavaPlugin {
         setupAttributePlus();
         setupSXAttribute();
         setupCraneAttribute();
+        
+        // 注册PlaceholderAPI扩展
+        setupPlaceholderAPI();
 
         Bukkit.getPluginManager().registerEvents(new KarEventListener(),this);
         Bukkit.getPluginManager().registerEvents(new DirectUpgradePaperEvent(),this);
@@ -148,6 +151,10 @@ public class KarRefinement extends JavaPlugin {
         Message.init();
         KarTakeItemGui.initItems();
         FurnaceDataManager.init();
+        
+        // 初始化lore动态更新管理器
+        LoreUpdateManager.init();
+        
         if(getConfig().getBoolean("settings.enablefurnace")) {
             setRecipe();
         }
@@ -251,6 +258,15 @@ public class KarRefinement extends JavaPlugin {
         if(this.getServer().getPluginManager().getPlugin("CraneAttribute") != null) {
             this.getServer().getConsoleSender().sendMessage("§7[§e" + this.getName() + "§7]§a检测到CraneAttribute插件，属性模块加载");
             caEnabled = true;
+        }
+    }
+
+    private void setupPlaceholderAPI() {
+        if (getServer().getPluginManager().getPlugin("PlaceholderAPI") != null) {
+            new KarRefinementStats(this).register();
+            getLogger().info("PlaceholderAPI扩展注册成功！");
+        } else {
+            getLogger().warning("未找到PlaceholderAPI，变量功能不可用。");
         }
     }
 

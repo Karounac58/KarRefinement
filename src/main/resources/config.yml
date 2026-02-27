@@ -20,6 +20,8 @@ settings:
   enablefastrefine: true
   # 是否开启淬炼界面显示成功概率功能
   enableguishowchance: false
+  # 是否开启动态lore更新功能（当配置文件修改后自动更新装备lore）
+  enableDynamicLoreUpdate: true
   # 淬炼、宝石镶嵌、保护符镶嵌、精魂镶嵌后的lore顺序
   SortOrder:
     - "{lore}"

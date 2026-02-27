@@ -19,6 +19,7 @@ public class ReloadCommand extends KarAbstractCommand {
         if(!checkPermission(sender)){
             return true;
         }
+
         reloadConfig();
         sender.sendMessage(Message.messages.get("reload_success"));
         return true;
@@ -40,6 +41,8 @@ public class ReloadCommand extends KarAbstractCommand {
     }
 
     public void reloadConfig(){
+        // 清理统计数据缓存
+        PlayerStatsDataManager.clearCache();
         KarRefinement.instance.reloadConfig();
         KarRefinement.instance.initGuiData();
         StoneDataManager.init();
@@ -59,5 +62,9 @@ public class ReloadCommand extends KarAbstractCommand {
         KarTakeItemGui.initItems();
         FurnaceDataManager.init();
         ScriptRunnable.enbaleScript = KarRefinement.instance.getConfig().getBoolean("settings.enablescript");
+        
+        // 更新lore版本号，触发所有已淬炼装备的lore更新
+        LoreUpdateManager.init();
+        LoreUpdateManager.clearAllCooldowns();
     }
 }

@@ -29,7 +29,7 @@ public class KarRefinementGuiListener implements Listener {
         }
 
         if(!(e.getClickedInventory().getHolder() instanceof KarRefinementInvHolder)){
-            System.out.println("1");
+//            System.out.println("1");
             return;
         }
 
@@ -37,17 +37,15 @@ public class KarRefinementGuiListener implements Listener {
         Bukkit.getScheduler().runTaskLater(KarRefinement.instance,() -> {
             Inventory inv = e.getClickedInventory();
             ItemStack item1 = inv.getItem(29);
-            ItemStack item2 = inv.getItem(31);
+            ItemStack item2 = inv.getItem(33);
             if(item1 != null && item2 != null){
-                System.out.println(2);
                 NBTItem nbtItem1 = new NBTItem(item1);
                 NBTItem nbtItem2 = new NBTItem(item2);
                 if(nbtItem1.hasTag("refinementstone")){
-                    System.out.println(3);
                     Stone stone = StoneDataManager.getStone(item1);
                     int level = EquipmentDataManager.carifyEquipmentLevel(item2);
+//                    System.out.println(level);
                     if(level == stone.getProbability().size()){
-                        System.out.println(4);
                         InvItem confirmButton = KarRefinementGui.rItems.get("ConfirmButton");
                         ItemStack invItem = KarRefinementGui.createInvItem(confirmButton,(Player) e.getWhoClicked());
                         ItemMeta im = invItem.getItemMeta();

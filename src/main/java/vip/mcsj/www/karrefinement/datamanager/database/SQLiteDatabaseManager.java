@@ -2,6 +2,7 @@ package vip.mcsj.www.karrefinement.datamanager.database;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import vip.mcsj.www.karrefinement.datamanager.PlayerStatsDataManager;
 import vip.mcsj.www.karrefinement.main.KarRefinement;
 
 import java.sql.Connection;
@@ -43,6 +44,9 @@ public class SQLiteDatabaseManager implements DatabaseManager{
                         "count INTEGER NOT NULL," +
                         "timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP" +
                         ");");
+                
+                // 初始化玩家统计表
+                PlayerStatsDataManager.initializeTable();
             }
             plugin.getLogger().info("数据库初始化完成");
         }catch(SQLException e){

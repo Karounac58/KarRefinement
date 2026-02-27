@@ -26,7 +26,7 @@ public class Level {
     }
 
 
-    private int getRefinementLevel() {
+    public int getRefinementLevel() {
         return refinementLevel;
     }
 

@@ -236,6 +236,10 @@ public class KarRefinementGui {
             p.sendMessage(Message.messages.get("refinement_maxlevel"));
             return;
         }
+        
+        // 记录淬炼尝试
+        PlayerStatsDataManager.recordAttempt(p);
+        
         double success = stone.getProbability().get(refinementLevel);
         BigDecimal decimal = BigDecimal.valueOf(KarUtils.nextDouble(100)).setScale(2, RoundingMode.HALF_UP);
 
@@ -246,6 +250,9 @@ public class KarRefinementGui {
             int count = (int)playerDarkChangeData.get(2);
             if (isSuccess) {
                 if (equipmentManager.injuryUpStar()) {
+                    // 记录淬炼成功
+                    PlayerStatsDataManager.recordSuccess(p, equipmentManager.carifyEquipmentLevel());
+                    
                     p.sendMessage(Message.messages.get("refinement_upstar"));
                     //Player p = (Player)e.getWhoClicked();
                     p.playSound(p.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
@@ -261,11 +268,18 @@ public class KarRefinementGui {
             } else {
                 KarRefinement.dcdm.updatePlayerDarkChangeData(p,isSuccess,count-1);
                 if (refinementLevel == 0) {
+                    // 记录淬炼失败
+                    PlayerStatsDataManager.recordFailure(p);
+                    
                     p.sendMessage(Message.messages.get("refinement_failed").replace("{level}", 0 + ""));
                     KarUtils.removeItemRefinement(itemStone);
                     return;
                 }
                 int downLevel = equipmentManager.injuryDownStar(paperDataManager.getPaperLevel(), stone);
+                
+                // 记录淬炼失败
+                PlayerStatsDataManager.recordFailure(p);
+                
                 p.sendMessage(Message.messages.get("refinement_failed").replace("{level}", downLevel + ""));
 
                 p.playSound(p.getLocation(), Sound.BLOCK_ANVIL_BREAK, 1, 1);
@@ -282,6 +296,9 @@ public class KarRefinementGui {
         //成功
         if((99-(success + addSuccess + addProb)) < decimal.doubleValue()){
             if(equipmentManager.injuryUpStar()){
+                // 记录淬炼成功
+                PlayerStatsDataManager.recordSuccess(p, equipmentManager.carifyEquipmentLevel());
+                
                 p.sendMessage(Message.messages.get("refinement_upstar"));
                 //Player p = (Player)e.getWhoClicked();
                 p.playSound(p.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
@@ -295,11 +312,18 @@ public class KarRefinementGui {
             //失败
         }else{
             if(refinementLevel == 0){
+                // 记录淬炼失败
+                PlayerStatsDataManager.recordFailure(p);
+                
                 p.sendMessage(Message.messages.get("refinement_failed").replace("{level}",0+""));
                 KarUtils.removeItemRefinement(itemStone);
                 return;
             }
             int downLevel = equipmentManager.injuryDownStar(paperDataManager.getPaperLevel(), stone);
+            
+            // 记录淬炼失败
+            PlayerStatsDataManager.recordFailure(p);
+            
             p.sendMessage(Message.messages.get("refinement_failed").replace("{level}",downLevel+""));
 
             p.playSound(p.getLocation(), Sound.BLOCK_ANVIL_BREAK, 1, 1);

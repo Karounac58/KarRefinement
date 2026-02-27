@@ -58,6 +58,12 @@ public class EffectDataManager {
         return judgeLevel(levels);
     }
 
+    /**
+     * 根据装备等级数组判断套装等级
+     * 
+     * @param levels 装备等级数组 [头盔, 胸甲, 护腿, 靴子, 主手武器]
+     * @return 套装等级 (0-5)
+     */
     private static int judgeLevel(int[] levels){
         if(levels[0] == 0 || levels[1] == 0 || levels[2] == 0 || levels[3] == 0 || levels[4] == 0){
             return 0;
@@ -75,80 +81,20 @@ public class EffectDataManager {
         return 0;
     }
 
-    //药水效果
-    public static void handlePlayerPotionEffect(Player p){
-        Level minLevel = LevelDataManager.getMinLevel(p);
-        if(minLevel != null){
-            List<String> potionEffects = minLevel.getSuitEffect().potionEffect;
-            if(!minLevel.getSuitEffect().potionEffect.isEmpty()){
-                for (String potionEffect : potionEffects) {
-                    PotionEffectType type = PotionEffectType.getByName(potionEffect.split(" ")[0]);
-                    int level = Integer.parseInt(potionEffect.split(" ")[1]);
-                    PotionEffect potionEffect1 = new PotionEffect(type, 120, level);
-                    p.removePotionEffect(type);
-                    p.addPotionEffect(potionEffect1);
-                }
-            }
-        }
-    }
-    //套装特效
-    public static void handlePlayerEffect(Player p){
-        int i = judgeRightLevelEquipment(p);
-        switch (i){
-            case 0:
-                if(taskMap.get(p.getName()) != null) {
-                    CrownEffect effect = new CrownEffect(p);
-                    effect.stopEffect();
-                }
-                break;
-            case 1:
-                if(taskMap.get(p.getName()) == null) {
-                    p.sendMessage(ChatColor.GREEN + "激活六星套装效果！");
-                    CrownEffect effect = new CrownEffect(p);
-                    effect.startEffect();
-                }
-                break;
-            case 2:
-                if(taskMap.get(p.getName()) == null) {
-                    p.sendMessage(ChatColor.GREEN + "激活九星套装效果！");
-                    CrownEffect2 effect2 = new CrownEffect2(p);
-                    effect2.startEffect();
-                }
-                break;
-            case 3:
-                if(taskMap.get(p.getName()) == null) {
-                    p.sendMessage(ChatColor.GREEN + "激活十二星套装效果！");
-                    CrownEffect3 effect3 = new CrownEffect3(p);
-                    effect3.startEffect();
-                }
-                break;
-            case 4:
-                if(taskMap.get(p.getName()) == null) {
-                    p.sendMessage(ChatColor.GREEN + "激活十五星套装效果！");
-                    CrownEffect4 effect4 = new CrownEffect4(p);
-                    effect4.startEffect();
-                }
-                break;
-            case 5:
-                if(taskMap.get(p.getName()) == null) {
-                    p.sendMessage(ChatColor.GREEN + "激活十八星套装效果！");
-                    CrownEffect5 effect5 = new CrownEffect5(p);
-                    effect5.startEffect();
-                }
-                break;
-        }
-    }
-
-    public static boolean arrayRange(int[] levels,int min,int swordLevel){
-//        return range(levels[0],min,max) && range(levels[1],min,max) && range(levels[2],min,max) && range(levels[3],min,max) && levels[4] >= swordLevel;
+    /**
+     * 检查所有装备是否满足最低等级要求，且主手武器满足剑等级要求
+     */
+    private static boolean arrayRange(int[] levels,int min,int swordLevel){
         return levels[0] >= min && levels[1] >= min && levels[2] >= min && levels[3] >= min && levels[4] >= swordLevel;
     }
 
-    public static Map<String,BukkitTask> getTaskMap() {
-        return taskMap;
-    }
-
-
+    /**
+     * 加载套装效果脚本文件
+     * 如果文件不存在则创建默认脚本
+     * 
+     * @param name 脚本文件名
+     * @return 脚本内容
+     */
     public static String loadSuitEffectScriptStr(String name) {
         if (!KarRefinement.instance.getDataFolder().exists()) {
             KarRefinement.instance.getDataFolder().mkdir();
@@ -163,6 +109,7 @@ public class EffectDataManager {
                 file.createNewFile();
                 FileUtil.write(file, SuitEffect.defaultScript);
             } catch (IOException ex) {
+                KarRefinement.instance.getLogger().warning("创建脚本文件失败: " + name);
             }
         }
         return FileUtil.read(file);

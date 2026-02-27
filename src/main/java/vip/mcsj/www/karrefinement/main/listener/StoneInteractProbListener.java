@@ -30,9 +30,9 @@ public class StoneInteractProbListener implements Listener {
             return;
         }
 
-        if(StoneDataManager.isStoneLegal(e.getItem())){
+        if(StoneDataManager.isStoneLegal(e.getPlayer().getInventory().getItemInMainHand())){
             e.setCancelled(true);
-            Stone stone = StoneDataManager.getStone(e.getItem());
+            Stone stone = StoneDataManager.getStone(e.getPlayer().getInventory().getItemInMainHand());
             List<Double> stoneChance = stone.getProbability();
             List<String> stoneChanceString = new ArrayList<>();
             String formatter = Message.messages.get("stone_interact_chance_formatter");

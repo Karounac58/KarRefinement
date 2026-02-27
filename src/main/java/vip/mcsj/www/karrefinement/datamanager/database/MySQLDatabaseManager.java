@@ -4,6 +4,7 @@ import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import org.bukkit.configuration.ConfigurationSection;
 import vip.mcsj.www.karrefinement.api.KarRefinementAPI;
+import vip.mcsj.www.karrefinement.datamanager.PlayerStatsDataManager;
 import vip.mcsj.www.karrefinement.main.KarRefinement;
 
 import java.sql.Connection;
@@ -43,6 +44,9 @@ public class MySQLDatabaseManager implements DatabaseManager {
                     "count INT NOT NULL," +
                     "timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP" +
                     ");");
+            
+            // 初始化玩家统计表
+            PlayerStatsDataManager.initializeTable();
         }catch(SQLException e){
             plugin.getLogger().log(Level.SEVERE,"数据库初始化失败!",e);
         }

@@ -55,7 +55,7 @@ public class KarEventListener implements Listener {
     public static ConcurrentHashMap<Player,ItemStack[]> closeItems2 = new ConcurrentHashMap<>();
 
     //淬炼菜单关闭后
-    public static ConcurrentHashMap<Player,ItemStack[]> closeItems = new ConcurrentHashMap<>();
+    public static ConcurrentHashMap<Player,ItemStack[]> closeItems = new ConcurrentHashMap();
 
 
     /**
@@ -456,5 +456,68 @@ public class KarEventListener implements Listener {
             EffectDataManager.getTask(name).cancel();
             EffectDataManager.removeTaskFromMap(name);
         }
+    }
+
+    @EventHandler
+    public void onPlayerQuitStats(PlayerQuitEvent event) {
+        // 玩家退出时清理缓存，确保数据已保存
+        PlayerStatsDataManager.removeFromCache(event.getPlayer().getUniqueId());
+    }
+    
+    /**
+     * 玩家打开背包时检查并更新装备lore
+     * @param e
+     */
+    @EventHandler
+    public void onInventoryOpen(InventoryOpenEvent e) {
+        if (e.getPlayer() instanceof Player) {
+            Player player = (Player) e.getPlayer();
+            // 延迟执行，确保背包已完全打开
+            Bukkit.getScheduler().runTaskLater(KarRefinement.instance, () -> {
+                LoreUpdateManager.checkAndUpdatePlayerInventory(player);
+            }, 2L);
+        }
+    }
+    
+    /**
+     * 玩家切换手持物品时检查并更新装备lore
+     * @param e
+     */
+    @EventHandler
+    public void onItemHeldChange(PlayerItemHeldEvent e) {
+        Player player = e.getPlayer();
+        // 延迟一tick执行，确保物品已切换
+        Bukkit.getScheduler().runTaskLater(KarRefinement.instance, () -> {
+            ItemStack newItem = player.getInventory().getItem(e.getNewSlot());
+            if (LoreUpdateManager.shouldUpdateItem(newItem)) {
+                LoreUpdateManager.updateItemLore(newItem);
+            }
+        }, 1L);
+    }
+    
+    /**
+     * 玩家装备/卸下盔甲时检查并更新装备lore
+     * @param e
+     */
+    @EventHandler
+    public void onInventoryClick(InventoryClickEvent e) {
+        if (!(e.getWhoClicked() instanceof Player)) {
+            return;
+        }
+        Player player = (Player) e.getWhoClicked();
+        
+        // 延迟执行，确保装备状态已改变
+        Bukkit.getScheduler().runTaskLater(KarRefinement.instance, () -> {
+            // 检查点击的物品
+            ItemStack clickedItem = e.getCurrentItem();
+            if (LoreUpdateManager.shouldUpdateItem(clickedItem)) {
+                LoreUpdateManager.updateItemLore(clickedItem);
+            }
+            // 检查光标上的物品
+            ItemStack cursorItem = e.getCursor();
+            if (LoreUpdateManager.shouldUpdateItem(cursorItem)) {
+                LoreUpdateManager.updateItemLore(cursorItem);
+            }
+        }, 1L);
     }
 }
