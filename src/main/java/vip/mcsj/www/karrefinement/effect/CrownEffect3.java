@@ -38,16 +38,6 @@ public class CrownEffect3 extends BukkitRunnable {
             cancel();
         }
 
-//        //第一种特效，圆在头上画圈圈
-//        Location playerLocation = player.getLocation();
-//        double radians = Math.toRadians(degree);
-//
-//        Location playEffectLocation = playerLocation.clone().add(0.3 * Math.cos(radians), 2D, 0.3 * Math.sin(radians));
-////        ParticleEffect.REDSTONE.display(new ParticleEffect.OrdinaryColor(Color.ORANGE), playEffectLocation, 50);
-//        playEffectLocation.getWorld().spawnParticle(Particle.WHITE_ASH,playEffectLocation,50);
-
-
-
         Location playerLocation = player.getLocation().add(0,0D,0);
         double radians = Math.toRadians(degree);
         double x1 = Math.sin(radians);

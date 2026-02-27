@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
+import vip.mcsj.www.karrefinement.core.Service;
 import vip.mcsj.www.karrefinement.main.KarRefinement;
 import vip.mcsj.www.karrefinement.object.InfiniteSoul;
 import vip.mcsj.www.karrefinement.object.Level;
@@ -14,12 +15,13 @@ import vip.mcsj.www.karrefinement.object.SpeStone;
 import vip.mcsj.www.karrefinement.utils.RandomLoreUtils;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 装备Lore动态更新管理器
  * 用于检测和更新装备上的淬炼lore，当配置文件变更时自动同步
  */
-public class LoreUpdateManager {
+public class LoreUpdateManager implements Service {
 
     // 当前lore版本号（基于配置文件的hash）
     private static String currentLoreVersion = "";
@@ -31,10 +33,20 @@ public class LoreUpdateManager {
     private static final long CHECK_COOLDOWN = 1000;
     
     // 玩家上次检查时间记录
-    private static final Map<UUID, Long> lastCheckTime = new HashMap<>();
+    private static final Map<UUID, Long> lastCheckTime = new ConcurrentHashMap<>();
     
     // 已处理过的物品缓存（防止同一tick内重复处理）
-    private static final Set<String> processedItems = new HashSet<>();
+    private static final Set<String> processedItems = ConcurrentHashMap.newKeySet();
+
+    @Override
+    public void initialize() {
+        init();
+    }
+
+    @Override
+    public void shutdown() {
+        clearAllCooldowns();
+    }
 
     /**
      * 初始化lore版本管理器

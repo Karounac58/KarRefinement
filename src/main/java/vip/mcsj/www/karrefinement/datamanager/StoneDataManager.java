@@ -8,6 +8,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import vip.mcsj.www.karrefinement.core.Service;
 import vip.mcsj.www.karrefinement.main.KarRefinement;
 import vip.mcsj.www.karrefinement.object.Stone;
 import vip.mcsj.www.karrefinement.utils.FileUtil;
@@ -20,7 +21,7 @@ import java.util.stream.Collectors;
 /**
  * 控制淬炼石信息的类
  */
-public class StoneDataManager {
+public class StoneDataManager implements Service {
 
     public static Map<String, Stone> stones = new HashMap<>();
     public String stoneNbt;
@@ -29,6 +30,15 @@ public class StoneDataManager {
 
     public StoneDataManager(String name){
         this.stoneNbt = name;
+    }
+
+    public StoneDataManager() {
+        this.stoneNbt = null;
+    }
+
+    @Override
+    public void initialize() {
+        init();
     }
 
     /**

@@ -3,6 +3,7 @@ package vip.mcsj.www.karrefinement.datamanager;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
+import vip.mcsj.www.karrefinement.core.Service;
 import vip.mcsj.www.karrefinement.object.EquipmentMaterial;
 import vip.mcsj.www.karrefinement.main.KarRefinement;
 
@@ -10,7 +11,7 @@ import java.io.File;
 import java.util.*;
 import java.util.logging.Logger;
 
-public class EquipmentTypeManager {
+public class EquipmentTypeManager implements Service {
 
     private static final Logger log = Logger.getLogger("Minecraft");
 
@@ -24,6 +25,11 @@ public class EquipmentTypeManager {
     public static final String CHESTPLATE = "Chestplate";
     public static final String LEGGINGS = "Leggings";
     public static final String BOOTS = "Boots";
+
+    @Override
+    public void initialize() {
+        init();
+    }
 
     /**
      * 初始化装备配置
@@ -138,7 +144,7 @@ public class EquipmentTypeManager {
     /**
      * 重载配置
      */
-    public static void reload() {
+    public static void reloadConfig() {
         init();
     }
 }

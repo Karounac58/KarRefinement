@@ -26,6 +26,7 @@ import vip.mcsj.www.karrefinement.utils.ReflectionUtils;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
 public class KarRefinementGui {
@@ -142,44 +143,39 @@ public class KarRefinementGui {
         removeIndex.add(24);
         InvItem videoItem = rItems.get("VideoItem");
         ItemStack invItem = createInvItem(videoItem,p);
+        // 使用同步递归调度替代异步Thread.sleep，保证线程安全
         new BukkitRunnable() {
+            int index = 0;
+            final List<Integer> remainingSlots = new ArrayList<>(lists);
             @Override
             public void run() {
-                //标识正在淬炼中
-                KarEventListener.judgeInvRefinementOrNot.put(p, 1);
-                for (int i = 0; i < size; i++) {
-                    //标识已关闭菜单,关闭即停止动画
-                    if (KarEventListener.judgeInvCloseOrNot.get(p) == null || KarEventListener.judgeInvCloseOrNot.get(p) == 0) {
-                        return;
-                    }
-                    Random random = new Random();
-                    //累加数，用于判断是否跳出循环
-                    int x = 0;
-                    //随机数，用于抽取list中内容
-                    int h = random.nextInt(54);
-                    //当原index列表不包含 且 移除index列表包含时
-                    while (!lists.contains(Integer.valueOf(h)) || removeIndex.contains(Integer.valueOf(h))) {
-                        h = random.nextInt(54);
-                    }
-                    inv.setItem(h, invItem);
-                    p.updateInventory();
-                    lists.remove(Integer.valueOf(h));
-                    KarEventListener.invs.put(p, inv);
-                    try {
-                        p.playSound(p.getLocation(), KarRefinement.cs.getSounds().get(0), 1, 1);
-                        Thread.sleep(100);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    if (i == size - 1) {
-                        KarRefinementMethod(itemStone, itemEquipment, p,0.0);
-                        setInvInitial(inv,p);
-                        //标识已淬炼完毕
-                        KarEventListener.judgeInvRefinementOrNot.put(p, 0);
-                    }
+                // 标识正在淬炼中
+                if(index == 0) {
+                    KarEventListener.judgeInvRefinementOrNot.put(p, 1);
                 }
+                // 标识已关闭菜单,关闭即停止动画
+                Integer closeState = KarEventListener.judgeInvCloseOrNot.get(p);
+                if (closeState == null || closeState == 0) {
+                    this.cancel();
+                    return;
+                }
+                if(index >= size) {
+                    KarRefinementMethod(itemStone, itemEquipment, p, 0.0);
+                    setInvInitial(inv, p);
+                    KarEventListener.judgeInvRefinementOrNot.put(p, 0);
+                    this.cancel();
+                    return;
+                }
+                // 随机选取一个未使用的槽位
+                int randIdx = ThreadLocalRandom.current().nextInt(remainingSlots.size());
+                int h = remainingSlots.remove(randIdx);
+                inv.setItem(h, invItem);
+                p.updateInventory();
+                KarEventListener.invs.put(p, inv);
+                p.playSound(p.getLocation(), KarRefinement.cs.getSounds().get(0), 1, 1);
+                index++;
             }
-        }.runTaskAsynchronously(KarRefinement.instance);
+        }.runTaskTimer(KarRefinement.instance, 0L, 2L);
 
     }
 
@@ -294,7 +290,7 @@ public class KarRefinementGui {
             addSuccess = (double)objects.get(1) * 100;
         }
         //成功
-        if((99-(success + addSuccess + addProb)) < decimal.doubleValue()){
+        if(decimal.doubleValue() < (success + addSuccess + addProb)){
             if(equipmentManager.injuryUpStar()){
                 // 记录淬炼成功
                 PlayerStatsDataManager.recordSuccess(p, equipmentManager.carifyEquipmentLevel());

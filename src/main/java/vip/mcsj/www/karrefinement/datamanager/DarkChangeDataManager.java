@@ -2,6 +2,7 @@ package vip.mcsj.www.karrefinement.datamanager;
 
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
+import vip.mcsj.www.karrefinement.core.Service;
 import vip.mcsj.www.karrefinement.main.KarRefinement;
 
 import java.sql.Connection;
@@ -11,8 +12,12 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DarkChangeDataManager {
+public class DarkChangeDataManager implements Service {
 
+    @Override
+    public void initialize() {
+        // 纯数据库操作类，无需初始化配置
+    }
 
     public void changePlayerDarkChangeInfo(OfflinePlayer p, boolean isSuccess,int count){
         List<Object> objects = getPlayerDarkChangeData(p);

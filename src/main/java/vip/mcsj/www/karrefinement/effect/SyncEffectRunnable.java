@@ -5,17 +5,15 @@ import cn.org.bukkit.craneattribute.CraneAttribute;
 import github.saukiya.sxattribute.SXAttribute;
 import github.saukiya.sxattribute.data.attribute.SXAttributeData;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import org.serverct.ersha.AttributePlus;
 import org.bukkit.entity.Player;
 import org.serverct.ersha.api.AttributeAPI;
 import org.serverct.ersha.attribute.data.AttributeData;
@@ -26,7 +24,7 @@ import vip.mcsj.www.karrefinement.object.Level;
 
 public class SyncEffectRunnable implements Runnable {
 
-    public static HashMap<UUID, Level> tmpMap = new HashMap<>();
+    public static ConcurrentHashMap<UUID, Level> tmpMap = new ConcurrentHashMap<>();
 
     @Override
     public void run() {
