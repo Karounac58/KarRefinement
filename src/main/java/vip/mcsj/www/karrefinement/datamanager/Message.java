@@ -4,12 +4,19 @@ import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.YamlConfiguration;
 import vip.mcsj.www.karrefinement.utils.FileUtil;
 
+import vip.mcsj.www.karrefinement.core.Service;
+
 import java.util.*;
 
-public class Message {
+public class Message implements Service {
     public static Map<String,String> messages = new HashMap<>();
 
     public static List<String> showStoneChance = new ArrayList<>();
+
+    @Override
+    public void initialize() {
+        init();
+    }
 
     public static void init(){
         if(!messages.isEmpty()) {

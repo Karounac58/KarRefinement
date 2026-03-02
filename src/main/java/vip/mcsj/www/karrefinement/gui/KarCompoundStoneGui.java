@@ -50,6 +50,7 @@ public class KarCompoundStoneGui{
             List<String> lore = fileCS.getStringList(key + ".Lore");
             cItems.put(key,new InvItem(name, material, data, customModelData, lore));
         }
+        initCompoundData();
     }
 
     public static void initCompoundData(){
@@ -117,7 +118,7 @@ public class KarCompoundStoneGui{
                 @Override
                 public void run() {
                     String stoneKey = compound(inv,p,firstNBT.getString("refinementstone"));
-                    if (stoneKey != "Shit" && stoneKey != null) {
+                    if (!"Shit".equals(stoneKey) && stoneKey != null) {
                         String stoneName = StoneDataManager.stones.get(stoneKey).getName();
                         p.playSound(p.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
                         //3.播报消息
@@ -136,7 +137,7 @@ public class KarCompoundStoneGui{
             }.runTaskLater(KarRefinement.instance, 60);
         }else{
             String stoneKey = compound(inv,p,firstNBT.getString("refinementstone"));
-            if (stoneKey != "Shit" && stoneKey != null) {
+            if (!"Shit".equals(stoneKey) && stoneKey != null) {
                 String stoneName = StoneDataManager.stones.get(stoneKey).getName();
                 p.playSound(p.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
                 //3.播报消息

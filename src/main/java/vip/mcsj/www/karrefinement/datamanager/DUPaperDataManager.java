@@ -7,6 +7,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import vip.mcsj.www.karrefinement.core.Service;
 import vip.mcsj.www.karrefinement.object.DirectUpgradePaper;
 import vip.mcsj.www.karrefinement.utils.FileUtil;
 import vip.mcsj.www.karrefinement.utils.ReflectionUtils;
@@ -16,17 +17,15 @@ import java.util.*;
 /**
  * 控制直升符的信息的类
  */
-public class DUPaperDataManager {
+public class DUPaperDataManager implements Service {
     public static Map<String, DirectUpgradePaper> duPapers = new HashMap<>();
 
     public static Set<Material> duMaterials = new HashSet<>();
 
-
-//    /**
-//     * 用于后续应用直升符的操作时对物品做条件判断
-//     * @param equipmentItem
-//     */
-//    public DUPaperDataManager(ItemStack equipmentItem){this.equipmentItem = equipmentItem;}
+    @Override
+    public void initialize() {
+        init();
+    }
 
     public static void init(){
         if(!duPapers.isEmpty()){

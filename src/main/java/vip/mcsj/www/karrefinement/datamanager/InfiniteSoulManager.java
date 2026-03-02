@@ -6,13 +6,14 @@ import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import vip.mcsj.www.karrefinement.core.Service;
 import vip.mcsj.www.karrefinement.object.InfiniteSoul;
 import vip.mcsj.www.karrefinement.utils.FileUtil;
 import vip.mcsj.www.karrefinement.utils.ReflectionUtils;
 
 import java.util.*;
 
-public class InfiniteSoulManager {
+public class InfiniteSoulManager implements Service {
     public static Map<String, InfiniteSoul> infiniteSouls = new HashMap<>();
 
     public static Set<Material> soulMaterials = new HashSet<>();
@@ -26,6 +27,16 @@ public class InfiniteSoulManager {
 
     public InfiniteSoulManager(String soulName) {
         this.soulName = soulName;
+    }
+
+    public InfiniteSoulManager() {
+        this.equipmentItem = null;
+        this.soulName = null;
+    }
+
+    @Override
+    public void initialize() {
+        init();
     }
 
     public static void init(){

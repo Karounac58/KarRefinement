@@ -142,7 +142,10 @@ public class FileUtil {
     }
 
     public static void initCustomFile(String inPath,String fileName){
-        saveResource(inPath,fileName,false);
+        File file = new File(KarRefinement.instance.getDataFolder(),fileName);
+        if(!file.exists()) {
+            saveResource(inPath, fileName, false);
+        }
     }
     /**
      * 从指定文件中获取ConfigurationSection

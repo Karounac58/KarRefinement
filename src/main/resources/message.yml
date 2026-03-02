@@ -1,6 +1,6 @@
 refinement_upstar: "§a§l淬炼成功，装备上星！"
 refinement_maxlevel: "§c§l此装备已经满级，无法继续淬炼"
-refinement_broadcast: "§f[§c淬炼告示§f] §a恭喜玩家 §e{player} §a用 {stone} §a将装备强化至 §6{level} 星"
+refinement_broadcast: "§f[§c淬炼告示§f] §a恭喜玩家 §e{player} §a用 {stone} §a将 {itemname} 强化至 §6{level} 星"
 refinement_failed: "§c§l淬炼失败，装备掉{level}星"
 refinement_running: "§c请等待淬炼结束！"
 refinement_fast_off: "§c右键快速淬炼功能已关闭，请使用左键淬炼"

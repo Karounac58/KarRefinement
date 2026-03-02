@@ -42,29 +42,31 @@ public class ReloadCommand extends KarAbstractCommand {
 
     public void reloadConfig(){
         // 清理统计数据缓存
-        PlayerStatsDataManager.clearCache();
+//        PlayerStatsDataManager.clearCache();
         KarRefinement.instance.reloadConfig();
-        KarRefinement.instance.initGuiData();
-        StoneDataManager.init();
+
+//        StoneDataManager.init();
         EquipmentDataManager.init();
-        EquipmentDataManager.initForgeData();
-        EquipmentDataManager.initTransformData();
-        LevelDataManager.init();
-        PaperDataManager.init();
-        SpecialStoneDataManager.init();
-        InfiniteSoulManager.init();
-        DUPaperDataManager.init();
-        KarCompoundStoneGui.initCompoundData();
-        DetachDataManager.init();
-        AdhesiveDataManager.init();
-        PotionDataManager.init();
-        Message.init();
-        KarTakeItemGui.initItems();
-        FurnaceDataManager.init();
+//        EquipmentDataManager.initForgeData();
+//        EquipmentDataManager.initTransformData();
+//        LevelDataManager.init();
+//        PaperDataManager.init();
+//        SpecialStoneDataManager.init();
+//        InfiniteSoulManager.init();
+//        DUPaperDataManager.init();
+//        KarCompoundStoneGui.initCompoundData();
+//        DetachDataManager.init();
+//        AdhesiveDataManager.init();
+//        PotionDataManager.init();
+//        Message.init();
+//        KarTakeItemGui.initItems();
+//        FurnaceDataManager.init();
+        KarRefinement.getContext().getRegistry().reloadAll();
+        KarRefinement.instance.initGuiData();
         ScriptRunnable.enbaleScript = KarRefinement.instance.getConfig().getBoolean("settings.enablescript");
         
         // 更新lore版本号，触发所有已淬炼装备的lore更新
-        LoreUpdateManager.init();
-        LoreUpdateManager.clearAllCooldowns();
+//        LoreUpdateManager.init();
+//        LoreUpdateManager.clearAllCooldowns();
     }
 }

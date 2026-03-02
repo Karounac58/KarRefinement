@@ -6,6 +6,7 @@ import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import vip.mcsj.www.karrefinement.core.Service;
 import vip.mcsj.www.karrefinement.object.SpeStone;
 import vip.mcsj.www.karrefinement.utils.FileUtil;
 import vip.mcsj.www.karrefinement.utils.KarUtils;
@@ -14,7 +15,7 @@ import vip.mcsj.www.karrefinement.utils.ReflectionUtils;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class SpecialStoneDataManager {
+public class SpecialStoneDataManager implements Service {
 
     public static Map<String, SpeStone> speStones = new HashMap<>();
 
@@ -27,10 +28,14 @@ public class SpecialStoneDataManager {
     public static Map<Integer,String> specialProtectStoneToLevelList = new HashMap<>();
 
     private String speStoneName;
-//    public int getSpeStoneLevel(){
-//        return NBT.get(speStoneItem,nbt -> nbt.getInteger("stone"));
-//    }
 
+    public SpecialStoneDataManager() {
+    }
+
+    @Override
+    public void initialize() {
+        init();
+    }
 
     public static void init(){
         if(!speStones.isEmpty()){

@@ -19,6 +19,8 @@ import vip.mcsj.www.karrefinement.main.listener.KarEventListener;
 import vip.mcsj.www.karrefinement.object.InvItem;
 import vip.mcsj.www.karrefinement.object.MCVersions;
 import vip.mcsj.www.karrefinement.object.Stone;
+import vip.mcsj.www.karrefinement.service.refinement.RefinementResult;
+import vip.mcsj.www.karrefinement.service.refinement.RefinementService;
 import vip.mcsj.www.karrefinement.utils.FileUtil;
 import vip.mcsj.www.karrefinement.utils.KarUtils;
 import vip.mcsj.www.karrefinement.utils.ReflectionUtils;
@@ -26,6 +28,7 @@ import vip.mcsj.www.karrefinement.utils.ReflectionUtils;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
 public class KarRefinementGui {
@@ -33,6 +36,7 @@ public class KarRefinementGui {
     public static String title = "";
 
     public static Boolean enableFastRefine = true;
+
 
     public static void init(){
         if(!rItems.isEmpty()){
@@ -142,44 +146,43 @@ public class KarRefinementGui {
         removeIndex.add(24);
         InvItem videoItem = rItems.get("VideoItem");
         ItemStack invItem = createInvItem(videoItem,p);
+        // 使用同步递归调度替代异步Thread.sleep，保证线程安全
         new BukkitRunnable() {
+            int index = 0;
+            final List<Integer> remainingSlots = new ArrayList<>(lists);
             @Override
             public void run() {
-                //标识正在淬炼中
-                KarEventListener.judgeInvRefinementOrNot.put(p, 1);
-                for (int i = 0; i < size; i++) {
-                    //标识已关闭菜单,关闭即停止动画
-                    if (KarEventListener.judgeInvCloseOrNot.get(p) == null || KarEventListener.judgeInvCloseOrNot.get(p) == 0) {
-                        return;
-                    }
-                    Random random = new Random();
-                    //累加数，用于判断是否跳出循环
-                    int x = 0;
-                    //随机数，用于抽取list中内容
-                    int h = random.nextInt(54);
-                    //当原index列表不包含 且 移除index列表包含时
-                    while (!lists.contains(Integer.valueOf(h)) || removeIndex.contains(Integer.valueOf(h))) {
-                        h = random.nextInt(54);
-                    }
-                    inv.setItem(h, invItem);
-                    p.updateInventory();
-                    lists.remove(Integer.valueOf(h));
-                    KarEventListener.invs.put(p, inv);
-                    try {
-                        p.playSound(p.getLocation(), KarRefinement.cs.getSounds().get(0), 1, 1);
-                        Thread.sleep(100);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    if (i == size - 1) {
-                        KarRefinementMethod(itemStone, itemEquipment, p,0.0);
-                        setInvInitial(inv,p);
-                        //标识已淬炼完毕
-                        KarEventListener.judgeInvRefinementOrNot.put(p, 0);
-                    }
+                // 标识正在淬炼中
+                if(index == 0) {
+                    KarEventListener.judgeInvRefinementOrNot.put(p, 1);
                 }
+                // 标识已关闭菜单,关闭即停止动画
+                Integer closeState = KarEventListener.judgeInvCloseOrNot.get(p);
+                if (closeState == null || closeState == 0) {
+                    this.cancel();
+                    return;
+                }
+                if(index >= size) {
+//                    KarRefinementMethod(itemStone, itemEquipment, p, 0.0);
+                    //如果有淬炼就消耗石头，没淬炼(淬炼前已满星)就不消耗石头
+                    if(KarRefinementMethod(p, itemEquipment, StoneDataManager.getStone(itemStone))){
+                        KarUtils.removeItemRefinement(itemStone);
+                    }
+                    setInvInitial(inv, p);
+                    KarEventListener.judgeInvRefinementOrNot.put(p, 0);
+                    this.cancel();
+                    return;
+                }
+                // 随机选取一个未使用的槽位
+                int randIdx = ThreadLocalRandom.current().nextInt(remainingSlots.size());
+                int h = remainingSlots.remove(randIdx);
+                inv.setItem(h, invItem);
+                p.updateInventory();
+                KarEventListener.invs.put(p, inv);
+                p.playSound(p.getLocation(), KarRefinement.cs.getSounds().get(0), 1, 1);
+                index++;
             }
-        }.runTaskAsynchronously(KarRefinement.instance);
+        }.runTaskTimer(KarRefinement.instance, 0L, 2L);
 
     }
 
@@ -260,7 +263,18 @@ public class KarRefinementGui {
                     KarUtils.removeItemRefinement(itemStone);
                     if ((equipmentManager.carifyEquipmentLevel()) >= EquipmentDataManager.broadcastLevel) {
 //                    Bukkit.broadcastMessage("§f[§c淬炼告示§f] §a恭喜玩家 §e" + p.getName() + " §a用 "+stone.getName()+" §a将装备强化至 §6" + equipmentManager.carifyEquipmentLevel() + "星");
-                        Bukkit.broadcastMessage(PlaceholderAPI.setPlaceholders(p,Message.messages.get("refinement_broadcast").replace("{player}", p.getName()).replace("{stone}", stone.getName()).replace("{level}", equipmentManager.carifyEquipmentLevel() + "")));
+//                        Bukkit.broadcastMessage(PlaceholderAPI.setPlaceholders(p,Message.messages.get("refinement_broadcast").replace("{player}", p.getName()).replace("{stone}", stone.getName()).replace("{level}", equipmentManager.carifyEquipmentLevel() + "")));
+                        String displayName = "";
+                        if(itemEquipment.getItemMeta().hasDisplayName()){
+                            displayName = itemEquipment.getItemMeta().getDisplayName();
+                        }else{
+                            displayName = EquipmentDataManager.chinesenames.get(itemEquipment.getType().name().toUpperCase()) == null ? "" : EquipmentDataManager.chinesenames.get(itemEquipment.getType().name().toUpperCase());
+                        }
+                        Bukkit.broadcastMessage(PlaceholderAPI.setPlaceholders(p, Message.messages.get("refinement_broadcast")
+                                        .replace("{player}", p.getName())
+                                        .replace("{stone}", stone.getName())
+                                        .replace("{level}", equipmentManager.carifyEquipmentLevel() + "")
+                                        .replace("{itemname}", displayName)));
                     }
                 }
                 KarRefinement.dcdm.updatePlayerDarkChangeData(p,isSuccess,count-1);
@@ -294,7 +308,7 @@ public class KarRefinementGui {
             addSuccess = (double)objects.get(1) * 100;
         }
         //成功
-        if((99-(success + addSuccess + addProb)) < decimal.doubleValue()){
+        if(decimal.doubleValue() < (success + addSuccess + addProb)){
             if(equipmentManager.injuryUpStar()){
                 // 记录淬炼成功
                 PlayerStatsDataManager.recordSuccess(p, equipmentManager.carifyEquipmentLevel());
@@ -306,7 +320,18 @@ public class KarRefinementGui {
                 KarUtils.removeItemRefinement(itemStone);
                 if ((equipmentManager.carifyEquipmentLevel()) >= EquipmentDataManager.broadcastLevel) {
 //                    Bukkit.broadcastMessage("§f[§c淬炼告示§f] §a恭喜玩家 §e" + p.getName() + " §a用 "+stone.getName()+" §a将装备强化至 §6" + equipmentManager.carifyEquipmentLevel() + "星");
-                    Bukkit.broadcastMessage(PlaceholderAPI.setPlaceholders(p,Message.messages.get("refinement_broadcast").replace("{player}",p.getName()).replace("{stone}",stone.getName()).replace("{level}",equipmentManager.carifyEquipmentLevel()+"")));
+//                    Bukkit.broadcastMessage(PlaceholderAPI.setPlaceholders(p,Message.messages.get("refinement_broadcast").replace("{player}",p.getName()).replace("{stone}",stone.getName()).replace("{level}",equipmentManager.carifyEquipmentLevel()+"")));
+                    String displayName;
+                    if(itemEquipment.getItemMeta().hasDisplayName()){
+                        displayName = itemEquipment.getItemMeta().getDisplayName();
+                    }else{
+                        displayName = EquipmentDataManager.chinesenames.get(itemEquipment.getType().name().toUpperCase()) == null ? "" : EquipmentDataManager.chinesenames.get(itemEquipment.getType().name().toUpperCase());
+                    }
+                    Bukkit.broadcastMessage(PlaceholderAPI.setPlaceholders(p, Message.messages.get("refinement_broadcast")
+                                    .replace("{player}", p.getName())
+                                    .replace("{stone}", stone.getName())
+                                    .replace("{level}", equipmentManager.carifyEquipmentLevel() + "")
+                                    .replace("{itemname}", displayName)));
                 }
             }
             //失败
@@ -330,6 +355,54 @@ public class KarRefinementGui {
             //减去强化石
             KarUtils.removeItemRefinement(itemStone);
         }
+    }
+
+    /**
+     * 淬炼优化方法(在执行这个方法之前，需判断淬炼石头和装备是否合法，执行完这个方法后根据返回值判断是否消费淬炼石)
+     * @param player
+     * @param itemEquipment
+     * @param stone
+     * @return 是否有淬炼
+     */
+    public static Boolean KarRefinementMethod(Player player,ItemStack itemEquipment,Stone stone){
+        RefinementResult result = new RefinementService().refine(player, itemEquipment, stone);
+        if(result.isMaxLevel()){
+            player.sendMessage(Message.messages.get("refinement_maxlevel"));
+            return false;
+        }
+        //记录淬炼尝试
+        PlayerStatsDataManager.recordAttempt(player);
+
+        if(result.isSuccess()){
+            // 记录淬炼成功
+            PlayerStatsDataManager.recordSuccess(player, result.getNewLevel());
+
+            player.sendMessage(Message.messages.get("refinement_upstar"));
+            player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
+
+            if(result.getNewLevel() >= EquipmentDataManager.broadcastLevel){
+                String displayName;
+                if(itemEquipment.getItemMeta().hasDisplayName()){
+                    displayName = itemEquipment.getItemMeta().getDisplayName();
+                }else{
+                    displayName = EquipmentDataManager.chinesenames.get(itemEquipment.getType().name().toUpperCase()) == null ? "" : EquipmentDataManager.chinesenames.get(itemEquipment.getType().name().toUpperCase());
+                }
+                Bukkit.broadcastMessage(PlaceholderAPI.setPlaceholders(player, Message.messages.get("refinement_broadcast")
+                        .replace("{player}", player.getName())
+                        .replace("{stone}", stone.getName())
+                        .replace("{level}", result.getNewLevel() + "")
+                        .replace("{itemname}", displayName)));
+
+            }
+        }else{
+            //记录淬炼失败
+            PlayerStatsDataManager.recordFailure(player);
+
+            player.sendMessage(Message.messages.get("refinement_failed").replace("{level}", result.getDownLevels() + ""));
+            player.playSound(player.getLocation(), Sound.BLOCK_ANVIL_BREAK, 1, 1);
+        }
+
+        return true;
     }
 
 }

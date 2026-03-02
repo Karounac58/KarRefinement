@@ -6,7 +6,7 @@
 
     <groupId>vip.mcsj.www</groupId>
     <artifactId>KarRefinement</artifactId>
-    <version>v1.4.3.0-SNAPSHOT</version>
+    <version>v2.0.0.1-beta</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

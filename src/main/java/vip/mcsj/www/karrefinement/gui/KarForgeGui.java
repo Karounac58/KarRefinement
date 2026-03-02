@@ -110,7 +110,7 @@ public class KarForgeGui {
             double success = EquipmentDataManager.forgeSuccessList.get(manager1.carifyEquipmentLevel()+1);
             BigDecimal decimal = BigDecimal.valueOf(KarUtils.nextDouble(100)).setScale(2, RoundingMode.HALF_UP);
             //锻造成功
-            if((99-success) < decimal.doubleValue()){
+            if(decimal.doubleValue() < success){
                 manager1.injuryUpStar();
                 p.sendMessage(Message.messages.get("forge_upstar"));
                 p.playSound(p.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
@@ -132,35 +132,35 @@ public class KarForgeGui {
     public static void playInvVideo(Inventory inv, ItemStack itemEquipment1, ItemStack itemEquipment2, Player p) {
         List<Integer> indexs = Arrays.asList(12,13,14,23,32,31,30,21);
         ItemStack videoItem = createInvItem(fItems.get("VideoItem"),p);
+        // 使用同步递归调度替代异步Thread.sleep，保证线程安全
         new BukkitRunnable() {
+            int index = 0;
             @Override
             public void run() {
-                //标识正在淬炼中
-                KarEventListener.judgeInvForgeOrNot.put(p, 1);
-                for (int i = 0; i < indexs.size(); i++) {
-                    //标识已关闭菜单,关闭即停止动画
-                    if (KarEventListener.judgeForgeInvCloseOrNot.get(p) == null || KarEventListener.judgeForgeInvCloseOrNot.get(p) == 0) {
-                        return;
-                    }
-
-                    inv.setItem(indexs.get(i), videoItem);
-                    p.updateInventory();
-                    KarEventListener.forgeInvs.put(p, inv);
-                    try {
-                        p.playSound(p.getLocation(), KarRefinement.cs.getSounds().get(0), 1, 1);
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    if (i == indexs.size() - 1) {
-                        KarForgeMethod(itemEquipment1,itemEquipment2, p);
-                        initInv(inv,p);
-                        //标识已淬炼完毕
-                        KarEventListener.judgeInvForgeOrNot.put(p, 0);
-                    }
+                // 标识正在锻造中
+                if(index == 0) {
+                    KarEventListener.judgeInvForgeOrNot.put(p, 1);
                 }
+                // 标识已关闭菜单,关闭即停止动画
+                Integer closeState = KarEventListener.judgeForgeInvCloseOrNot.get(p);
+                if (closeState == null || closeState == 0) {
+                    this.cancel();
+                    return;
+                }
+                if(index >= indexs.size()) {
+                    KarForgeMethod(itemEquipment1, itemEquipment2, p);
+                    initInv(inv, p);
+                    KarEventListener.judgeInvForgeOrNot.put(p, 0);
+                    this.cancel();
+                    return;
+                }
+                inv.setItem(indexs.get(index), videoItem);
+                p.updateInventory();
+                KarEventListener.forgeInvs.put(p, inv);
+                p.playSound(p.getLocation(), KarRefinement.cs.getSounds().get(0), 1, 1);
+                index++;
             }
-        }.runTaskAsynchronously(KarRefinement.instance);
+        }.runTaskTimer(KarRefinement.instance, 0L, 20L);
 
     }
 

@@ -1,6 +1,8 @@
 package vip.mcsj.www.karrefinement.datamanager;
 
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
+import vip.mcsj.www.karrefinement.core.Service;
 import vip.mcsj.www.karrefinement.main.KarRefinement;
 
 import java.sql.Connection;
@@ -14,7 +16,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * 玩家淬炼统计数据管理器
  * 负责记录和查询玩家的淬炼统计信息
  */
-public class PlayerStatsDataManager {
+public class PlayerStatsDataManager implements Service {
     
     // 缓存玩家统计数据，提高查询性能
     private static final ConcurrentHashMap<UUID, PlayerStats> statsCache = new ConcurrentHashMap<>();
@@ -79,6 +81,16 @@ public class PlayerStatsDataManager {
     /**
      * 初始化数据库表
      */
+    @Override
+    public void initialize() {
+        initializeTable();
+    }
+
+    @Override
+    public void shutdown() {
+        clearCache();
+    }
+
     public static void initializeTable() {
         String createTableSQL = "CREATE TABLE IF NOT EXISTS player_refinement_stats (" +
                 "player_uuid VARCHAR(36) PRIMARY KEY," +
@@ -189,14 +201,26 @@ public class PlayerStatsDataManager {
     }
     
     /**
+     * 异步保存玩家统计数据到数据库（避免持锁时间过长）
+     */
+    private static void savePlayerStatsAsync(PlayerStats statsCopy) {
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                savePlayerStats(statsCopy);
+            }
+        }.runTaskAsynchronously(KarRefinement.instance);
+    }
+    
+    /**
      * 记录淬炼尝试（增加总尝试次数）
      */
     public static void recordAttempt(Player player) {
         PlayerStats stats = getPlayerStats(player.getUniqueId());
         synchronized (stats) {
             stats.incrementAttempts();
-            savePlayerStats(stats);
         }
+        savePlayerStatsAsync(stats);
     }
     
     /**
@@ -207,8 +231,8 @@ public class PlayerStatsDataManager {
         synchronized (stats) {
             stats.incrementSuccesses();
             stats.updateHighestLevel(newLevel);
-            savePlayerStats(stats);
         }
+        savePlayerStatsAsync(stats);
     }
     
     /**
@@ -218,8 +242,8 @@ public class PlayerStatsDataManager {
         PlayerStats stats = getPlayerStats(player.getUniqueId());
         synchronized (stats) {
             stats.incrementFailures();
-            savePlayerStats(stats);
         }
+        savePlayerStatsAsync(stats);
     }
     
     /**
@@ -229,8 +253,8 @@ public class PlayerStatsDataManager {
         PlayerStats stats = getPlayerStats(player.getUniqueId());
         synchronized (stats) {
             stats.setCurrentSuitLevel(suitLevel);
-            savePlayerStats(stats);
         }
+        savePlayerStatsAsync(stats);
     }
     
     /**

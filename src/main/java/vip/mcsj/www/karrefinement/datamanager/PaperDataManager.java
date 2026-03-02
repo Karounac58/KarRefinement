@@ -7,6 +7,7 @@ import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import vip.mcsj.www.karrefinement.core.Service;
 import vip.mcsj.www.karrefinement.object.ProtectPaper;
 import vip.mcsj.www.karrefinement.utils.FileUtil;
 import vip.mcsj.www.karrefinement.utils.ReflectionUtils;
@@ -16,7 +17,7 @@ import java.util.*;
 /**
  * 控制淬炼保护符的信息的类
  */
-public class PaperDataManager {
+public class PaperDataManager implements Service {
 
     public static Map<String, ProtectPaper> papers = new HashMap<>();
 
@@ -39,6 +40,15 @@ public class PaperDataManager {
      */
     public PaperDataManager(String paperName){
         this.paperName = paperName;
+    }
+
+    public PaperDataManager() {
+        this.paperName = null;
+    }
+
+    @Override
+    public void initialize() {
+        init();
     }
 
     public static void init(){
