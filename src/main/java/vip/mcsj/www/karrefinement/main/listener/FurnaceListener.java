@@ -6,6 +6,7 @@ import de.tr7zw.nbtapi.NBTItem;
 import de.tr7zw.nbtapi.NBTTileEntity;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Furnace;
@@ -30,8 +31,10 @@ import vip.mcsj.www.karrefinement.datamanager.StoneDataManager;
 import vip.mcsj.www.karrefinement.gui.KarRefinementGui;
 import vip.mcsj.www.karrefinement.main.KarRefinement;
 import vip.mcsj.www.karrefinement.object.Stone;
+import vip.mcsj.www.karrefinement.utils.KarUtils;
 
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 
@@ -45,7 +48,7 @@ public class FurnaceListener implements Listener {
         if(e.getAction().equals(Action.RIGHT_CLICK_BLOCK) && e.hasBlock() && e.getClickedBlock().getType().equals(Material.FURNACE)){
             Player p = e.getPlayer();
             Furnace furnace = (Furnace) e.getClickedBlock().getState();
-            furnace.setMetadata("FurnaceOwner",new FixedMetadataValue(KarRefinement.instance,p.getName()));
+            furnace.setMetadata("FurnaceOwner",new FixedMetadataValue(KarRefinement.instance,p.getUniqueId().toString()));
         }
     }
 
@@ -91,12 +94,14 @@ public class FurnaceListener implements Listener {
                     }
                 }
             }
-            ItemStack stone = (ItemStack) furnace.getMetadata("FurnaceFuel").get(0).value();
-            String name = furnace.hasMetadata("FurnaceOwner") ? furnace.getMetadata("FurnaceOwner").get(0).asString() : "";
-            Player p = Bukkit.getPlayer(name);
+            ItemStack stoneItem = (ItemStack) furnace.getMetadata("FurnaceFuel").get(0).value();
+            String uuid = furnace.hasMetadata("FurnaceOwner") ? furnace.getMetadata("FurnaceOwner").get(0).asString() : "";
+            OfflinePlayer p = Bukkit.getOfflinePlayer(UUID.fromString(uuid));
             smelt.setAmount(1);
-            ItemStack stone1 = stone.clone();
-            KarRefinementGui.KarRefinementMethod(stone1, smelt, p,addSuccess);
+            Stone stone = StoneDataManager.getStone(stoneItem);
+            if(KarRefinementGui.KarRefinementMethod(p,smelt,stone,addSuccess)){
+                KarUtils.removeItemRefinement(stoneItem);
+            }
             e.setResult(smelt);
             furnace.removeMetadata("FurnaceFuel", KarRefinement.instance);
         } else if (smelt != null && EquipmentDataManager.isEquipmentLegal(smelt)) {

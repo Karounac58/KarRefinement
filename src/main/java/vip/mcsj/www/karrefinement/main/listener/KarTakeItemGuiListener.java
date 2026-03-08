@@ -9,7 +9,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import vip.mcsj.www.karrefinement.datamanager.Message;
-import vip.mcsj.www.karrefinement.gui.KarTakeItemGuiInvHolder;
+import vip.mcsj.www.karrefinement.gui.holder.KarTakeItemGuiInvHolder;
 import vip.mcsj.www.karrefinement.object.CustomInventory;
 
 import java.util.HashMap;

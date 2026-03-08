@@ -6,7 +6,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import vip.mcsj.www.karrefinement.gui.KarCompoundStoneGui;
-import vip.mcsj.www.karrefinement.gui.KarCompoundStoneInvHolder;
+import vip.mcsj.www.karrefinement.gui.holder.KarCompoundStoneInvHolder;
 import vip.mcsj.www.karrefinement.main.commands.KarAbstractCommand;
 
 public class OpenCompoundGuiCommand extends KarAbstractCommand {

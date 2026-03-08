@@ -61,7 +61,7 @@ public class EquipmentDataManager{
     public EquipmentDataManager(ItemStack equipmentItem, Player p) {
         this.equipmentItem = equipmentItem;
         this.p = p;
-        this.service = new EquipmentService(equipmentItem, p);
+        this.service = new EquipmentService(equipmentItem);
     }
 
     // ==================== 静态初始化方法 ====================
@@ -142,8 +142,8 @@ public class EquipmentDataManager{
     }
 
     public boolean setRefinementLevel(int level, Map<String, List<String>> map, int paperLevel,
-                                      List<SpeStone> speStones, int soulLevel) {
-        return service.setRefinementLevel(level, map, paperLevel, speStones, soulLevel);
+                                      List<SpeStone> speStones, int soulLevel,Player p) {
+        return service.setRefinementLevel(level, map, paperLevel, speStones, soulLevel, p);
     }
 
     public int injuryDownStar(int protectPaperLevel, Stone stone) {

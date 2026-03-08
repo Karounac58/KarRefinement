@@ -16,6 +16,7 @@ import vip.mcsj.www.karrefinement.datamanager.StoneDataManager;
 import vip.mcsj.www.karrefinement.main.KarRefinement;
 import vip.mcsj.www.karrefinement.object.Compound;
 import vip.mcsj.www.karrefinement.object.InvItem;
+import vip.mcsj.www.karrefinement.service.SoundDataManager;
 import vip.mcsj.www.karrefinement.utils.FileUtil;
 
 import java.util.*;
@@ -106,31 +107,37 @@ public class KarCompoundStoneGui{
             p.sendMessage(Message.messages.get("compound_confilctstone"));
             return;
         }
-        //开始合成
         compoundOrNot.put(p.getUniqueId(),1);
-        //1.播放动画
         if(b) {
             playInvVideo(inv,p);
         }
         if(b) {
-            //2.合成
             new BukkitRunnable() {
                 @Override
                 public void run() {
                     String stoneKey = compound(inv,p,firstNBT.getString("refinementstone"));
                     if (!"Shit".equals(stoneKey) && stoneKey != null) {
                         String stoneName = StoneDataManager.stones.get(stoneKey).getName();
-                        p.playSound(p.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
-                        //3.播报消息
+                        
+                        Sound successSound = SoundDataManager.getSound("KarCompoundStoneGui", "Success");
+                        if(successSound != null){
+                            p.playSound(p.getLocation(), successSound, 1, 1);
+                        }else{
+                            p.playSound(p.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
+                        }
                         p.sendMessage(Message.messages.get("compound_upstar").replace("{stone}",stoneName));
                     }else if(stoneKey == null){
                         p.playSound(p.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 1);
                         p.sendMessage(Message.messages.get("compound_maxlevel"));
                     }else{
-                        p.playSound(p.getLocation(), Sound.BLOCK_ANVIL_BREAK, 1, 1);
+                        Sound failSound = SoundDataManager.getSound("KarCompoundStoneGui", "Fail");
+                        if(failSound != null){
+                            p.playSound(p.getLocation(), failSound, 1, 1);
+                        }else{
+                            p.playSound(p.getLocation(), Sound.BLOCK_ANVIL_BREAK, 1, 1);
+                        }
                         p.sendMessage(Message.messages.get("compound_failed"));
                     }
-                    //4.初始化
                     initial(inv,p);
                     compoundOrNot.put(p.getUniqueId(),0);
                 }
@@ -139,17 +146,26 @@ public class KarCompoundStoneGui{
             String stoneKey = compound(inv,p,firstNBT.getString("refinementstone"));
             if (!"Shit".equals(stoneKey) && stoneKey != null) {
                 String stoneName = StoneDataManager.stones.get(stoneKey).getName();
-                p.playSound(p.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
-                //3.播报消息
+                
+                Sound successSound = SoundDataManager.getSound("KarCompoundStoneGui", "Success");
+                if(successSound != null){
+                    p.playSound(p.getLocation(), successSound, 1, 1);
+                }else{
+                    p.playSound(p.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
+                }
                 p.sendMessage(Message.messages.get("compound_upstar").replace("{stone}",stoneName));
             }else if(stoneKey == null){
                 p.playSound(p.getLocation(), Sound.ENTITY_VILLAGER_NO, 1, 1);
                 p.sendMessage(Message.messages.get("compound_maxlevel"));
             }else{
-                p.playSound(p.getLocation(), Sound.BLOCK_ANVIL_BREAK, 1, 1);
+                Sound failSound = SoundDataManager.getSound("KarCompoundStoneGui", "Fail");
+                if(failSound != null){
+                    p.playSound(p.getLocation(), failSound, 1, 1);
+                }else{
+                    p.playSound(p.getLocation(), Sound.BLOCK_ANVIL_BREAK, 1, 1);
+                }
                 p.sendMessage(Message.messages.get("compound_failed"));
             }
-            //4.初始化
             initial(inv,p);
             compoundOrNot.put(p.getUniqueId(),0);
         }
@@ -164,7 +180,13 @@ public class KarCompoundStoneGui{
             public void run() {
                 for (int i = 0; i < indexs.size(); i++) {
                     inv.setItem(indexs.get(i), videoItem);
-                    p.playSound(p.getLocation(), KarRefinement.cs.getSounds().get(0), 1, 1);
+                    
+                    Sound runSound = SoundDataManager.getSound("KarCompoundStoneGui", "Run");
+                    if(runSound != null){
+                        p.playSound(p.getLocation(), runSound, 1, 1);
+                    }else{
+                        p.playSound(p.getLocation(), KarRefinement.cs.getSounds().get(0), 1, 1);
+                    }
                     p.updateInventory();
                     try {
                         Thread.sleep(500);
@@ -192,7 +214,13 @@ public class KarCompoundStoneGui{
             }
             if(com.getHigherStoneKey() != null) {
                 StoneDataManager sdm = new StoneDataManager(com.getHigherStoneKey());
-                p.playSound(p.getLocation(), KarRefinement.cs.getSounds().get(0), 1, 1);
+                
+                Sound runSound = SoundDataManager.getSound("KarCompoundStoneGui", "Run");
+                if(runSound != null){
+                    p.playSound(p.getLocation(), runSound, 1, 1);
+                }else{
+                    p.playSound(p.getLocation(), KarRefinement.cs.getSounds().get(0), 1, 1);
+                }
                 inv.setItem(16,subtractItemAmount(inv.getItem(16)));
                 inv.setItem(34,subtractItemAmount(inv.getItem(34)));
                 ItemStack item = inv.getItem(19);

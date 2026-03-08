@@ -13,7 +13,7 @@ import vip.mcsj.www.karrefinement.datamanager.EquipmentDataManager;
 import vip.mcsj.www.karrefinement.datamanager.Message;
 import vip.mcsj.www.karrefinement.datamanager.StoneDataManager;
 import vip.mcsj.www.karrefinement.gui.KarRefinementGui;
-import vip.mcsj.www.karrefinement.gui.KarRefinementInvHolder;
+import vip.mcsj.www.karrefinement.gui.holder.KarRefinementInvHolder;
 import vip.mcsj.www.karrefinement.main.KarRefinement;
 import vip.mcsj.www.karrefinement.object.InvItem;
 import vip.mcsj.www.karrefinement.object.Stone;

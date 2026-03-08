@@ -25,6 +25,7 @@ import vip.mcsj.www.karrefinement.object.MCVersions;
 import vip.mcsj.www.karrefinement.object.Stone;
 import vip.mcsj.www.karrefinement.service.ConfigurationService;
 import vip.mcsj.www.karrefinement.service.EquipmentRepository;
+import vip.mcsj.www.karrefinement.service.SoundDataManager;
 import vip.mcsj.www.karrefinement.utils.FileUtil;
 import vip.mcsj.www.karrefinement.utils.ReflectionUtils;
 import vip.mcsj.www.karrefinement.version.CustomMaterial;
@@ -188,6 +189,7 @@ public class KarRefinement extends JavaPlugin {
         registry.register(PlayerStatsDataManager.class, new PlayerStatsDataManager());
         registry.register(EquipmentTypeManager.class, new EquipmentTypeManager());
         registry.register(DarkChangeDataManager.class, dcdm);
+        registry.register(SoundDataManager.class, new SoundDataManager());
 
         registry.initializeAll();
 

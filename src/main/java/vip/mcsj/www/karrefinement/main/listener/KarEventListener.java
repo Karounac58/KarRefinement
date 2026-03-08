@@ -22,7 +22,7 @@ import vip.mcsj.www.karrefinement.datamanager.*;
 import vip.mcsj.www.karrefinement.gui.KarForgeGui;
 import vip.mcsj.www.karrefinement.gui.KarForgeInvHolder;
 import vip.mcsj.www.karrefinement.gui.KarRefinementGui;
-import vip.mcsj.www.karrefinement.gui.KarRefinementInvHolder;
+import vip.mcsj.www.karrefinement.gui.holder.KarRefinementInvHolder;
 import vip.mcsj.www.karrefinement.main.KarRefinement;
 import vip.mcsj.www.karrefinement.object.SpeStone;
 import vip.mcsj.www.karrefinement.utils.KarUtils;
@@ -213,7 +213,7 @@ public class KarEventListener implements Listener {
 
             if (KarRefinementGui.judgeInventoryClickMethod(itemStone,itemEquipment,p1)) {
 //                KarRefinementGui.KarRefinementMethod(itemStone,itemEquipment,p1,0.0);
-                if(KarRefinementGui.KarRefinementMethod(p1,itemEquipment,StoneDataManager.getStone(itemStone))){
+                if(KarRefinementGui.KarRefinementMethod(p1,itemEquipment,StoneDataManager.getStone(itemStone),0)){
                     KarUtils.removeItemRefinement(itemStone);
                 }
                 closeItems.put(p1,new ItemStack[]{itemStone,itemEquipment});

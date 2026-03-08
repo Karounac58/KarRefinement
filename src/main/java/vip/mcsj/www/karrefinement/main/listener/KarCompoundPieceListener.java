@@ -13,6 +13,7 @@ import org.bukkit.inventory.ItemStack;
 import vip.mcsj.www.karrefinement.datamanager.Message;
 import vip.mcsj.www.karrefinement.gui.KarCompoundPieceGui;
 import vip.mcsj.www.karrefinement.gui.KarTransformStarGui;
+import vip.mcsj.www.karrefinement.service.SoundDataManager;
 
 public class KarCompoundPieceListener implements Listener {
     @EventHandler
@@ -40,12 +41,17 @@ public class KarCompoundPieceListener implements Listener {
                 }
                 inv.setItem(KarCompoundPieceGui.afterSlot, item);
                 p.sendMessage(Message.messages.get("compoundpiece_success").replace("{item}", item.getItemMeta().getDisplayName()));
-                p.playSound(p.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
+                
+                Sound successSound = SoundDataManager.getSound("KarCompoundPieceGui", "Success");
+                if(successSound != null){
+                    p.playSound(p.getLocation(), successSound, 1, 1);
+                }else{
+                    p.playSound(p.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
+                }
             }
         }
     }
 
-    //宝石碎片合成
     @EventHandler
     public void onInventoryClick2(InventoryClickEvent e){
         Inventory inv = e.getInventory();
@@ -65,7 +71,13 @@ public class KarCompoundPieceListener implements Listener {
 
             if(!KarCompoundPieceGui.judgeInventoryClickMethod2(itemPiece,p) && !KarCompoundPieceGui.judgeInventoryClickMethod(itemPiece,p)){
                 p.sendMessage(Message.messages.get("compoundpiece_failed"));
-                p.playSound(p.getLocation(), Sound.BLOCK_ANVIL_BREAK, 1, 1);
+                
+                Sound failSound = SoundDataManager.getSound("KarCompoundPieceGui", "Fail");
+                if(failSound != null){
+                    p.playSound(p.getLocation(), failSound, 1, 1);
+                }else{
+                    p.playSound(p.getLocation(), Sound.BLOCK_ANVIL_BREAK, 1, 1);
+                }
             }else if(KarCompoundPieceGui.judgeInventoryClickMethod2(itemPiece,p)){
                 item = KarCompoundPieceGui.karCompoundPieceMethod2(itemPiece,p);
                 ItemStack item1 = inv.getItem(KarCompoundPieceGui.afterSlot);
@@ -74,7 +86,13 @@ public class KarCompoundPieceListener implements Listener {
                 }
                 inv.setItem(KarCompoundPieceGui.afterSlot, item);
                 p.sendMessage(Message.messages.get("compoundpiece_success").replace("{item}", item.getItemMeta().getDisplayName()));
-                p.playSound(p.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
+                
+                Sound successSound = SoundDataManager.getSound("KarCompoundPieceGui", "Success");
+                if(successSound != null){
+                    p.playSound(p.getLocation(), successSound, 1, 1);
+                }else{
+                    p.playSound(p.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
+                }
             }
         }
     }

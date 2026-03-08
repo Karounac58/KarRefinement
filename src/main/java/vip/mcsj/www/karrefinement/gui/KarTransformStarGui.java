@@ -140,7 +140,7 @@ public class KarTransformStarGui {
             KarRefinement.econ.withdrawPlayer(p,EquipmentDataManager.transformCost);
             p.sendMessage(Message.messages.get("transform_moneycost").replace("{money}",EquipmentDataManager.transformCost+""));
             if(EquipmentDataManager.allowTransformOther){
-                itemManager2.setRefinementLevel(item1Level,stringListMap,paperLevel,speStones,soulLevel);
+                itemManager2.setRefinementLevel(item1Level,stringListMap,paperLevel,speStones,soulLevel,p);
             }else {
                 for (int i = 0; i < item1Level - item2Level; i++) {
                     itemManager2.injuryUpStar();

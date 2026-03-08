@@ -42,6 +42,7 @@ public class ConfigurationService implements Service {
         FileUtil.initCustomFile(path + "potion.yml", "potion.yml");
         FileUtil.initCustomFile("message.yml", "message.yml");
         FileUtil.initCustomFile("furnace.yml", "furnace.yml");
+        FileUtil.initCustomFile(path + "sound.yml", "sound.yml");
 
         // GUI配置文件
         FileUtil.initCustomFile(path + "gui/compoundgui.yml", "gui/compoundgui.yml");

@@ -14,6 +14,7 @@ import vip.mcsj.www.karrefinement.datamanager.Message;
 import vip.mcsj.www.karrefinement.main.KarRefinement;
 import vip.mcsj.www.karrefinement.main.listener.KarEventListener;
 import vip.mcsj.www.karrefinement.object.InvItem;
+import vip.mcsj.www.karrefinement.service.SoundDataManager;
 import vip.mcsj.www.karrefinement.utils.FileUtil;
 import vip.mcsj.www.karrefinement.utils.KarUtils;
 import vip.mcsj.www.karrefinement.utils.ReflectionUtils;
@@ -109,15 +110,26 @@ public class KarForgeGui {
             EquipmentDataManager manager1 = new EquipmentDataManager(itemEquipment1,p);
             double success = EquipmentDataManager.forgeSuccessList.get(manager1.carifyEquipmentLevel()+1);
             BigDecimal decimal = BigDecimal.valueOf(KarUtils.nextDouble(100)).setScale(2, RoundingMode.HALF_UP);
-            //锻造成功
             if(decimal.doubleValue() < success){
                 manager1.injuryUpStar();
                 p.sendMessage(Message.messages.get("forge_upstar"));
-                p.playSound(p.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
+                
+                Sound successSound = SoundDataManager.getSound("KarForgeGui", "Success");
+                if(successSound != null){
+                    p.playSound(p.getLocation(), successSound, 1, 1);
+                }else{
+                    p.playSound(p.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
+                }
                 KarUtils.removeItemRefinement(itemEquipment2);
             }else{
                 p.sendMessage(Message.messages.get("forge_failed"));
-                p.playSound(p.getLocation(), Sound.BLOCK_ANVIL_BREAK, 1, 1);
+                
+                Sound failSound = SoundDataManager.getSound("KarForgeGui", "Fail");
+                if(failSound != null){
+                    p.playSound(p.getLocation(), failSound, 1, 1);
+                }else{
+                    p.playSound(p.getLocation(), Sound.BLOCK_ANVIL_BREAK, 1, 1);
+                }
                 KarUtils.removeItemRefinement(itemEquipment2);
             }
         }
@@ -132,16 +144,13 @@ public class KarForgeGui {
     public static void playInvVideo(Inventory inv, ItemStack itemEquipment1, ItemStack itemEquipment2, Player p) {
         List<Integer> indexs = Arrays.asList(12,13,14,23,32,31,30,21);
         ItemStack videoItem = createInvItem(fItems.get("VideoItem"),p);
-        // 使用同步递归调度替代异步Thread.sleep，保证线程安全
         new BukkitRunnable() {
             int index = 0;
             @Override
             public void run() {
-                // 标识正在锻造中
                 if(index == 0) {
                     KarEventListener.judgeInvForgeOrNot.put(p, 1);
                 }
-                // 标识已关闭菜单,关闭即停止动画
                 Integer closeState = KarEventListener.judgeForgeInvCloseOrNot.get(p);
                 if (closeState == null || closeState == 0) {
                     this.cancel();
@@ -157,7 +166,13 @@ public class KarForgeGui {
                 inv.setItem(indexs.get(index), videoItem);
                 p.updateInventory();
                 KarEventListener.forgeInvs.put(p, inv);
-                p.playSound(p.getLocation(), KarRefinement.cs.getSounds().get(0), 1, 1);
+                
+                Sound runSound = SoundDataManager.getSound("KarForgeGui", "Run");
+                if(runSound != null){
+                    p.playSound(p.getLocation(), runSound, 1, 1);
+                }else{
+                    p.playSound(p.getLocation(), KarRefinement.cs.getSounds().get(0), 1, 1);
+                }
                 index++;
             }
         }.runTaskTimer(KarRefinement.instance, 0L, 20L);

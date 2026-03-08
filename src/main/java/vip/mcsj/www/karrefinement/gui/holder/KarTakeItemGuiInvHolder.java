@@ -1,4 +1,4 @@
-package vip.mcsj.www.karrefinement.gui;
+package vip.mcsj.www.karrefinement.gui.holder;
 
 import org.bukkit.Bukkit;
 import org.bukkit.inventory.Inventory;

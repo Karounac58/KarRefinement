@@ -7,9 +7,8 @@ import org.bukkit.entity.Player;
 
 import org.bukkit.inventory.Inventory;
 import vip.mcsj.www.karrefinement.gui.KarRefinementGui;
-import vip.mcsj.www.karrefinement.gui.KarRefinementInvHolder;
+import vip.mcsj.www.karrefinement.gui.holder.KarRefinementInvHolder;
 import vip.mcsj.www.karrefinement.main.commands.KarAbstractCommand;
-import vip.mcsj.www.karrefinement.main.commands.KarCommand;
 
 public class OpenGuiCommand extends KarAbstractCommand {
 

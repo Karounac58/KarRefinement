@@ -1,5 +1,6 @@
 package vip.mcsj.www.karrefinement.service.refinement;
 
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import vip.mcsj.www.karrefinement.datamanager.LevelDataManager;
@@ -25,19 +26,19 @@ public class RefinementService {
      * @param stone     淬炼石
      * @return 淬炼结果
      */
-    public RefinementResult refine(Player player, ItemStack equipment, Stone stone) {
+    public RefinementResult refine(OfflinePlayer player, ItemStack equipment, Stone stone,double extraBonus) {
         // 检查暗改数据，决定使用哪个策略
         List<Object> darkChangeData = KarRefinement.dcdm.getPlayerDarkChangeData(player);
         if (darkChangeData != null) {
-            return darkChangeStrategy.execute(player, equipment, stone);
+            return darkChangeStrategy.execute(player, equipment, stone,0);
         }
-        return normalStrategy.execute(player, equipment, stone);
+        return normalStrategy.execute(player, equipment, stone,extraBonus);
     }
 
     /**
      * 使用指定策略执行淬炼
      */
     public RefinementResult refine(Player player, ItemStack equipment, Stone stone, RefinementStrategy strategy) {
-        return strategy.execute(player, equipment, stone);
+        return strategy.execute(player, equipment, stone,0);
     }
 }

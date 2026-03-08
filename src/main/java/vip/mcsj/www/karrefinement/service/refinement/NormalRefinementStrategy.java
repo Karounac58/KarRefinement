@@ -1,5 +1,6 @@
 package vip.mcsj.www.karrefinement.service.refinement;
 
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import vip.mcsj.www.karrefinement.datamanager.EquipmentDataManager;
@@ -19,8 +20,8 @@ import java.util.List;
 public class NormalRefinementStrategy implements RefinementStrategy {
 
     @Override
-    public RefinementResult execute(Player player, ItemStack equipment, Stone stone) {
-        EquipmentService service = new EquipmentService(equipment, player);
+    public RefinementResult execute(OfflinePlayer player, ItemStack equipment, Stone stone, double extraBonus) {
+        EquipmentService service = new EquipmentService(equipment);
         int currentLevel = service.getLevel();
 
         // 检查最大等级
@@ -37,9 +38,6 @@ public class NormalRefinementStrategy implements RefinementStrategy {
         if (potionInfo != null) {
             potionBonus = (double) potionInfo.get(1) * 100;
         }
-
-        // 获取熔炉加成（从调用方传入，这里默认0）
-        double extraBonus = 0;
 
         // 掷骰判定
         if (ProbabilityCalculator.rollSuccess(baseChance, potionBonus, extraBonus)) {

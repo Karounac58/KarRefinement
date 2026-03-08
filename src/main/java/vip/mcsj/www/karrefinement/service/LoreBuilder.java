@@ -20,16 +20,9 @@ import java.util.*;
 public class LoreBuilder {
 
     private final ItemStack equipmentItem;
-    private final Player player; // nullable, only used for judgeSoul message
 
     public LoreBuilder(ItemStack equipmentItem) {
         this.equipmentItem = equipmentItem;
-        this.player = null;
-    }
-
-    public LoreBuilder(ItemStack equipmentItem, Player player) {
-        this.equipmentItem = equipmentItem;
-        this.player = player;
     }
 
     // ==================== Add Refinement Info ====================
@@ -52,7 +45,7 @@ public class LoreBuilder {
      * @param speStones       宝石列表（null 表示不写入 NBT，使用已有信息）
      * @param soulLevel       精魂等级（0 表示不写入 NBT）
      */
-    public void addRefinementInfo(List<String> mainLore, List<String> extractLore, int refinementLevel,
+    public boolean addRefinementInfo(List<String> mainLore, List<String> extractLore, int refinementLevel,
                                   Map<String, List<String>> existingInfoMap,
                                   int paperLevel, List<SpeStone> speStones, int soulLevel) {
 
@@ -180,12 +173,14 @@ public class LoreBuilder {
         }
 
         // 精魂等级检查
-        judgeSoul(refinementLevel);
+        boolean isSoulDestroy = judgeSoul(refinementLevel);
 
         // 设置 Lore 版本号
         NBT.modify(this.equipmentItem, nbt -> {
             nbt.setString("loreversion", LoreUpdateManager.getCurrentLoreVersion());
         });
+
+        return isSoulDestroy;
     }
 
     // ==================== Remove Refinement Info ====================
@@ -396,11 +391,12 @@ public class LoreBuilder {
 
     /**
      * 精魂破碎检查 — 淬炼等级低于精魂等级时移除精魂
+     * @return 是否破碎
      */
-    private void judgeSoul(int refinementLevel) {
+    private boolean judgeSoul(int refinementLevel) {
         int soulLevel = new NBTItem(this.equipmentItem).getInteger("infinite");
         if (soulLevel == 0) {
-            return;
+            return false;
         }
         if (refinementLevel > soulLevel || refinementLevel == 0) {
             String soulIdentifier = InfiniteSoulManager.getSoulName(this.equipmentItem);
@@ -412,9 +408,9 @@ public class LoreBuilder {
             NBT.modify(this.equipmentItem, nbt -> {
                 nbt.removeKey("infinite");
             });
-            if (this.player != null) {
-                this.player.sendMessage("§c无限耐久精魂破碎!");
-            }
+            return true;
+        }else{
+            return false;
         }
     }
 }

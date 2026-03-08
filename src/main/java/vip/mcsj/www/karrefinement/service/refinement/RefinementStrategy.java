@@ -1,5 +1,6 @@
 package vip.mcsj.www.karrefinement.service.refinement;
 
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import vip.mcsj.www.karrefinement.object.Stone;
@@ -18,5 +19,5 @@ public interface RefinementStrategy {
      * @param stone     淬炼石
      * @return 淬炼结果
      */
-    RefinementResult execute(Player player, ItemStack equipment, Stone stone);
+    RefinementResult execute(OfflinePlayer player, ItemStack equipment, Stone stone,double extraBonus);
 }

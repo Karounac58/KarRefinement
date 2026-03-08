@@ -1,10 +1,7 @@
 package vip.mcsj.www.karrefinement.gui;
 
 import me.clip.placeholderapi.PlaceholderAPI;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
-import org.bukkit.Sound;
+import org.bukkit.*;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
@@ -21,6 +18,7 @@ import vip.mcsj.www.karrefinement.object.MCVersions;
 import vip.mcsj.www.karrefinement.object.Stone;
 import vip.mcsj.www.karrefinement.service.refinement.RefinementResult;
 import vip.mcsj.www.karrefinement.service.refinement.RefinementService;
+import vip.mcsj.www.karrefinement.service.SoundDataManager;
 import vip.mcsj.www.karrefinement.utils.FileUtil;
 import vip.mcsj.www.karrefinement.utils.KarUtils;
 import vip.mcsj.www.karrefinement.utils.ReflectionUtils;
@@ -146,26 +144,21 @@ public class KarRefinementGui {
         removeIndex.add(24);
         InvItem videoItem = rItems.get("VideoItem");
         ItemStack invItem = createInvItem(videoItem,p);
-        // 使用同步递归调度替代异步Thread.sleep，保证线程安全
         new BukkitRunnable() {
             int index = 0;
             final List<Integer> remainingSlots = new ArrayList<>(lists);
             @Override
             public void run() {
-                // 标识正在淬炼中
                 if(index == 0) {
                     KarEventListener.judgeInvRefinementOrNot.put(p, 1);
                 }
-                // 标识已关闭菜单,关闭即停止动画
                 Integer closeState = KarEventListener.judgeInvCloseOrNot.get(p);
                 if (closeState == null || closeState == 0) {
                     this.cancel();
                     return;
                 }
                 if(index >= size) {
-//                    KarRefinementMethod(itemStone, itemEquipment, p, 0.0);
-                    //如果有淬炼就消耗石头，没淬炼(淬炼前已满星)就不消耗石头
-                    if(KarRefinementMethod(p, itemEquipment, StoneDataManager.getStone(itemStone))){
+                    if(KarRefinementMethod(p, itemEquipment, StoneDataManager.getStone(itemStone),0)){
                         KarUtils.removeItemRefinement(itemStone);
                     }
                     setInvInitial(inv, p);
@@ -173,13 +166,18 @@ public class KarRefinementGui {
                     this.cancel();
                     return;
                 }
-                // 随机选取一个未使用的槽位
                 int randIdx = ThreadLocalRandom.current().nextInt(remainingSlots.size());
                 int h = remainingSlots.remove(randIdx);
                 inv.setItem(h, invItem);
                 p.updateInventory();
                 KarEventListener.invs.put(p, inv);
-                p.playSound(p.getLocation(), KarRefinement.cs.getSounds().get(0), 1, 1);
+                
+                Sound runSound = SoundDataManager.getSound("KarRefinementGui", "Run");
+                if(runSound != null){
+                    p.playSound(p.getLocation(), runSound, 1, 1);
+                }else{
+                    p.playSound(p.getLocation(), KarRefinement.cs.getSounds().get(0), 1, 1);
+                }
                 index++;
             }
         }.runTaskTimer(KarRefinement.instance, 0L, 2L);
@@ -214,7 +212,7 @@ public class KarRefinementGui {
      * @param itemEquipment
      * @param
      */
-    public static void KarRefinementMethod(ItemStack itemStone, ItemStack itemEquipment, Player p,double addProb) {
+    public static void KarRefinementMethod(ItemStack itemStone, ItemStack itemEquipment, Player p,double addProb,int i) {
         Random rand = new Random();
 
         //如果石头不合法，返回
@@ -364,21 +362,31 @@ public class KarRefinementGui {
      * @param stone
      * @return 是否有淬炼
      */
-    public static Boolean KarRefinementMethod(Player player,ItemStack itemEquipment,Stone stone){
-        RefinementResult result = new RefinementService().refine(player, itemEquipment, stone);
+    public static Boolean KarRefinementMethod(OfflinePlayer player,ItemStack itemEquipment,Stone stone,double extraBonus){
+        RefinementResult result = new RefinementService().refine(player, itemEquipment, stone, extraBonus);
         if(result.isMaxLevel()){
-            player.sendMessage(Message.messages.get("refinement_maxlevel"));
+            if(player.isOnline()) {
+                player.getPlayer().sendMessage(Message.messages.get("refinement_maxlevel"));
+            }
             return false;
         }
-        //记录淬炼尝试
         PlayerStatsDataManager.recordAttempt(player);
 
         if(result.isSuccess()){
-            // 记录淬炼成功
             PlayerStatsDataManager.recordSuccess(player, result.getNewLevel());
-
-            player.sendMessage(Message.messages.get("refinement_upstar"));
-            player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
+            if(player.isOnline()) {
+                player.getPlayer().sendMessage(Message.messages.get("refinement_upstar"));
+            }
+            Sound successSound = SoundDataManager.getSound("KarRefinementGui", "Success");
+            if(successSound != null){
+                if(player.isOnline()) {
+                    player.getPlayer().playSound(player.getPlayer().getLocation(), successSound, 1, 1);
+                }
+            }else{
+                if(player.isOnline()) {
+                    player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
+                }
+            }
 
             if(result.getNewLevel() >= EquipmentDataManager.broadcastLevel){
                 String displayName;
@@ -395,11 +403,22 @@ public class KarRefinementGui {
 
             }
         }else{
-            //记录淬炼失败
             PlayerStatsDataManager.recordFailure(player);
 
-            player.sendMessage(Message.messages.get("refinement_failed").replace("{level}", result.getDownLevels() + ""));
-            player.playSound(player.getLocation(), Sound.BLOCK_ANVIL_BREAK, 1, 1);
+            if(player.isOnline()) {
+                player.getPlayer().sendMessage(Message.messages.get("refinement_failed").replace("{level}", result.getDownLevels() + ""));
+            }
+            
+            Sound failSound = SoundDataManager.getSound("KarRefinementGui", "Fail");
+            if(failSound != null){
+                if(player.isOnline()) {
+                    player.getPlayer().playSound(player.getPlayer().getLocation(), failSound, 1, 1);
+                }
+            }else{
+                if(player.isOnline()) {
+                    player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.BLOCK_ANVIL_BREAK, 1, 1);
+                }
+            }
         }
 
         return true;

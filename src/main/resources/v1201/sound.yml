@@ -1,0 +1,26 @@
+# 音效设置
+Sound:
+  # 淬炼界面
+  KarRefinementGui:
+    # 左键慢速淬炼播放动画时音效
+    Run: "ENTITY_FIREWORK_ROCKET_BLAST"
+    # 成功音效
+    Success: "ENTITY_EXPERIENCE_ORB_PICKUP"
+    # 失败音效
+    Fail: "BLOCK_ANVIL_BREAK"
+  # 锻造界面
+  KarForgeGui:
+    # 锻造过程音效
+    Run: "ENTITY_FIREWORK_ROCKET_BLAST"
+    Success: "ENTITY_EXPERIENCE_ORB_PICKUP"
+    Fail: "BLOCK_ANVIL_BREAK"
+  # 碎片合成界面
+  KarCompoundPieceGui:
+    Success: "ENTITY_EXPERIENCE_ORB_PICKUP"
+    Fail: "BLOCK_ANVIL_BREAK"
+  # 淬炼石合石界面
+  KarCompoundStoneGui:
+    # 合石过程音效
+    Run: "ENTITY_FIREWORK_ROCKET_BLAST"
+    Success: "ENTITY_EXPERIENCE_ORB_PICKUP"
+    Fail: "BLOCK_ANVIL_BREAK"

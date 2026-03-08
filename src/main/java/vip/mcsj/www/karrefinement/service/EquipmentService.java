@@ -20,19 +20,16 @@ import java.util.Random;
 public class EquipmentService {
 
     private final ItemStack equipmentItem;
-    private final Player player;
     private final LoreBuilder loreBuilder;
 
     public EquipmentService(ItemStack equipmentItem) {
         this.equipmentItem = equipmentItem;
-        this.player = null;
         this.loreBuilder = new LoreBuilder(equipmentItem);
     }
 
     public EquipmentService(ItemStack equipmentItem, Player player) {
         this.equipmentItem = equipmentItem;
-        this.player = player;
-        this.loreBuilder = new LoreBuilder(equipmentItem, player);
+        this.loreBuilder = new LoreBuilder(equipmentItem);
     }
 
     /**
@@ -133,10 +130,11 @@ public class EquipmentService {
      * @param paperLevel 保护符等级
      * @param speStones  宝石列表
      * @param soulLevel  精魂等级
+     * @param p          玩家 - 用于发送精魄破碎消息
      * @return 是否成功
      */
     public boolean setRefinementLevel(int level, Map<String, List<String>> map, int paperLevel,
-                                      List<SpeStone> speStones, int soulLevel) {
+                                      List<SpeStone> speStones, int soulLevel,Player p) {
         if (level > LevelDataManager.levels.size()) {
             return false;
         }
@@ -162,7 +160,10 @@ public class EquipmentService {
 
         // 从 0 级设为目标等级
         if (oldLevel == 0) {
-            loreBuilder.addRefinementInfo(newMainLore, newExtractLore, level, map, paperLevel, speStones, soulLevel);
+            boolean isSoulDestroy = loreBuilder.addRefinementInfo(newMainLore, newExtractLore, level, map, paperLevel, speStones, soulLevel);
+            if(isSoulDestroy) {
+                p.sendMessage("§c无限耐久精魂破碎!");
+            }
             return true;
         }
 

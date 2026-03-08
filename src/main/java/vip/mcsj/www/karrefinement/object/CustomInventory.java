@@ -5,7 +5,7 @@ import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import vip.mcsj.www.karrefinement.gui.KarTakeItemGuiInvHolder;
+import vip.mcsj.www.karrefinement.gui.holder.KarTakeItemGuiInvHolder;
 
 import java.util.Arrays;
 import java.util.Collections;

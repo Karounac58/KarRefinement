@@ -1,5 +1,6 @@
 package vip.mcsj.www.karrefinement.datamanager;
 
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import vip.mcsj.www.karrefinement.core.Service;
@@ -215,7 +216,7 @@ public class PlayerStatsDataManager implements Service {
     /**
      * 记录淬炼尝试（增加总尝试次数）
      */
-    public static void recordAttempt(Player player) {
+    public static void recordAttempt(OfflinePlayer player) {
         PlayerStats stats = getPlayerStats(player.getUniqueId());
         synchronized (stats) {
             stats.incrementAttempts();
@@ -226,7 +227,7 @@ public class PlayerStatsDataManager implements Service {
     /**
      * 记录淬炼成功
      */
-    public static void recordSuccess(Player player, int newLevel) {
+    public static void recordSuccess(OfflinePlayer player, int newLevel) {
         PlayerStats stats = getPlayerStats(player.getUniqueId());
         synchronized (stats) {
             stats.incrementSuccesses();
@@ -238,7 +239,7 @@ public class PlayerStatsDataManager implements Service {
     /**
      * 记录淬炼失败
      */
-    public static void recordFailure(Player player) {
+    public static void recordFailure(OfflinePlayer player) {
         PlayerStats stats = getPlayerStats(player.getUniqueId());
         synchronized (stats) {
             stats.incrementFailures();
@@ -249,7 +250,7 @@ public class PlayerStatsDataManager implements Service {
     /**
      * 更新当前套装效果等级
      */
-    public static void updateSuitLevel(Player player, int suitLevel) {
+    public static void updateSuitLevel(OfflinePlayer player, int suitLevel) {
         PlayerStats stats = getPlayerStats(player.getUniqueId());
         synchronized (stats) {
             stats.setCurrentSuitLevel(suitLevel);

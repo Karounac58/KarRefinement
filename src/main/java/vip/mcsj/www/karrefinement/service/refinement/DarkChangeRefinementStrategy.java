@@ -1,5 +1,6 @@
 package vip.mcsj.www.karrefinement.service.refinement;
 
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import vip.mcsj.www.karrefinement.datamanager.LevelDataManager;
@@ -17,8 +18,8 @@ import java.util.List;
 public class DarkChangeRefinementStrategy implements RefinementStrategy {
 
     @Override
-    public RefinementResult execute(Player player, ItemStack equipment, Stone stone) {
-        EquipmentService service = new EquipmentService(equipment, player);
+    public RefinementResult execute(OfflinePlayer player, ItemStack equipment, Stone stone,double extraBonus) {
+        EquipmentService service = new EquipmentService(equipment);
         int currentLevel = service.getLevel();
 
         // 检查最大等级
