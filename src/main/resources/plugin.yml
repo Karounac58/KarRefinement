@@ -1,6 +1,6 @@
 name: KarRefinement
 main: vip.mcsj.www.karrefinement.main.KarRefinement
-version: 2.0.1.0-beta
+version: 2.0.1.1-beta
 author: Karounac58
 api-version: 1.13
 commands:

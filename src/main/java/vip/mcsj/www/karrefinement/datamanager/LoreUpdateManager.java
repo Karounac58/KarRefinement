@@ -27,7 +27,7 @@ public class LoreUpdateManager implements Service {
     private static String currentLoreVersion = "";
     
     // 是否启用动态lore更新
-    private static boolean enableDynamicLoreUpdate = true;
+    public static boolean enableDynamicLoreUpdate = true;
     
     // 更新检查冷却时间（毫秒），防止频繁检查
     private static final long CHECK_COOLDOWN = 1000;
@@ -35,7 +35,7 @@ public class LoreUpdateManager implements Service {
     // 玩家上次检查时间记录
     private static final Map<UUID, Long> lastCheckTime = new ConcurrentHashMap<>();
     
-    // 已处理过的物品缓存（防止同一tick内重复处理）
+    // 已处理过的物品缓存（防止同一tick内重复处理）- key格式: "playerUUID_slotHash"
     private static final Set<String> processedItems = ConcurrentHashMap.newKeySet();
 
     @Override
@@ -76,51 +76,65 @@ public class LoreUpdateManager implements Service {
      * @param player 玩家
      */
     public static void checkAndUpdatePlayerInventory(Player player) {
-        if (!enableDynamicLoreUpdate) {
-            return;
-        }
 
         // 检查冷却时间
         long now = System.currentTimeMillis();
         Long lastCheck = lastCheckTime.get(player.getUniqueId());
         if (lastCheck != null && (now - lastCheck) < CHECK_COOLDOWN) {
+            KarRefinement.instance.getLogger().info("[LoreUpdate] 冷却中，跳过检查: " + player.getName());
             return;
         }
         lastCheckTime.put(player.getUniqueId(), now);
 
-        // 异步处理避免阻塞主线程
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                // 检查主手装备
-                ItemStack mainHand = player.getInventory().getItemInMainHand();
-                if (shouldUpdateItem(mainHand)) {
-                    updateItemLore(mainHand);
-                }
+        // 清除本tick的处理记录
+        processedItems.clear();
+        
+        KarRefinement.instance.getLogger().info("[LoreUpdate] 开始检查: " + player.getName() + ", 版本号: " + currentLoreVersion);
 
-                // 检查副手装备
-                ItemStack offHand = player.getInventory().getItemInOffHand();
-                if (shouldUpdateItem(offHand)) {
-                    updateItemLore(offHand);
-                }
+        // 在主线程同步处理，避免并发问题
+        // 检查主手装备
+        ItemStack mainHand = player.getInventory().getItemInMainHand();
+        String mainHandKey = player.getUniqueId() + "_mainhand";
+        if (!processedItems.contains(mainHandKey) && shouldUpdateItem(mainHand)) {
+            processedItems.add(mainHandKey);
+            updateItemLore(mainHand, player, EquipmentSlot.MAIN_HAND);
+        }
 
-                // 检查盔甲
-                for (ItemStack armor : player.getInventory().getArmorContents()) {
-                    if (shouldUpdateItem(armor)) {
-                        updateItemLore(armor);
-                    }
-                }
+        // 检查副手装备
+        ItemStack offHand = player.getInventory().getItemInOffHand();
+        String offHandKey = player.getUniqueId() + "_offhand";
+        if (!processedItems.contains(offHandKey) && shouldUpdateItem(offHand)) {
+            processedItems.add(offHandKey);
+            updateItemLore(offHand, player, EquipmentSlot.OFF_HAND);
+        }
 
-                // 检查背包物品（限制数量以优化性能）
-                ItemStack[] contents = player.getInventory().getStorageContents();
-                int checkLimit = Math.min(contents.length, 36); // 只检查前36格
-                for (int i = 0; i < checkLimit; i++) {
-                    if (shouldUpdateItem(contents[i])) {
-                        updateItemLore(contents[i]);
-                    }
-                }
+        // 检查盔甲
+        ItemStack[] armors = player.getInventory().getArmorContents();
+        for (int i = 0; i < armors.length; i++) {
+            String armorKey = player.getUniqueId() + "_armor_" + i;
+            if (!processedItems.contains(armorKey) && shouldUpdateItem(armors[i])) {
+                processedItems.add(armorKey);
+                updateItemLore(armors[i], player, EquipmentSlot.ARMOR);
             }
-        }.runTask(KarRefinement.instance);
+        }
+
+        // 检查背包物品（限制数量以优化性能）
+        ItemStack[] contents = player.getInventory().getStorageContents();
+        int checkLimit = Math.min(contents.length, 36); // 只检查前36格
+        for (int i = 0; i < checkLimit; i++) {
+            String slotKey = player.getUniqueId() + "_inv_" + i;
+            if (!processedItems.contains(slotKey) && shouldUpdateItem(contents[i])) {
+                processedItems.add(slotKey);
+                updateItemLore(contents[i], player, EquipmentSlot.INVENTORY);
+            }
+        }
+    }
+
+    /**
+     * 装备槽位类型
+     */
+    private enum EquipmentSlot {
+        MAIN_HAND, OFF_HAND, ARMOR, INVENTORY
     }
 
     /**
@@ -151,10 +165,51 @@ public class LoreUpdateManager implements Service {
     }
 
     /**
-     * 更新单个物品的lore
+     * 更新单个物品的lore（带槽位验证的安全版本）
+     * @param item 物品
+     * @param player 玩家（用于验证物品是否仍在原位）
+     * @param slot 槽位类型
+     */
+    private static void updateItemLore(ItemStack item, Player player, EquipmentSlot slot) {
+        if (item == null || item.getType().name().equals("AIR")) {
+            return;
+        }
+
+        // 再次验证物品是否需要更新（可能已被其他操作改变）
+        if (!shouldUpdateItem(item)) {
+            return;
+        }
+
+        // 获取当前物品的唯一标识（用于后续验证）
+        NBTItem nbtItem = new NBTItem(item);
+        int refinementLevel = nbtItem.getInteger("refinement");
+        String originalVersion = nbtItem.getString("loreversion");
+
+        // 执行实际更新
+        updateItemLoreInternal(item);
+
+        // 验证更新是否成功
+        NBTItem verifyNbt = new NBTItem(item);
+        String newVersion = verifyNbt.getString("loreversion");
+        if (!currentLoreVersion.equals(newVersion)) {
+            // 更新失败，记录日志
+            KarRefinement.instance.getLogger().warning("Lore更新失败: " + player.getName() + " 的物品未能正确更新版本号");
+        }
+    }
+
+    /**
+     * 更新单个物品的lore（内部实现）
      * @param item 物品
      */
     public static void updateItemLore(ItemStack item) {
+        updateItemLoreInternal(item);
+    }
+
+    /**
+     * 更新单个物品的lore（内部实现）
+     * @param item 物品
+     */
+    private static void updateItemLoreInternal(ItemStack item) {
         if (item == null || item.getType().name().equals("AIR")) {
             return;
         }
@@ -190,6 +245,10 @@ public class LoreUpdateManager implements Service {
 
         // 获取物品当前的lore
         ItemMeta meta = item.getItemMeta();
+        if (meta == null) {
+            return;
+        }
+        
         List<String> currentLore = meta.getLore();
         if (currentLore == null) {
             currentLore = new ArrayList<>();
@@ -280,8 +339,11 @@ public class LoreUpdateManager implements Service {
                 case "{paper}":
                     if (paperLevel > 0) {
                         String paperIdentifier = PaperDataManager.getPaperIdentifier(paperLevel);
-                        if (paperIdentifier != null) {
-                            newLore.add(PaperDataManager.papers.get(paperIdentifier).getName());
+                        if (paperIdentifier != null && PaperDataManager.papers.containsKey(paperIdentifier)) {
+                            ProtectPaper paper = PaperDataManager.papers.get(paperIdentifier);
+                            if (paper != null && paper.getName() != null) {
+                                newLore.add(paper.getName());
+                            }
                         }
                     }
                     break;
@@ -352,7 +414,9 @@ public class LoreUpdateManager implements Service {
         if (paperLevel <= 0) return false;
         String paperIdentifier = PaperDataManager.getPaperIdentifier(paperLevel);
         if (paperIdentifier == null) return false;
-        return line.equals(PaperDataManager.papers.get(paperIdentifier).getName());
+        ProtectPaper paper = PaperDataManager.papers.get(paperIdentifier);
+        if (paper == null) return false;
+        return line.equals(paper.getName());
     }
 
     /**
@@ -374,7 +438,7 @@ public class LoreUpdateManager implements Service {
         NBT.modify(item, nbt -> {
             nbt.removeKey("loreversion");
         });
-        updateItemLore(item);
+        updateItemLoreInternal(item);
     }
 
     /**

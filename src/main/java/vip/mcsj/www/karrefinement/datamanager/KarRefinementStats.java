@@ -77,7 +77,7 @@ public class KarRefinementStats extends PlaceholderExpansion {
                     return "0.00%";
                 }
                 double rate = (double) successes / attempts * 100;
-                return String.format("%.2f%%", rate);
+                return String.format("%.2f", rate);
                 
             default:
                 return null;

@@ -177,13 +177,28 @@ public class InfiniteSoulManager implements Service {
             });
             return true;
         }else{
-            lores = equipmentMeta.getLore();
-            lores.clear();
+            lores = new ArrayList<>();
+            List<String> metaLore = equipmentMeta.getLore();
+            if (metaLore == null) {
+                metaLore = new ArrayList<>();
+            }
+
             if(willLevel > nowLevel){
 
                 Map<String, List<String>> equipmentInfoLore = EquipmentDataManager.getEquipmentInfoLore(equipmentItem);
+
+                // 移除所有系统 lore，保留原始 lore
+                for (String s : equipmentInfoLore.keySet()) {
+                    List<String> strList = equipmentInfoLore.get(s);
+                    metaLore.removeAll(strList);
+                }
+
                 List<String> sortOrder = EquipmentDataManager.sortOrder;
                 for (String s : sortOrder) {
+                    if(s.equals("{lore}")){
+                        lores.addAll(metaLore);
+                    }
+
                     if(s.equals("{refinement}")){
                         if(equipmentInfoLore.containsKey("refinement")){
                             lores.addAll(equipmentInfoLore.get("refinement"));
@@ -203,9 +218,11 @@ public class InfiniteSoulManager implements Service {
                     }
 
                     if(s.equals("{soul}")){
+                        // 移除旧的精魂 lore
                         for (String s1 : infiniteSouls.keySet()) {
                             if(infiniteSouls.get(s1).getLevel() == nowLevel){
-                                lores.remove(infiniteSouls.get(s1).getName());
+                                // 不需要再移除，已经在上面统一移除了
+                                break;
                             }
                         }
                         lores.add(infiniteSouls.get(soulIdentifier).getName());

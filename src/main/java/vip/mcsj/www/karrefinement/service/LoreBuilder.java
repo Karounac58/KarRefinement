@@ -270,15 +270,17 @@ public class LoreBuilder {
         }
 
         // 移除 mainLore 头部标识
-        int headerIndex = 0;
+        int headerIndex = -1;
         for (int i = 0; i < lores.size(); i++) {
             if (lores.get(i).equals(EquipmentDataManager.mainLore)) {
                 headerIndex = i;
                 break;
             }
         }
-        lores.remove(headerIndex);
 
+        if(headerIndex != -1) {
+            lores.remove(headerIndex);
+        }
         // 移除 mainLore 内容
         lores.removeAll(mainLore);
 
