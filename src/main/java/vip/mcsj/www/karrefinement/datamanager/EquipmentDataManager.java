@@ -150,6 +150,10 @@ public class EquipmentDataManager{
         return service.injuryDownStar(protectPaperLevel, stone);
     }
 
+    public EquipmentService.DownStarResult injuryDownStarWithResult(int protectPaperLevel, Stone stone) {
+        return service.injuryDownStarWithResult(protectPaperLevel, stone);
+    }
+
     public Map<String, List<String>> removeNowItemRefinementInfo(int nowLevel) {
         return service.removeRefinementInfo(nowLevel);
     }

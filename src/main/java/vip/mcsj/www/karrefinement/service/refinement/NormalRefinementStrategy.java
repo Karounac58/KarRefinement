@@ -49,13 +49,18 @@ public class NormalRefinementStrategy implements RefinementStrategy {
         } else {
             // 失败
             if (currentLevel == 0) {
-                return RefinementResult.failure(currentLevel, 0, 0);
+                return RefinementResult.failure(currentLevel, 0, 0, false);
             }
             PaperDataManager paperManager = new PaperDataManager(equipment);
             int paperLevel = paperManager.getPaperLevel();
-            int downLevel = service.injuryDownStar(paperLevel, stone);
+            
+            // 使用带结果返回的降星方法
+            EquipmentService.DownStarResult downResult = service.injuryDownStarWithResult(paperLevel, stone);
+            int downLevel = downResult.getDownLevel();
+            boolean protectorWorked = downResult.isProtectorWorked();
             int newLevel = service.getLevel();
-            return RefinementResult.failure(currentLevel, newLevel, downLevel);
+            
+            return RefinementResult.failure(currentLevel, newLevel, downLevel, protectorWorked);
         }
     }
 }

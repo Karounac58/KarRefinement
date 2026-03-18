@@ -18,6 +18,8 @@ public class ProtectPaper {
 
     private int level;
 
+    private boolean singleUse;
+
 
 
     public ProtectPaper(String identifier, String name, List<String> lore, Material type,int data, int customModelData, int level) {
@@ -30,12 +32,31 @@ public class ProtectPaper {
         this.level = level;
     }
 
+    public ProtectPaper(String identifier, String name, List<String> lore, Material type,int data, int customModelData, int level, boolean singleUse) {
+        this.identifier = identifier;
+        this.name = name;
+        this.lore = lore;
+        this.type = type;
+        this.data = data;
+        this.customModelData = customModelData;
+        this.level = level;
+        this.singleUse = singleUse;
+    }
+
     public int getLevel() {
         return level;
     }
 
     public void setLevel(int level) {
         this.level = level;
+    }
+
+    public boolean isSingleUse() {
+        return singleUse;
+    }
+
+    public void setSingleUse(boolean singleUse) {
+        this.singleUse = singleUse;
     }
 
     public ProtectPaper() {

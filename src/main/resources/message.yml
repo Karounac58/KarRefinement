@@ -62,6 +62,7 @@ paper_up: "§a保护符已经成功融入这件装备"
 spestone_up: "§a宝石已经成功镶嵌进这件装备！"
 soul_up: "§a精魂已经成功融入这件装备"
 dupaper_up: "§a直升符已经成功融入这件装备"
+paper_singleuse_consume: "§a保护符已消耗"
 
 reload_success: "§a§l配置文件重载成功!"
 

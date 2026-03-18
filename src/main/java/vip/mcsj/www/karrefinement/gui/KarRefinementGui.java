@@ -16,6 +16,7 @@ import vip.mcsj.www.karrefinement.main.listener.KarEventListener;
 import vip.mcsj.www.karrefinement.object.InvItem;
 import vip.mcsj.www.karrefinement.object.MCVersions;
 import vip.mcsj.www.karrefinement.object.Stone;
+import vip.mcsj.www.karrefinement.service.EquipmentService;
 import vip.mcsj.www.karrefinement.service.refinement.RefinementResult;
 import vip.mcsj.www.karrefinement.service.refinement.RefinementService;
 import vip.mcsj.www.karrefinement.service.SoundDataManager;
@@ -407,6 +408,14 @@ public class KarRefinementGui {
 
             if(player.isOnline()) {
                 player.getPlayer().sendMessage(Message.messages.get("refinement_failed").replace("{level}", result.getDownLevels() + ""));
+            }
+            
+            // 如果保护符生效且是单次使用，移除保护符
+            if(result.isProtectorWorked() && PaperDataManager.isSingleUsePaper(itemEquipment)){
+                PaperDataManager.removeProtectPaper(itemEquipment);
+                if(player.isOnline()) {
+                    player.getPlayer().sendMessage(Message.messages.get("paper_singleuse_consume"));
+                }
             }
             
             Sound failSound = SoundDataManager.getSound("KarRefinementGui", "Fail");

@@ -31,7 +31,7 @@ public class DarkChangeRefinementStrategy implements RefinementStrategy {
         List<Object> darkChangeData = KarRefinement.dcdm.getPlayerDarkChangeData(player);
         if (darkChangeData == null) {
             // 无暗改数据，不应使用此策略
-            return RefinementResult.failure(currentLevel, currentLevel, 0);
+            return RefinementResult.failure(currentLevel, currentLevel, 0, false);
         }
 
         boolean isSuccess = (boolean) darkChangeData.get(1);
@@ -47,13 +47,18 @@ public class DarkChangeRefinementStrategy implements RefinementStrategy {
             return RefinementResult.maxLevel(currentLevel);
         } else {
             if (currentLevel == 0) {
-                return RefinementResult.failure(currentLevel, 0, 0);
+                return RefinementResult.failure(currentLevel, 0, 0, false);
             }
             PaperDataManager paperManager = new PaperDataManager(equipment);
             int paperLevel = paperManager.getPaperLevel();
-            int downLevel = service.injuryDownStar(paperLevel, stone);
+            
+            // 使用带结果返回的降星方法
+            EquipmentService.DownStarResult downResult = service.injuryDownStarWithResult(paperLevel, stone);
+            int downLevel = downResult.getDownLevel();
+            boolean protectorWorked = downResult.isProtectorWorked();
             int newLevel = service.getLevel();
-            return RefinementResult.failure(currentLevel, newLevel, downLevel);
+            
+            return RefinementResult.failure(currentLevel, newLevel, downLevel, protectorWorked);
         }
     }
 }

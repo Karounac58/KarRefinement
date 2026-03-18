@@ -232,6 +232,71 @@ public class EquipmentService {
     }
 
     /**
+     * 降星操作（带保护符生效状态返回）
+     *
+     * @param protectPaperLevel 保护符等级
+     * @param stone             淬炼石（包含掉级信息）
+     * @return DownStarResult 包含实际掉落等级和保护符是否生效
+     */
+    public DownStarResult injuryDownStarWithResult(int protectPaperLevel, Stone stone) {
+        int oldLevel = getLevel();
+        Level oldLevelData = LevelDataManager.levels.get(oldLevel - 1);
+        List<String> oldMainLore = oldLevelData.getMainLore();
+        String identifier = EquipmentDataManager.getEquipmentIdentifier(this.equipmentItem);
+        List<String> oldExtractLore = oldLevelData.getExtractLores().get(identifier);
+
+        int downLevel = randomDownLevel(stone.getDownLevels());
+
+        // 掉到 0 以下：直接归零
+        if (oldLevel - downLevel < 0) {
+            loreBuilder.removeRefinementInfoWithDownLevel(oldMainLore, oldExtractLore, oldLevel, downLevel);
+            return new DownStarResult(oldLevel, false);
+        }
+
+        // 恰好掉到 0
+        if (oldLevel - downLevel == 0) {
+            if (oldLevel == protectPaperLevel) {
+                // 保护符保护生效
+                return new DownStarResult(0, true);
+            } else {
+                loreBuilder.removeRefinementInfoWithDownLevel(oldMainLore, oldExtractLore, oldLevel, downLevel);
+                return new DownStarResult(downLevel, false);
+            }
+        }
+
+        // 正常掉星
+        int realDownLevel;
+        int newLevel;
+
+        if (oldLevel - downLevel < protectPaperLevel) {
+            // 掉星后低于保护符等级：只掉到保护符等级（保护符生效）
+            realDownLevel = oldLevel - protectPaperLevel;
+            newLevel = oldLevel - realDownLevel;
+            
+            Level newLevelData = LevelDataManager.levels.get(newLevel - 1);
+            List<String> newMainLore = newLevelData.getMainLore();
+            List<String> newExtractLore = newLevelData.getExtractLores().get(identifier);
+
+            loreBuilder.removeRefinementInfo(oldMainLore, oldExtractLore, oldLevel);
+            loreBuilder.addRefinementInfo(newMainLore, newExtractLore, newLevel);
+            
+            return new DownStarResult(realDownLevel, true);
+        } else {
+            realDownLevel = downLevel;
+            newLevel = oldLevel - realDownLevel;
+            
+            Level newLevelData = LevelDataManager.levels.get(newLevel - 1);
+            List<String> newMainLore = newLevelData.getMainLore();
+            List<String> newExtractLore = newLevelData.getExtractLores().get(identifier);
+
+            loreBuilder.removeRefinementInfo(oldMainLore, oldExtractLore, oldLevel);
+            loreBuilder.addRefinementInfo(newMainLore, newExtractLore, newLevel);
+            
+            return new DownStarResult(realDownLevel, false);
+        }
+    }
+
+    /**
      * 根据等级直接移除淬炼信息
      */
     public Map<String, List<String>> removeRefinementInfo(int nowLevel) {
@@ -278,5 +343,26 @@ public class EquipmentService {
 
     public LoreBuilder getLoreBuilder() {
         return loreBuilder;
+    }
+    
+    /**
+     * 降星结果类
+     */
+    public static class DownStarResult {
+        private final int downLevel;
+        private final boolean protectorWorked;
+        
+        public DownStarResult(int downLevel, boolean protectorWorked) {
+            this.downLevel = downLevel;
+            this.protectorWorked = protectorWorked;
+        }
+        
+        public int getDownLevel() {
+            return downLevel;
+        }
+        
+        public boolean isProtectorWorked() {
+            return protectorWorked;
+        }
     }
 }

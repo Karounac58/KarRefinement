@@ -23,6 +23,8 @@ public class PaperDataManager implements Service {
 
     public static Set<Material> paperMaterials = new HashSet<>();
 
+    public static boolean globalSingleUseEnabled = false;
+
     private ItemStack equipmentItem;
 
     private String paperName;
@@ -55,16 +57,36 @@ public class PaperDataManager implements Service {
         if(!papers.isEmpty()){
             papers.clear();
         }
+        if(!paperMaterials.isEmpty()){
+            paperMaterials.clear();
+        }
         YamlConfiguration customFileYaml = FileUtil.getCustomFileYaml("protectpaper.yml");
+        
+        // 读取全局设置
+        if(customFileYaml.contains("Settings.SingleUseEnabled")){
+            globalSingleUseEnabled = customFileYaml.getBoolean("Settings.SingleUseEnabled");
+        }
+        
         Set<String> keys = customFileYaml.getKeys(false);
         for (String key : keys) {
+            // 跳过Settings节点
+            if(key.equals("Settings")){
+                continue;
+            }
             String name = customFileYaml.getString(key+".Name");
             Material type = Material.valueOf(customFileYaml.getString(key+".Type"));
             int customModelData = customFileYaml.getInt(key+".CustomModelData");
-            int data = customFileYaml.getInt(key+"Data");
+            int data =  customFileYaml.getInt(key+".Data");
             int level = customFileYaml.getInt(key+".Level");
             List<String> lores = customFileYaml.getStringList(key+".Lore");
-            ProtectPaper paper = new ProtectPaper(key,name,lores,type,data,customModelData,level);
+            
+            // 读取单个保护符的单次使用设置（如果没有则使用全局设置）
+            boolean singleUse = globalSingleUseEnabled;
+            if(customFileYaml.contains(key+".SingleUse")){
+                singleUse = customFileYaml.getBoolean(key+".SingleUse");
+            }
+            
+            ProtectPaper paper = new ProtectPaper(key,name,lores,type,data,customModelData,level,singleUse);
             papers.put(key,paper);
             paperMaterials.add(type);
         }
@@ -238,11 +260,6 @@ public class PaperDataManager implements Service {
         return false;
     }
 
-    public static String getPaperIdentifier(ItemStack itemPaper){
-        int paperLevel = new NBTItem(itemPaper).getInteger("protector");
-        return getPaperIdentifier(paperLevel);
-    }
-
     public static String getPaperIdentifier(int level){
         for (String s : papers.keySet()) {
             if(papers.get(s).getLevel() == level){
@@ -250,6 +267,69 @@ public class PaperDataManager implements Service {
             }
         }
         return null;
+    }
+
+    public static String getPaperIdentifier(ItemStack item){
+        int paperLevel = new NBTItem(item).getInteger("protector");
+        return getPaperIdentifier(paperLevel);
+    }
+
+    /**
+     * 检查装备的保护符是否为单次使用
+     * @param equipmentItem 装备
+     * @return 是否为单次使用保护符
+     */
+    public static boolean isSingleUsePaper(ItemStack equipmentItem){
+        int paperLevel = new NBTItem(equipmentItem).getInteger("protector");
+        if(paperLevel <= 0){
+            return false;
+        }
+        String identifier = getPaperIdentifier(paperLevel);
+        if(identifier == null){
+            return false;
+        }
+        ProtectPaper paper = papers.get(identifier);
+        if(paper == null){
+            return false;
+        }
+        return paper.isSingleUse();
+    }
+
+    /**
+     * 移除装备上的保护符
+     * @param equipmentItem 装备
+     */
+    public static void removeProtectPaper(ItemStack equipmentItem){
+        ItemMeta equipmentMeta = equipmentItem.getItemMeta();
+        if(equipmentMeta == null || !equipmentMeta.hasLore()){
+            return;
+        }
+        
+        int paperLevel = new NBTItem(equipmentItem).getInteger("protector");
+        if(paperLevel <= 0){
+            return;
+        }
+        
+        String identifier = getPaperIdentifier(paperLevel);
+        if(identifier == null){
+            return;
+        }
+        
+        ProtectPaper protectPaper = papers.get(identifier);
+        if(protectPaper == null){
+            return;
+        }
+        
+        List<String> lores = equipmentMeta.getLore();
+        // 移除保护符lore
+        lores.remove(protectPaper.getName());
+        equipmentMeta.setLore(lores);
+        equipmentItem.setItemMeta(equipmentMeta);
+        
+        // 移除NBT
+        NBT.modify(equipmentItem,nbt -> {
+            nbt.removeKey("protector");
+        });
     }
 
 

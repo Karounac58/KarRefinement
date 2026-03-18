@@ -1,3 +1,6 @@
+Settings:
+  # 是否只能阻挡一次失败
+  SingleUseEnabled: false
 三星淬炼保护符:
   Name: "§a三星淬炼保护符"
   Type: PAPER
