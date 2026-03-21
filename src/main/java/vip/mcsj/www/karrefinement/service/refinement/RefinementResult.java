@@ -40,6 +40,20 @@ public class RefinementResult {
         return new RefinementResult(false, level, level, 0, false);
     }
 
+    /**
+     * 创建一个被取消的淬炼结果（由 PreRefinementEvent 取消时使用）
+     */
+    public static RefinementResult cancelled() {
+        return new RefinementResult(false, -1, -1, 0, false);
+    }
+
+    /**
+     * 是否被取消
+     */
+    public boolean isCancelled() {
+        return oldLevel == -1 && newLevel == -1;
+    }
+
     public boolean isSuccess() {
         return success;
     }

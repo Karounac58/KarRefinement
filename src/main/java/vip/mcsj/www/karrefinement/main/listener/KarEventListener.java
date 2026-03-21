@@ -18,6 +18,14 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
+import vip.mcsj.www.karrefinement.api.KarRefinementAPI;
+import vip.mcsj.www.karrefinement.api.event.KarGuiClickEvent;
+import vip.mcsj.www.karrefinement.api.event.KarGuiOpenEvent;
+import vip.mcsj.www.karrefinement.api.event.ProtectPaperApplyEvent;
+import vip.mcsj.www.karrefinement.api.gui.GuiContext;
+import vip.mcsj.www.karrefinement.api.gui.GuiSlot;
+import vip.mcsj.www.karrefinement.api.gui.GuiSlotRegistry;
+import vip.mcsj.www.karrefinement.api.gui.GuiType;
 import vip.mcsj.www.karrefinement.datamanager.*;
 import vip.mcsj.www.karrefinement.gui.KarForgeGui;
 import vip.mcsj.www.karrefinement.gui.KarForgeInvHolder;
@@ -25,6 +33,8 @@ import vip.mcsj.www.karrefinement.gui.KarRefinementGui;
 import vip.mcsj.www.karrefinement.gui.holder.KarRefinementInvHolder;
 import vip.mcsj.www.karrefinement.main.KarRefinement;
 import vip.mcsj.www.karrefinement.object.SpeStone;
+import vip.mcsj.www.karrefinement.service.gui.ForgeGuiContext;
+import vip.mcsj.www.karrefinement.service.gui.RefinementGuiContext;
 import vip.mcsj.www.karrefinement.utils.KarUtils;
 import static vip.mcsj.www.karrefinement.datamanager.EquipmentDataManager.*;
 
@@ -79,9 +89,13 @@ public class KarEventListener implements Listener {
             itemEquipment = e.getCurrentItem();
             if(PaperDataManager.isPaperLegal(itemPaper)){
                 if(EquipmentDataManager.isEquipmentLegal(itemEquipment)){
-                    //System.out.println("11111");
+                    // 触发 ProtectPaperApplyEvent
+                    ProtectPaperApplyEvent paperEvent = new ProtectPaperApplyEvent(p1, itemPaper, itemEquipment);
+                    Bukkit.getPluginManager().callEvent(paperEvent);
+                    if (paperEvent.isCancelled()) {
+                        return;
+                    }
                     if(PaperDataManager.protectorPaperUp(itemPaper,itemEquipment)) {
-                        //System.out.println("2222");
                         Player p = (Player)e.getWhoClicked();
                         p.sendMessage(Message.messages.get("paper_up"));
                         p.playSound(p.getLocation(), KarRefinement.cs.getSounds().get(0),1,1);
@@ -184,6 +198,19 @@ public class KarEventListener implements Listener {
             return;
         }
         if(!(e.getSlot() == 29 || e.getSlot() == 33)){
+            // 检查是否为自定义槽位
+            if (KarRefinementAPI.getInstance() != null) {
+                GuiSlotRegistry registry = KarRefinementAPI.getGuiSlotRegistry();
+                for (GuiSlot slot : registry.getSlots(GuiType.REFINEMENT)) {
+                    if (slot.getSlotIndex() == e.getSlot()) {
+                        e.setCancelled(true);
+                        Player slotPlayer = (Player) e.getWhoClicked();
+                        GuiContext context = new RefinementGuiContext(inv, slotPlayer, registry.getSlots(GuiType.REFINEMENT));
+                        slot.onClick(e, context);
+                        return;
+                    }
+                }
+            }
             //System.out.println("2");
             e.setCancelled(true);
         }
@@ -218,6 +245,7 @@ public class KarEventListener implements Listener {
                 }
                 closeItems.put(p1,new ItemStack[]{itemStone,itemEquipment});
             }
+            KarRefinementGui.renderCustomSlots(inv, p1, GuiType.REFINEMENT);
         }
     }
 
@@ -266,9 +294,23 @@ public class KarEventListener implements Listener {
     @EventHandler
     public void onKarInventoryOpenEvent(InventoryOpenEvent e) {
         if (e.getInventory().getHolder() instanceof KarRefinementInvHolder) {
+            // 触发 KarGuiOpenEvent
+            KarGuiOpenEvent openEvent = new KarGuiOpenEvent((Player) e.getPlayer(), GuiType.REFINEMENT, e.getInventory());
+            Bukkit.getPluginManager().callEvent(openEvent);
+            if (openEvent.isCancelled()) {
+                e.setCancelled(true);
+                return;
+            }
             judgeInvCloseOrNot.put((Player) e.getPlayer(),1);
         }
         if (e.getInventory().getHolder() instanceof KarForgeInvHolder) {
+            // 触发 KarGuiOpenEvent
+            KarGuiOpenEvent openEvent = new KarGuiOpenEvent((Player) e.getPlayer(), GuiType.FORGE, e.getInventory());
+            Bukkit.getPluginManager().callEvent(openEvent);
+            if (openEvent.isCancelled()) {
+                e.setCancelled(true);
+                return;
+            }
             judgeForgeInvCloseOrNot.put((Player) e.getPlayer(),1);
         }
     }
@@ -392,6 +434,19 @@ public class KarEventListener implements Listener {
             return;
         }
         if(!(e.getSlot() == 19 || e.getSlot() == 25)){
+            // 检查是否为自定义槽位
+            if (KarRefinementAPI.getInstance() != null) {
+                GuiSlotRegistry registry = KarRefinementAPI.getGuiSlotRegistry();
+                for (GuiSlot slot : registry.getSlots(GuiType.FORGE)) {
+                    if (slot.getSlotIndex() == e.getSlot()) {
+                        e.setCancelled(true);
+                        Player slotPlayer = (Player) e.getWhoClicked();
+                        GuiContext context = new ForgeGuiContext(inv, slotPlayer, registry.getSlots(GuiType.FORGE));
+                        slot.onClick(e, context);
+                        return;
+                    }
+                }
+            }
             //System.out.println("2");
             e.setCancelled(true);
         }

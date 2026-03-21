@@ -1,5 +1,6 @@
 package vip.mcsj.www.karrefinement.gui;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.configuration.ConfigurationSection;
@@ -9,11 +10,18 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
+import vip.mcsj.www.karrefinement.api.KarRefinementAPI;
+import vip.mcsj.www.karrefinement.api.gui.GuiSlot;
+import vip.mcsj.www.karrefinement.api.gui.GuiSlotRegistry;
+import vip.mcsj.www.karrefinement.api.gui.GuiType;
+import vip.mcsj.www.karrefinement.api.event.PostForgeEvent;
+import vip.mcsj.www.karrefinement.api.event.PreForgeEvent;
 import vip.mcsj.www.karrefinement.datamanager.EquipmentDataManager;
 import vip.mcsj.www.karrefinement.datamanager.Message;
 import vip.mcsj.www.karrefinement.main.KarRefinement;
 import vip.mcsj.www.karrefinement.main.listener.KarEventListener;
 import vip.mcsj.www.karrefinement.object.InvItem;
+import vip.mcsj.www.karrefinement.service.gui.ForgeGuiContext;
 import vip.mcsj.www.karrefinement.service.SoundDataManager;
 import vip.mcsj.www.karrefinement.utils.FileUtil;
 import vip.mcsj.www.karrefinement.utils.KarUtils;
@@ -71,6 +79,21 @@ public class KarForgeGui {
         }
         inv.setItem(22,redStone);
         inv.setItem(4,oak_sign);
+
+        // === 渲染自定义槽位 ===
+        if (KarRefinementAPI.getInstance() != null) {
+            GuiSlotRegistry registry = KarRefinementAPI.getGuiSlotRegistry();
+            java.util.List<GuiSlot> slots = registry.getSlots(GuiType.FORGE);
+            if (!slots.isEmpty()) {
+                ForgeGuiContext context = new ForgeGuiContext(inv, p, slots);
+                for (GuiSlot slot : slots) {
+                    ItemStack display = slot.buildDisplayItem(p, context);
+                    if (display != null) {
+                        inv.setItem(slot.getSlotIndex(), display);
+                    }
+                }
+            }
+        }
     }
 
 
@@ -107,13 +130,22 @@ public class KarForgeGui {
 
     public static void KarForgeMethod(ItemStack itemEquipment1, ItemStack itemEquipment2, Player p) {
         if(judgeInventoryClickMethod(itemEquipment1,itemEquipment2,p)){
+            // 触发 PreForgeEvent
+            PreForgeEvent preEvent = new PreForgeEvent(p, itemEquipment1, itemEquipment2);
+            Bukkit.getPluginManager().callEvent(preEvent);
+            if (preEvent.isCancelled()) {
+                return;
+            }
+
             EquipmentDataManager manager1 = new EquipmentDataManager(itemEquipment1,p);
             double success = EquipmentDataManager.forgeSuccessList.get(manager1.carifyEquipmentLevel()+1);
             BigDecimal decimal = BigDecimal.valueOf(KarUtils.nextDouble(100)).setScale(2, RoundingMode.HALF_UP);
+            boolean forgeSuccess;
             if(decimal.doubleValue() < success){
+                forgeSuccess = true;
                 manager1.injuryUpStar();
                 p.sendMessage(Message.messages.get("forge_upstar"));
-                
+
                 Sound successSound = SoundDataManager.getSound("KarForgeGui", "Success");
                 if(successSound != null){
                     p.playSound(p.getLocation(), successSound, 1, 1);
@@ -122,8 +154,9 @@ public class KarForgeGui {
                 }
                 KarUtils.removeItemRefinement(itemEquipment2);
             }else{
+                forgeSuccess = false;
                 p.sendMessage(Message.messages.get("forge_failed"));
-                
+
                 Sound failSound = SoundDataManager.getSound("KarForgeGui", "Fail");
                 if(failSound != null){
                     p.playSound(p.getLocation(), failSound, 1, 1);
@@ -132,6 +165,10 @@ public class KarForgeGui {
                 }
                 KarUtils.removeItemRefinement(itemEquipment2);
             }
+
+            // 触发 PostForgeEvent
+            PostForgeEvent postEvent = new PostForgeEvent(p, itemEquipment1, itemEquipment2, forgeSuccess);
+            Bukkit.getPluginManager().callEvent(postEvent);
         }
     }
 

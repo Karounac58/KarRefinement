@@ -10,10 +10,16 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import vip.mcsj.www.karrefinement.api.KarRefinementAPI;
+import vip.mcsj.www.karrefinement.api.gui.GuiContext;
+import vip.mcsj.www.karrefinement.api.gui.GuiSlot;
+import vip.mcsj.www.karrefinement.api.gui.GuiSlotRegistry;
+import vip.mcsj.www.karrefinement.api.gui.GuiType;
 import vip.mcsj.www.karrefinement.datamanager.Message;
 import vip.mcsj.www.karrefinement.gui.KarCompoundPieceGui;
 import vip.mcsj.www.karrefinement.gui.KarTransformStarGui;
 import vip.mcsj.www.karrefinement.service.SoundDataManager;
+import vip.mcsj.www.karrefinement.service.gui.SimpleGuiContext;
 
 public class KarCompoundPieceListener implements Listener {
     @EventHandler
@@ -24,6 +30,19 @@ public class KarCompoundPieceListener implements Listener {
         if(!(e.getClickedInventory().getHolder() instanceof KarCompoundPieceGui.KarCompoundPieceGuiInvHolder)) return;
 
         if(!(e.getSlot() == KarCompoundPieceGui.originSlot || e.getSlot() == KarCompoundPieceGui.afterSlot)){
+            // 检查是否为自定义槽位
+            if (KarRefinementAPI.getInstance() != null) {
+                GuiSlotRegistry registry = KarRefinementAPI.getGuiSlotRegistry();
+                for (GuiSlot slot : registry.getSlots(GuiType.COMPOUND_PIECE)) {
+                    if (slot.getSlotIndex() == e.getSlot()) {
+                        e.setCancelled(true);
+                        Player slotPlayer = (Player) e.getWhoClicked();
+                        GuiContext context = new SimpleGuiContext(GuiType.COMPOUND_PIECE, inv, slotPlayer, registry.getSlots(GuiType.COMPOUND_PIECE));
+                        slot.onClick(e, context);
+                        return;
+                    }
+                }
+            }
             e.setCancelled(true);
         }
 

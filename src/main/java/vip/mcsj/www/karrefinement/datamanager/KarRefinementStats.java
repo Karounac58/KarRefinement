@@ -4,6 +4,9 @@ import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import vip.mcsj.www.karrefinement.api.KarRefinementAPI;
+import vip.mcsj.www.karrefinement.api.placeholder.PlaceholderProvider;
+import vip.mcsj.www.karrefinement.api.placeholder.PlaceholderRegistry;
 import vip.mcsj.www.karrefinement.main.KarRefinement;
 import vip.mcsj.www.karrefinement.object.Level;
 
@@ -80,6 +83,19 @@ public class KarRefinementStats extends PlaceholderExpansion {
                 return String.format("%.2f", rate);
                 
             default:
+                // 查询自定义变量提供者
+                if (KarRefinementAPI.getInstance() != null) {
+                    PlaceholderRegistry registry = KarRefinementAPI.getPlaceholderRegistry();
+                    for (PlaceholderProvider provider : registry.getProviders()) {
+                        String prefix = provider.getPrefix();
+                        if (params.toLowerCase().startsWith(prefix)) {
+                            String args = params.substring(prefix.length());
+                            if (args.startsWith("_")) args = args.substring(1);
+                            String result = provider.onRequest(player, args);
+                            if (result != null) return result;
+                        }
+                    }
+                }
                 return null;
         }
     }

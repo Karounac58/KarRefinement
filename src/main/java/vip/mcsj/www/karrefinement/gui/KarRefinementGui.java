@@ -10,6 +10,10 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
+import vip.mcsj.www.karrefinement.api.KarRefinementAPI;
+import vip.mcsj.www.karrefinement.api.gui.GuiSlot;
+import vip.mcsj.www.karrefinement.api.gui.GuiSlotRegistry;
+import vip.mcsj.www.karrefinement.api.gui.GuiType;
 import vip.mcsj.www.karrefinement.datamanager.*;
 import vip.mcsj.www.karrefinement.main.KarRefinement;
 import vip.mcsj.www.karrefinement.main.listener.KarEventListener;
@@ -17,6 +21,7 @@ import vip.mcsj.www.karrefinement.object.InvItem;
 import vip.mcsj.www.karrefinement.object.MCVersions;
 import vip.mcsj.www.karrefinement.object.Stone;
 import vip.mcsj.www.karrefinement.service.EquipmentService;
+import vip.mcsj.www.karrefinement.service.gui.RefinementGuiContext;
 import vip.mcsj.www.karrefinement.service.refinement.RefinementResult;
 import vip.mcsj.www.karrefinement.service.refinement.RefinementService;
 import vip.mcsj.www.karrefinement.service.SoundDataManager;
@@ -93,6 +98,26 @@ public class KarRefinementGui {
                 InvItem barrier2 = rItems.get("Barrier2");
                 ItemStack invItem = createInvItem(barrier2,p);
                 inv.setItem(i, invItem);
+            }
+        }
+
+        // === 渲染自定义槽位 ===
+        renderCustomSlots(inv, p, GuiType.REFINEMENT);
+    }
+
+    /**
+     * 渲染自定义槽位
+     */
+    public static void renderCustomSlots(Inventory inv, Player p, GuiType guiType) {
+        if (KarRefinementAPI.getInstance() == null) return;
+        GuiSlotRegistry registry = KarRefinementAPI.getGuiSlotRegistry();
+        java.util.List<GuiSlot> slots = registry.getSlots(guiType);
+        if (slots.isEmpty()) return;
+        RefinementGuiContext context = new RefinementGuiContext(inv, p, slots);
+        for (GuiSlot slot : slots) {
+            ItemStack display = slot.buildDisplayItem(p, context);
+            if (display != null) {
+                inv.setItem(slot.getSlotIndex(), display);
             }
         }
     }

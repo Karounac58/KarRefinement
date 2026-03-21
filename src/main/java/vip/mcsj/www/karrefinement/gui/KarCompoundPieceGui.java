@@ -8,6 +8,10 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import vip.mcsj.www.karrefinement.api.KarRefinementAPI;
+import vip.mcsj.www.karrefinement.api.gui.GuiSlot;
+import vip.mcsj.www.karrefinement.api.gui.GuiSlotRegistry;
+import vip.mcsj.www.karrefinement.api.gui.GuiType;
 import vip.mcsj.www.karrefinement.datamanager.DetachDataManager;
 import vip.mcsj.www.karrefinement.datamanager.EquipmentDataManager;
 import vip.mcsj.www.karrefinement.datamanager.PaperDataManager;
@@ -15,6 +19,7 @@ import vip.mcsj.www.karrefinement.datamanager.SpecialStoneDataManager;
 import vip.mcsj.www.karrefinement.main.KarRefinement;
 import vip.mcsj.www.karrefinement.object.Detach;
 import vip.mcsj.www.karrefinement.object.InvItem;
+import vip.mcsj.www.karrefinement.service.gui.SimpleGuiContext;
 import vip.mcsj.www.karrefinement.utils.FileUtil;
 import vip.mcsj.www.karrefinement.utils.KarUtils;
 
@@ -83,6 +88,21 @@ public class KarCompoundPieceGui {
 
         for (Integer slot : afterInfo.getSlots()) {
             inv.setItem(slot, afterSign);
+        }
+
+        // === 渲染自定义槽位 ===
+        if (KarRefinementAPI.getInstance() != null) {
+            GuiSlotRegistry registry = KarRefinementAPI.getGuiSlotRegistry();
+            java.util.List<GuiSlot> slots = registry.getSlots(GuiType.COMPOUND_PIECE);
+            if (!slots.isEmpty()) {
+                SimpleGuiContext context = new SimpleGuiContext(GuiType.COMPOUND_PIECE, inv, p, slots);
+                for (GuiSlot slot : slots) {
+                    ItemStack display = slot.buildDisplayItem(p, context);
+                    if (display != null) {
+                        inv.setItem(slot.getSlotIndex(), display);
+                    }
+                }
+            }
         }
     }
 

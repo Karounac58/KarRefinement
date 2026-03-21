@@ -9,6 +9,7 @@ import org.bukkit.material.MaterialData;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
+import vip.mcsj.www.karrefinement.api.KarRefinementAPI;
 import vip.mcsj.www.karrefinement.core.PluginContext;
 import vip.mcsj.www.karrefinement.core.ServiceRegistry;
 import vip.mcsj.www.karrefinement.datamanager.*;
@@ -193,6 +194,9 @@ public class KarRefinement extends JavaPlugin {
         registry.register(SoundDataManager.class, new SoundDataManager());
 
         registry.initializeAll();
+
+        // 初始化 API 门面
+        new KarRefinementAPI();
 
         if(getConfig().getBoolean("settings.enablefurnace")) {
             setRecipe();

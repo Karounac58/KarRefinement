@@ -11,11 +11,16 @@ import org.bukkit.event.Listener;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
+import vip.mcsj.www.karrefinement.api.KarRefinementAPI;
+import vip.mcsj.www.karrefinement.api.gui.GuiSlot;
+import vip.mcsj.www.karrefinement.api.gui.GuiSlotRegistry;
+import vip.mcsj.www.karrefinement.api.gui.GuiType;
 import vip.mcsj.www.karrefinement.datamanager.Message;
 import vip.mcsj.www.karrefinement.datamanager.StoneDataManager;
 import vip.mcsj.www.karrefinement.main.KarRefinement;
 import vip.mcsj.www.karrefinement.object.Compound;
 import vip.mcsj.www.karrefinement.object.InvItem;
+import vip.mcsj.www.karrefinement.service.gui.SimpleGuiContext;
 import vip.mcsj.www.karrefinement.service.SoundDataManager;
 import vip.mcsj.www.karrefinement.utils.FileUtil;
 
@@ -88,6 +93,21 @@ public class KarCompoundStoneGui{
                 inv.setItem(i, confirmButton);
             }else{
                 inv.setItem(i, whiteBarrier);
+            }
+        }
+
+        // === 渲染自定义槽位 ===
+        if (KarRefinementAPI.getInstance() != null) {
+            GuiSlotRegistry registry = KarRefinementAPI.getGuiSlotRegistry();
+            java.util.List<GuiSlot> slots = registry.getSlots(GuiType.COMPOUND_STONE);
+            if (!slots.isEmpty()) {
+                SimpleGuiContext context = new SimpleGuiContext(GuiType.COMPOUND_STONE, inv, p, slots);
+                for (GuiSlot slot : slots) {
+                    ItemStack display = slot.buildDisplayItem(p, context);
+                    if (display != null) {
+                        inv.setItem(slot.getSlotIndex(), display);
+                    }
+                }
             }
         }
     }
