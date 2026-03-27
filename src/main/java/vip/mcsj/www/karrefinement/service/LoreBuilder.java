@@ -2,7 +2,6 @@ package vip.mcsj.www.karrefinement.service;
 
 import de.tr7zw.nbtapi.NBT;
 import de.tr7zw.nbtapi.NBTItem;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import vip.mcsj.www.karrefinement.datamanager.*;
@@ -376,14 +375,14 @@ public class LoreBuilder {
         }
 
         // 保护符 Lore
-        String paperIdentifier = PaperDataManager.getPaperIdentifier(equipmentItem);
+        String paperIdentifier = PaperDataManager.getIdentifier(equipmentItem);
         if (paperIdentifier != null) {
             String paperLore = PaperDataManager.papers.get(paperIdentifier).getName();
             map.put("paper", Arrays.asList(paperLore));
         }
 
         // 精魂 Lore
-        String soulName = InfiniteSoulManager.getSoulName(equipmentItem);
+        String soulName = InfiniteSoulManager.getName(equipmentItem);
         if (soulName != null) {
             map.put("soul", Arrays.asList(soulName));
         }
@@ -401,7 +400,7 @@ public class LoreBuilder {
             return false;
         }
         if (refinementLevel > soulLevel || refinementLevel == 0) {
-            String soulIdentifier = InfiniteSoulManager.getSoulName(this.equipmentItem);
+            String soulIdentifier = InfiniteSoulManager.getName(this.equipmentItem);
             ItemMeta itemMeta = this.equipmentItem.getItemMeta();
             List<String> lore = itemMeta.getLore();
             lore.remove(soulIdentifier);

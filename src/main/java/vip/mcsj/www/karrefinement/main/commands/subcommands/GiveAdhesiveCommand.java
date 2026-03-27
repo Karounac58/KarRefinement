@@ -1,8 +1,8 @@
 package vip.mcsj.www.karrefinement.main.commands.subcommands;
 
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import vip.mcsj.www.karrefinement.api.KarRefinementAPI;
 import vip.mcsj.www.karrefinement.datamanager.AdhesiveDataManager;
 import vip.mcsj.www.karrefinement.main.commands.KarAbstractGiveCommand;
 
@@ -28,7 +28,8 @@ public class GiveAdhesiveCommand extends KarAbstractGiveCommand {
             return true;
         }
 
-        p.getInventory().addItem(AdhesiveDataManager.createAdhesiveItem(args[1]));
+//        p.getInventory().addItem(AdhesiveDataManager.create(args[1]));
+        p.getInventory().addItem(KarRefinementAPI.createAdhesive(args[1]));
         return true;
     }
 }

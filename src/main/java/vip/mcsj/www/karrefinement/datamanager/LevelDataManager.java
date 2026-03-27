@@ -67,7 +67,8 @@ public class LevelDataManager implements Service {
         }
     }
 
-    public static Level getMinLevel(Player p){
+    @Override
+    public Level getMinLevel(Player p){
         int minLevel = EquipmentDataManager.getMinLevelFromEquipments(p);
         if(minLevel == 0){
             return null;

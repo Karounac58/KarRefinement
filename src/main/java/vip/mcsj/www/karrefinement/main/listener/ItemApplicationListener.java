@@ -10,6 +10,8 @@ import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerItemDamageEvent;
 import org.bukkit.inventory.ItemStack;
+import vip.mcsj.www.karrefinement.api.KarRefinementAPI;
+import vip.mcsj.www.karrefinement.core.Service;
 import vip.mcsj.www.karrefinement.datamanager.*;
 import vip.mcsj.www.karrefinement.gui.GuiStateManager;
 import vip.mcsj.www.karrefinement.main.KarRefinement;
@@ -36,9 +38,10 @@ public class ItemApplicationListener implements Listener {
         }
         ItemStack itemPaper = e.getCursor();
         ItemStack itemEquipment = e.getCurrentItem();
-        if (PaperDataManager.isPaperLegal(itemPaper)) {
+        Service service = KarRefinementAPI.getService(PaperDataManager.class);
+        if (service.isLegal(itemPaper)) {
             if (EquipmentDataManager.isEquipmentLegal(itemEquipment)) {
-                if (PaperDataManager.protectorPaperUp(itemPaper, itemEquipment)) {
+                if (service.up(itemPaper, itemEquipment)) {
                     p.sendMessage(Message.messages.get("paper_up"));
                     p.playSound(p.getLocation(), KarRefinement.cs.getSounds().get(0), 1, 1);
                     KarUtils.removeItemRefinement(itemPaper);
@@ -61,10 +64,11 @@ public class ItemApplicationListener implements Listener {
         }
         ItemStack itemStone = e.getCursor();
         ItemStack itemEquipment = e.getCurrentItem();
-        if (SpecialStoneDataManager.isSpeStoneLegal(itemStone)) {
-            SpeStone speStone = SpecialStoneDataManager.getSpeStone(itemStone);
+        Service service = KarRefinementAPI.getService(SpecialStoneDataManager.class);
+        if (service.isLegal(itemStone)) {
+            SpeStone speStone = (SpeStone) service.get(itemStone);
             if (SpecialStoneDataManager.isEquipmentLegal(speStone, itemEquipment)) {
-                if (SpecialStoneDataManager.specialStoneUp(itemStone, itemEquipment)) {
+                if (service.up(itemStone, itemEquipment)) {
                     p.sendMessage(Message.messages.get("spestone_up"));
                     p.playSound(p.getLocation(), KarRefinement.cs.getSounds().get(0), 1, 1);
                     KarUtils.removeItemRefinement(itemStone);
@@ -87,9 +91,10 @@ public class ItemApplicationListener implements Listener {
         }
         ItemStack itemSoul = e.getCursor();
         ItemStack itemEquipment = e.getCurrentItem();
-        if (InfiniteSoulManager.isInfiniteSoulLegal(itemSoul)) {
+        Service service = KarRefinementAPI.getService(InfiniteSoulManager.class);
+        if (service.isLegal(itemSoul)) {
             if (EquipmentDataManager.isEquipmentLegal(itemEquipment)) {
-                if (InfiniteSoulManager.infiniteSoulUp(itemSoul, itemEquipment)) {
+                if (service.up(itemSoul, itemEquipment)) {
                     p.sendMessage(Message.messages.get("soul_up"));
                     p.playSound(p.getLocation(), KarRefinement.cs.getSounds().get(0), 1, 1);
                     KarUtils.removeItemRefinement(itemSoul);

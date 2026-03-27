@@ -17,6 +17,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import vip.mcsj.www.karrefinement.api.KarRefinementAPI;
 import vip.mcsj.www.karrefinement.datamanager.*;
 import vip.mcsj.www.karrefinement.gui.*;
 import vip.mcsj.www.karrefinement.gui.holder.KarCompoundStoneInvHolder;
@@ -27,258 +28,12 @@ import java.util.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class KarExecutor implements CommandExecutor, TabCompleter {
+public class KarExecutor implements TabCompleter {
     private final CommandFactory commandFactory;
 
 
     public KarExecutor() {
         commandFactory = new CommandFactory();
-    }
-
-    @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
-        if (args.length == 0) {
-            return true;
-        }
-        //只有一个子命令
-        if(args.length == 1){
-            Player p = (Player) sender;
-            switch (args[0]){
-                case "help":
-                    p.sendMessage("§c§l§m  §6§l§m  §e§l§m  §a§l§m  §b§l§m  §e§lKarRefinement§b§l§m  §a§l§m  §e§l§m  §6§l§m  §c§l§m  ");
-                    p.sendMessage("§e/krf adminup —— §b为手上物品升星");
-                    p.sendMessage("§e/krf set <等级> —— §b为手上物品设置淬炼等级");
-                    p.sendMessage("§e/krf reload —— §b重载配置文件");
-                    p.sendMessage("§e/krf openitemgui —— §b打开淬炼物品菜单");
-                    p.sendMessage("§e/krf givestone <玩家名> <淬炼石名> <数量> —— §b获取淬炼石");
-                    p.sendMessage("§e/krf givepaper <玩家名> <保护符名> —— §b获取保护符");
-                    p.sendMessage("§e/krf givedupaper <玩家名> <直升符名> —— §b获取直升符");
-                    p.sendMessage("§e/krf givespestone <玩家名> <宝石名> —— §b获取宝石");
-                    p.sendMessage("§e/krf givesoul <玩家名> <精魂名> —— §b获取无限耐久精魂");
-                    p.sendMessage("§e/krf givedetachitem <玩家名> 保护符拆卸工具 —— §b获取保护符拆卸工具");
-                    p.sendMessage("§e/krf giveadhesive <玩家名> <粘合剂名> —— §b获取宝石粘合剂");
-                    p.sendMessage("§e/krf givepotion <玩家名> <淬炼药水名> —— §b获取淬炼药水");
-                    p.sendMessage("§e/krf opengui <玩家名> —— §b打开淬炼界面");
-                    p.sendMessage("§e/krf openforgegui <玩家名> —— §b打开锻造界面");
-                    p.sendMessage("§e/krf opencompoundgui <玩家名> —— §b打开宝石合石界面");
-                    p.sendMessage("§e/krf opencompoundpiecegui <玩家名> —— §b打开保护符碎片合成界面");
-                    p.sendMessage("§e/krf opentransformgui <玩家名> —— §b打开淬炼移星界面");
-                    p.sendMessage("§e/krf querypotion <玩家名> —— §b让玩家查看淬炼药水加成");
-                    p.sendMessage("§e/krf adminquerypotion <玩家名> —— §b查看玩家的淬炼药水加成");
-                    break;
-                case "adminup":
-                    ItemStack itemInMainHand = p.getInventory().getItemInMainHand();
-                    if (EquipmentDataManager.isEquipmentLegal(itemInMainHand)) {
-                        EquipmentDataManager manager = new EquipmentDataManager(itemInMainHand,p);
-                        manager.injuryUpStar();
-                        p.playSound(p.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
-                        return true;
-                    }
-                    break;
-                case "reload":
-                    reloadConfig();
-                    KarTakeItemGui.initItems();
-                    p.sendMessage("§a§l配置文件重载成功");
-                    break;
-                case "getnbt":
-                    ItemStack invItem = p.getInventory().getItemInMainHand();
-                    int a = new NBTItem(invItem).getInteger(args[1]);
-                    p.sendMessage(String.valueOf(a));
-                    break;
-                case "clearlore":
-                    ItemStack invItem1 = p.getInventory().getItemInMainHand();
-                    ItemMeta itemMeta = invItem1.getItemMeta();
-                    List<String> lores = itemMeta.getLore();
-                    lores.clear();
-                    itemMeta.setLore(lores);
-                    invItem1.setItemMeta(itemMeta);
-                    return true;
-                case "openitemgui":
-                    KarTakeItemGui.openKarTakeItemGui(p);
-                    p.sendMessage("§a你打开了淬炼物品菜单");
-                    return true;
-
-            }
-        }
-        if(args.length == 2){
-            switch (args[0]){
-                case "set":
-                    if(!(sender instanceof Player)){
-                        sender.sendMessage("§c§l只有玩家才能执行此命令");
-                        return true;
-                    }
-                    Player p = (Player) sender;
-                    int i = 0;
-                    try{
-                        i = Integer.parseInt(args[1]);
-                    }catch (Exception e){
-                        KarRefinement.instance.getLogger().log(java.util.logging.Level.SEVERE, null, e);
-                        p.sendMessage("§c§l参数必须为数字！");
-                        return true;
-                    }
-                    if(EquipmentDataManager.isEquipmentLegal(p.getInventory().getItemInMainHand())){
-                        EquipmentDataManager edm = new EquipmentDataManager(p.getInventory().getItemInMainHand(),p);
-                        edm.setRefinementLevel(i);
-                        p.playSound(p.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
-                        return true;
-                    }
-                    break;
-                case "querypotion":
-                    OfflinePlayer player = Bukkit.getOfflinePlayer(args[1]);
-                    if(player != null){
-                        PotionDataManager pdm = new PotionDataManager();
-                        List<Object> rs = pdm.queryPlayerPotionInfo(player);
-                        if (player.isOnline()) {
-                            Player player1 = player.getPlayer();
-                            if(rs == null){
-                                player1.sendMessage("§c§l该玩家没有药水加成！");
-                                return true;
-                            }
-                            player1.sendMessage("§c§l§m  §6§l§m  §e§l§m  §a§l§m  §b§l§m  §e§l药水增幅§b§l§m  §a§l§m  §e§l§m  §6§l§m  §c§l§m  ");
-                            player1.sendMessage("§6§l增加成功率："+(double)rs.get(1)*100);
-                            player1.sendMessage("§a§l持续时间："+PotionDataManager.formatTimeRemaining((Long)rs.get(0)));
-                        }
-                        return true;
-                    }else{
-                        sender.sendMessage("§c§l此玩家不存在！");
-                    }
-                    break;
-                case "adminquerypotion":
-                    OfflinePlayer player3 = Bukkit.getOfflinePlayer(args[1]);
-                    if(player3 != null){
-                        PotionDataManager pdm = new PotionDataManager();
-                        List<Object> rs = pdm.queryPlayerPotionInfo(player3);
-                        if(rs == null){
-                            sender.sendMessage("§c§l该玩家没有药水加成！");
-                            return true;
-                        }
-                        sender.sendMessage("§c§l§m  §6§l§m  §e§l§m  §a§l§m  §b§l§m  §e§l药水增幅§b§l§m  §a§l§m  §e§l§m  §6§l§m  §c§l§m  ");
-                        sender.sendMessage("§b§l玩家："+player3.getName());
-                        sender.sendMessage("§6§l增加成功率："+(double)rs.get(1)*100);
-                        sender.sendMessage("§a§l持续时间："+PotionDataManager.formatTimeRemaining((Long)rs.get(0)));
-                    }else{
-                        sender.sendMessage("§c§l此玩家不存在！");
-                    }
-                    break;
-            }
-        }
-        //有多个子命令
-        if(args.length >= 2){
-            Player p = Bukkit.getPlayer(args[1]);
-            if (p == null) {
-                sender.sendMessage("§c找不到这个玩家");
-                return true;
-            }
-            switch(args[0].toLowerCase()){
-                case "givestone":
-                    StoneDataManager stoneManager = new StoneDataManager(args[2]);
-                    ItemStack stone = stoneManager.createStone();
-                    if (stone == null) {
-                        p.sendMessage(ChatColor.RED + "没有这个淬炼石");
-                        return true;
-                    }
-                    int i = Integer.parseInt(args[3]);
-                    for (int j = 0; j < i; j++) {
-                        p.getInventory().addItem(stoneManager.createStone());
-                    }
-                    break;
-                case "givepaper":
-                    PaperDataManager paperDataManager = new PaperDataManager(args[2]);
-                    p.getInventory().addItem(paperDataManager.createProtectedPaper());
-                    break;
-                case "givedupaper":
-                    p.getInventory().addItem(DUPaperDataManager.createDUPaper(args[2]));
-                    break;
-                case "givespestone":
-                    SpecialStoneDataManager speStoneManager = new SpecialStoneDataManager(args[2]);
-                    p.getInventory().addItem(speStoneManager.createSpeStone());
-                    break;
-                case "givesoul":
-                    InfiniteSoulManager soulManager = new InfiniteSoulManager(args[2]);
-                    p.getInventory().addItem(soulManager.createInfiniteSoul());
-                    break;
-                case "giveadhesive":
-                    p.getInventory().addItem(AdhesiveDataManager.createAdhesiveItem(args[2]));
-                    break;
-                case "givedetachitem":
-                    if (!DetachDataManager.enabled) {
-                        p.sendMessage("§c§l请前往detach.yml配置文件中开启保护符拆卸功能");
-                        return true;
-                    }
-                    if(args[2].equalsIgnoreCase("保护符拆卸工具")){
-                        p.getInventory().addItem(DetachDataManager.createPaperDetachItem());
-                    }
-                    break;
-                case "givepotion":
-                    p.getInventory().addItem(new PotionDataManager(args[2]).createPotion());
-                    break;
-                case "setnbt":
-                    ItemStack invItem = p.getInventory().getItemInMainHand();
-                    NBT.modify(invItem, nbt -> {
-                        nbt.setInteger(args[1], Integer.parseInt(args[2]));
-                    });
-                    break;
-                case "opengui":
-                    Inventory inv = Bukkit.createInventory(new KarRefinementInvHolder(), 54, PlaceholderAPI.setPlaceholders(p,KarRefinementGui.title));
-                    KarRefinementGui.setInvInitial(inv,p);
-                    p.openInventory(inv);
-                    break;
-                case "openforgegui":
-                    Inventory inv1 = Bukkit.createInventory(new KarForgeInvHolder(),45,PlaceholderAPI.setPlaceholders(p,KarForgeGui.title));
-                    KarForgeGui.initInv(inv1,p);
-                    p.openInventory(inv1);
-                    break;
-                case "opencompoundgui":
-                    Inventory inv2 = Bukkit.createInventory(new KarCompoundStoneInvHolder(),54,PlaceholderAPI.setPlaceholders(p,KarCompoundStoneGui.title));
-                    KarCompoundStoneGui.initial(inv2,p);
-                    KarCompoundStoneGui.openGuiForPlayer(inv2,p);
-                    break;
-                case "opentransformgui":
-                    Inventory inv3 = Bukkit.createInventory(new KarTransformStarGui.KarTransformStarGuiInvHolder(), 27, PlaceholderAPI.setPlaceholders(p,KarTransformStarGui.title));
-                    KarTransformStarGui.initInv(inv3,p);
-                    p.openInventory(inv3);
-                    break;
-                case "opencompoundpiecegui":
-                    if (!DetachDataManager.enabled) {
-                        p.sendMessage("§c§l请前往detach.yml配置文件中开启保护符拆卸功能");
-                        return true;
-                    }
-                    Inventory inv4 = Bukkit.createInventory(new KarCompoundPieceGui.KarCompoundPieceGuiInvHolder(),27,PlaceholderAPI.setPlaceholders(p,KarCompoundPieceGui.title));
-                    KarCompoundPieceGui.initInv(inv4,p);
-                    p.openInventory(inv4);
-                    break;
-            }
-        }
-//        if(args[0].equals("admindown")){
-//            Player p = (Player)sender;
-//            ItemStack itemInMainHand = p.getInventory().getItemInMainHand();
-//            if(EquipmentDataManager.canRefinementDamagedEquipment.contains(itemInMainHand.getType().name())){
-//                EquipmentDataManager manager = new EquipmentDataManager(itemInMainHand);
-//                manager.injuryDownStar(Integer.parseInt(args[1]));
-//                p.playSound(p.getLocation(),Sound.ITEM_ARMOR_EQUIP_NETHERITE,1,1);
-//                return true;
-//            }else if(EquipmentDataManager.canRefinementProtectedEquipment.contains(itemInMainHand.getType().name())){
-//                EquipmentDataManager manager = new EquipmentDataManager(itemInMainHand);
-//                manager.protectDownStar(Integer.parseInt(args[1]));
-//                p.playSound(p.getLocation(),Sound.ITEM_ARMOR_EQUIP_NETHERITE,1,1);
-//                return true;
-//            }
-//        }
-
-
-//        if (args[0].equals("test")) {
-//            Player p = (Player) sender;
-//            //测试次数
-//            int num = Integer.parseInt(args[1]);
-//            int start = Integer.parseInt(args[2]);
-//            int end = Integer.parseInt(args[3]);
-//            double stone1 = StoneDataManager.stoneSuccessList.get((args[4]));
-//            double stone2 = StoneDataManager.stoneSuccessList.get((args[5]));
-//            double stone3 = StoneDataManager.stoneSuccessList.get((args[6]));
-//            KarUtils.testRefinement(num, start, end, stone1, stone2, stone3, p);
-//
-//        }
-        return true;
     }
 
 
@@ -318,7 +73,7 @@ public class KarExecutor implements CommandExecutor, TabCompleter {
                     completions.add("<等级>");
                     break;
                 case "givestone":
-                    completions.add("<淬炼石名> <数量>");
+                    completions.add("<淬炼石Nbt名> <数量>");
                     break;
                 case "givepaper":
                     completions.add("<保护符名>");
@@ -339,17 +94,17 @@ public class KarExecutor implements CommandExecutor, TabCompleter {
                     completions.add("<nbt键名> <nbt值>");
                     break;
                 case "giveadhesive":
-                    completions.add("<玩家名> <宝石粘合剂名>");
+                    completions.add("<宝石粘合剂名>");
                     break;
                 case "givepotion":
-                    completions.add("<玩家名> <淬炼药水名>");
+                    completions.add("<淬炼药水名>");
                 case "givedetachitem":
-                    completions.add("<玩家名> 保护符拆卸工具");
+                    completions.add("保护符拆卸工具");
                 case "querypotion":
-                    completions.add("<玩家名>");
+                    completions.add("");
                     break;
                 case "adminquerypotion":
-                    completions.add("<玩家名>");
+                    completions.add("");
                     break;
             }
         }

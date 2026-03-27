@@ -2,6 +2,7 @@ package vip.mcsj.www.karrefinement.main.commands.subcommands;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import vip.mcsj.www.karrefinement.api.KarRefinementAPI;
 import vip.mcsj.www.karrefinement.datamanager.PotionDataManager;
 import vip.mcsj.www.karrefinement.main.commands.KarAbstractGiveCommand;
 
@@ -27,7 +28,7 @@ public class GivePotionCommand extends KarAbstractGiveCommand {
             return true;
         }
 
-        p.getInventory().addItem(new PotionDataManager(args[1]).createPotion());
+        p.getInventory().addItem(KarRefinementAPI.createPotion(args[1]));
 
         return true;
     }

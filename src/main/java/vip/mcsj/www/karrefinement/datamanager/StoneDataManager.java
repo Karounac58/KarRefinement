@@ -2,6 +2,7 @@ package vip.mcsj.www.karrefinement.datamanager;
 
 import de.tr7zw.nbtapi.NBT;
 import de.tr7zw.nbtapi.NBTItem;
+import jdk.nashorn.internal.objects.annotations.Optimistic;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -76,11 +77,12 @@ public class StoneDataManager implements Service {
         }
     }
 
-    public ItemStack createStone(){
-        if(!stones.keySet().contains(this.stoneNbt)){
+    @Override
+    public ItemStack create(String stoneNbt){
+        if(!stones.keySet().contains(stoneNbt)){
             return null;
         }
-        Stone stone = stones.get(this.stoneNbt);
+        Stone stone = stones.get(stoneNbt);
         ItemStack stoneItem = new ItemStack(stone.getType(),1, (short) stone.getData());
         ItemMeta im = stoneItem.getItemMeta();
         im.setDisplayName(stone.getName());
@@ -88,7 +90,7 @@ public class StoneDataManager implements Service {
         stoneItem.setItemMeta(im);
         ReflectionUtils.setCustomModelData(stoneItem,stone.getCustomModelData());
         NBT.modify(stoneItem,nbt -> {
-            nbt.setString("refinementstone",this.stoneNbt);
+            nbt.setString("refinementstone",stoneNbt);
         });
         return stoneItem;
     }
@@ -98,7 +100,8 @@ public class StoneDataManager implements Service {
      * @param itemStone
      * @return
      */
-    public static boolean isStoneLegal(ItemStack itemStone){
+    @Override
+    public boolean isLegal(ItemStack itemStone){
         for (String s : stones.keySet()) {
             NBTItem nbtItemStone = new NBTItem(itemStone);
             if(!nbtItemStone.hasTag("refinementstone")){
@@ -111,13 +114,14 @@ public class StoneDataManager implements Service {
         return false;
     }
 
-    public static Stone getStone(ItemStack itemStone){
+    @Override
+    public Stone get(ItemStack itemStone){
         NBTItem nbtItemStone = new NBTItem(itemStone);
         return stones.get(nbtItemStone.getString("refinementstone"));
     }
 
-    public static List<Double> getStoneChance(ItemStack itemStone){
-        Stone stone = getStone(itemStone);
+    public List<Double> getStoneChance(ItemStack itemStone){
+        Stone stone = this.get(itemStone);
         return stone.getProbability();
     }
 }

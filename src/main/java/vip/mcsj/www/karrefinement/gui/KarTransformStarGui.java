@@ -8,7 +8,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import vip.mcsj.www.karrefinement.api.KarRefinementAPI;
 import vip.mcsj.www.karrefinement.api.gui.GuiSlot;
 import vip.mcsj.www.karrefinement.api.gui.GuiSlotRegistry;
@@ -146,13 +145,13 @@ public class KarTransformStarGui {
             int item1Level = itemManager1.carifyEquipmentLevel();
             int item2Level = itemManager2.carifyEquipmentLevel();
             PaperDataManager pdm = new PaperDataManager(equipmentItem1);
-            int paperLevel = pdm.getPaperLevel();
+            int paperLevel = pdm.getLevel();
 
             List<SpeStone> speStones = SpecialStoneDataManager.getSpeStones(equipmentItem1);
             speStones.removeIf(speStone -> !SpecialStoneDataManager.isEquipmentLegal(speStone, equipmentItem2));
 //            System.out.println(b);
             InfiniteSoulManager ism = new InfiniteSoulManager(equipmentItem1);
-            int soulLevel = ism.getSoulLevel();
+            int soulLevel = ism.getLevel();
 
             //移除淬炼信息
             Map<String, List<String>> stringListMap = EquipmentDataManager.getEquipmentInfoLore(equipmentItem1);

@@ -8,9 +8,11 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
+import vip.mcsj.www.karrefinement.api.KarRefinementAPI;
 import vip.mcsj.www.karrefinement.datamanager.AdhesiveDataManager;
 import vip.mcsj.www.karrefinement.datamanager.Message;
 import vip.mcsj.www.karrefinement.datamanager.SpecialStoneDataManager;
+import vip.mcsj.www.karrefinement.main.KarRefinement;
 import vip.mcsj.www.karrefinement.object.Adhesive;
 import vip.mcsj.www.karrefinement.object.SpeStone;
 import vip.mcsj.www.karrefinement.utils.ItemStackUtils;
@@ -32,24 +34,25 @@ public class AdhesiveListener implements Listener {
         if(!nbtItem.hasKey("adhesive")){
             return;
         }
-        Adhesive adhesive = AdhesiveDataManager.getAdehesive(itemInMainHand);
+//        Adhesive adhesive = AdhesiveDataManager.get(itemInMainHand);
+        Adhesive adhesive = KarRefinement.getContext().getRegistry().get(AdhesiveDataManager.class).get(itemInMainHand);
         if(adhesive == null){
             return;
         }
 
         for (String nbtKey : SpecialStoneDataManager.nbtKeys) {
             for (int i = 0; i < SpecialStoneDataManager.getTypeSpeStoneAmount(nbtKey); i++) {
-                ItemStack speStone = new SpecialStoneDataManager(SpecialStoneDataManager.getSpeStone(nbtKey,i+1).getIdentifier()).createSpeStone();
+                ItemStack speStone = KarRefinementAPI.createSpeStone(SpecialStoneDataManager.get(nbtKey,i+1).getIdentifier());
                 int amount = ItemStackUtils.judgePlayerItemStackAmount(e.getPlayer().getInventory(), speStone);
                 if(amount >= adhesive.getRequiredAmount()){
                     int num = ThreadLocalRandom.current().nextInt(0, 100);
-                    SpeStone speStone1 = SpecialStoneDataManager.getSpeStone(nbtKey, i + 2);
+                    SpeStone speStone1 = SpecialStoneDataManager.get(nbtKey, i + 2);
                     if(speStone1 == null){
                         e.getPlayer().sendMessage(Message.messages.get("adhesive_maxlevel"));
                         return;
                     }
-                    SpecialStoneDataManager ssm2 = new SpecialStoneDataManager(speStone1.getIdentifier());
-                    ItemStack afterGem = ssm2.createSpeStone();
+                    // speStone1.getIdentifier()
+                    ItemStack afterGem = KarRefinementAPI.createSpeStone(speStone1.getIdentifier());
                     if(afterGem == null){
                         e.getPlayer().sendMessage(Message.messages.get("adhesive_maxlevel"));
                         return;

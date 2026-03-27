@@ -58,8 +58,10 @@ public class InfiniteSoulManager implements Service {
         }
     }
 
-    public ItemStack createInfiniteSoul(){
-        InfiniteSoul infiniteSoul = infiniteSouls.get(this.soulName);
+
+    @Override
+    public ItemStack create(String soulName){
+        InfiniteSoul infiniteSoul = infiniteSouls.get(soulName);
         ItemStack soulItem = new ItemStack(infiniteSoul.getType(), 1, (short) infiniteSoul.getData());
         ItemMeta im = soulItem.getItemMeta();
         im.setDisplayName(infiniteSoul.getName());
@@ -73,7 +75,8 @@ public class InfiniteSoulManager implements Service {
         return soulItem;
     }
 
-    public static boolean isInfiniteSoulLegal(ItemStack soulItem){
+    @Override
+    public boolean isLegal(ItemStack soulItem){
         if(soulItem == null || soulItem.getType() == Material.AIR) {
             return false;
         }
@@ -89,7 +92,7 @@ public class InfiniteSoulManager implements Service {
         return false;
     }
 
-    public static String getSoulIdentifier(ItemStack itemSoul){
+    public static String getIdentifier(ItemStack itemSoul){
         int soulLevel = new NBTItem(itemSoul).getInteger("infinite");
         for (String s : infiniteSouls.keySet()) {
             if(infiniteSouls.get(s).getLevel() == soulLevel){
@@ -99,7 +102,7 @@ public class InfiniteSoulManager implements Service {
         return null;
     }
 
-    public static String getSoulName(ItemStack itemSoul){
+    public static String getName(ItemStack itemSoul){
         int soulLevel = new NBTItem(itemSoul).getInteger("infinite");
         for (String s : infiniteSouls.keySet()) {
             InfiniteSoul soul = infiniteSouls.get(s);
@@ -110,16 +113,18 @@ public class InfiniteSoulManager implements Service {
         return null;
     }
 
-    public int getSoulLevel(){
+    public int getLevel(){
         return new NBTItem(this.equipmentItem).getInteger("infinite");
     }
 
-    public static boolean infiniteSoulUp(ItemStack itemSoul,ItemStack equipmentItem){
+
+    @Override
+    public boolean up(ItemStack itemSoul, ItemStack equipmentItem){
         ItemMeta equipmentMeta = equipmentItem.getItemMeta();
         int refinementLevel = new NBTItem(equipmentItem).getInteger("refinement");
         int nowLevel = new NBTItem(equipmentItem).getInteger("infinite");
         int willLevel = new NBTItem(itemSoul).getInteger("infinite");
-        String soulIdentifier = getSoulIdentifier(itemSoul);
+        String soulIdentifier = getIdentifier(itemSoul);
         List<String> lores;
 
         if(refinementLevel == 0){

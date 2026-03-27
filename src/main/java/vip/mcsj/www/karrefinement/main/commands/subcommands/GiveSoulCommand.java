@@ -2,6 +2,7 @@ package vip.mcsj.www.karrefinement.main.commands.subcommands;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import vip.mcsj.www.karrefinement.api.KarRefinementAPI;
 import vip.mcsj.www.karrefinement.datamanager.InfiniteSoulManager;
 import vip.mcsj.www.karrefinement.main.commands.KarAbstractGiveCommand;
 
@@ -28,8 +29,7 @@ public class GiveSoulCommand extends KarAbstractGiveCommand {
             return true;
         }
 
-        InfiniteSoulManager soulManager = new InfiniteSoulManager(args[1]);
-        p.getInventory().addItem(soulManager.createInfiniteSoul());
+        p.getInventory().addItem(KarRefinementAPI.createSoul(args[1]));
         return true;
     }
 }

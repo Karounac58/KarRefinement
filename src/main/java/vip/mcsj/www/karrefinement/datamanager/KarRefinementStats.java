@@ -66,7 +66,7 @@ public class KarRefinementStats extends PlaceholderExpansion {
                 if (player.isOnline()) {
                     Player onlinePlayer = player.getPlayer();
                     if (onlinePlayer != null) {
-                        Level minLevel = LevelDataManager.getMinLevel(onlinePlayer);
+                        Level minLevel = KarRefinementAPI.getService(LevelDataManager.class).getMinLevel(onlinePlayer);
                         return minLevel != null ? String.valueOf(minLevel.getRefinementLevel()) : "0";
                     }
                 }

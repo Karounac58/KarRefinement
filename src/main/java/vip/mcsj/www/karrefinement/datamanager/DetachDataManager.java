@@ -7,7 +7,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.yaml.snakeyaml.Yaml;
+import vip.mcsj.www.karrefinement.api.KarRefinementAPI;
 import vip.mcsj.www.karrefinement.core.Service;
 import vip.mcsj.www.karrefinement.object.Detach;
 import vip.mcsj.www.karrefinement.object.DetachItem;
@@ -17,8 +17,6 @@ import vip.mcsj.www.karrefinement.utils.FileUtil;
 import vip.mcsj.www.karrefinement.utils.KarUtils;
 import vip.mcsj.www.karrefinement.utils.ReflectionUtils;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -191,7 +189,7 @@ public class DetachDataManager implements Service {
             return false;
         }
         Integer protectLevel = new NBTItem(equipmentItem).getInteger("protector");
-        String paperIdentifier = PaperDataManager.getPaperIdentifier(equipmentItem);
+        String paperIdentifier = PaperDataManager.getIdentifier(equipmentItem);
         Detach paperDetach = paperDetachs.get(paperIdentifier);
         if(paperDetach == null){
             return false;
@@ -210,7 +208,7 @@ public class DetachDataManager implements Service {
         }
 
         NBTItem nbtItem = new NBTItem(equipmentItem);
-        SpeStone speStone1 = SpecialStoneDataManager.getSpeStone(equipmentItem);
+        SpeStone speStone1 = KarRefinementAPI.getService(SpecialStoneDataManager.class).get(equipmentItem);
         Detach speStoneDetach = speStoneDetachs.get(speStone1.getIdentifier());
         if(speStone1 == null){
             return false;

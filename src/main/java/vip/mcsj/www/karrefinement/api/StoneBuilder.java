@@ -47,7 +47,7 @@ public class StoneBuilder {
      */
     public ItemStack build() {
         StoneDataManager sdm = new StoneDataManager(stoneName);
-        ItemStack item = sdm.createStone();
+        ItemStack item = KarRefinementAPI.createStone(stoneName);
         if (item == null) return null;
 
         item.setAmount(amount);

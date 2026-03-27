@@ -7,6 +7,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
+import vip.mcsj.www.karrefinement.api.KarRefinementAPI;
 import vip.mcsj.www.karrefinement.datamanager.*;
 import vip.mcsj.www.karrefinement.object.Detach;
 import vip.mcsj.www.karrefinement.object.SpeStone;
@@ -38,14 +39,14 @@ public class KarDetachListener implements Listener {
             }
             if(DetachDataManager.isPaperDetachItemLegal(detachItem)){
                 if(DetachDataManager.canPaperDetachUp(detachItem,equipmentItem)){
-                    String paperIdentifier = PaperDataManager.getPaperIdentifier(equipmentItem);
+                    String paperIdentifier = PaperDataManager.getIdentifier(equipmentItem);
                     Detach paperDetach = DetachDataManager.paperDetachs.get(paperIdentifier);
                     Double chance = paperDetach.getChance();
                     BigDecimal decimal = BigDecimal.valueOf(KarUtils.nextDouble(100)).setScale(2, RoundingMode.HALF_UP);
                     if((99-chance) < decimal.doubleValue()){
                         DetachDataManager ddm = new DetachDataManager(paperIdentifier);
                         ddm.paperDetachItemUp(detachItem, equipmentItem);
-                        ItemStack protectedPaper = new PaperDataManager(paperIdentifier).createProtectedPaper();
+                        ItemStack protectedPaper = KarRefinementAPI.createPaper(paperIdentifier);
                         p1.getInventory().addItem(protectedPaper);
                         p1.sendMessage(Message.messages.get("detach_success"));
                         p1.playSound(p1.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
@@ -93,7 +94,7 @@ public class KarDetachListener implements Listener {
                     if((99-chance) < decimal.doubleValue()){
                         DetachDataManager ddm = new DetachDataManager(speStoneIdentifier);
                         ddm.speStoneDetachItemUp(detachItem, equipmentItem);
-                        ItemStack speStoneItemStack =  new SpecialStoneDataManager(speStoneIdentifier).createSpeStone();
+                        ItemStack speStoneItemStack =  KarRefinementAPI.createSpeStone(speStoneIdentifier);
                         p1.getInventory().addItem(speStoneItemStack);
                         p1.sendMessage(Message.messages.get("detach_success"));
                         p1.playSound(p1.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);

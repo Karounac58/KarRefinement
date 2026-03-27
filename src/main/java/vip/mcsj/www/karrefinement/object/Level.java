@@ -1,13 +1,13 @@
 package vip.mcsj.www.karrefinement.object;
 
-import org.bukkit.potion.PotionEffect;
+import vip.mcsj.www.karrefinement.api.model.ILevel;
+import vip.mcsj.www.karrefinement.api.model.ISuitEffect;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Level {
+public class Level implements ILevel {
     private int refinementLevel;
     private List<String> mainLore;
     private Map<String, List<String>> extractLores = new HashMap<>();
@@ -26,6 +26,7 @@ public class Level {
     }
 
 
+    @Override
     public int getRefinementLevel() {
         return refinementLevel;
     }
@@ -34,6 +35,7 @@ public class Level {
         this.refinementLevel = refinementLevel;
     }
 
+    @Override
     public List<String> getMainLore() {
         return mainLore;
     }
@@ -42,6 +44,7 @@ public class Level {
         this.mainLore = mainLore;
     }
 
+    @Override
     public Map<String, List<String>> getExtractLores() {
         return extractLores;
     }
@@ -50,15 +53,16 @@ public class Level {
         this.extractLores = extractLores;
     }
 
-    public HashMap<String, List<String>> getAttribute() {
+    @Override
+    public Map<String, List<String>> getAttribute() {
         return attribute;
     }
 
     public void setAttribute(HashMap<String, List<String>> attribute) {
         this.attribute = attribute;
     }
-
-    public SuitEffect getSuitEffect() {
+    @Override
+    public ISuitEffect getSuitEffect() {
         return suitEffect;
     }
 

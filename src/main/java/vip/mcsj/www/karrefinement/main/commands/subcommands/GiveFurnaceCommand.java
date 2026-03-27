@@ -1,8 +1,8 @@
 package vip.mcsj.www.karrefinement.main.commands.subcommands;
 
-import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import vip.mcsj.www.karrefinement.api.KarRefinementAPI;
 import vip.mcsj.www.karrefinement.datamanager.FurnaceDataManager;
 import vip.mcsj.www.karrefinement.main.commands.KarAbstractGiveCommand;
 
@@ -31,7 +31,7 @@ public class GiveFurnaceCommand extends KarAbstractGiveCommand {
             sender.sendMessage( "§c§l找不到这个玩家！");
             return true;
         }
-        p.getInventory().addItem(FurnaceDataManager.createFurnace(args[1]));
+        p.getInventory().addItem(KarRefinementAPI.getService(FurnaceDataManager.class).create(args[1]));
         return true;
     }
 }

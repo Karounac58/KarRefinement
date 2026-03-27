@@ -1,11 +1,13 @@
 package vip.mcsj.www.karrefinement.object;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import org.bukkit.configuration.file.YamlConfiguration;
+import vip.mcsj.www.karrefinement.api.model.ISuitEffect;
 import vip.mcsj.www.karrefinement.datamanager.EffectDataManager;
 
-public class SuitEffect {
+public class SuitEffect implements ISuitEffect {
 
     public static String defaultScript = "var a = [\n"
             + "[1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1],\n"
@@ -91,5 +93,21 @@ public class SuitEffect {
         return new SuitEffect(config.getStringList(path + ".PotionEffect"),
                 config.getStringList(path + ".Attribute"),
                 script);
+    }
+
+
+    @Override
+    public List<String> getPotionEffect() {
+        return potionEffect;
+    }
+
+    @Override
+    public List<String> getAttribute() {
+        return attribute;
+    }
+
+    @Override
+    public List<String> getScript() {
+        return script;
     }
 }

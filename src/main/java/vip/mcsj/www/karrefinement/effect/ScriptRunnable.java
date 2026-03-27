@@ -8,6 +8,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 //import org.openjdk.nashorn.api.scripting.NashornScriptEngineFactory;
+import vip.mcsj.www.karrefinement.api.KarRefinementAPI;
 import vip.mcsj.www.karrefinement.datamanager.LevelDataManager;
 import vip.mcsj.www.karrefinement.datamanager.NashornManager;
 import vip.mcsj.www.karrefinement.effect.particle.*;
@@ -36,7 +37,7 @@ public class ScriptRunnable implements Runnable {
 
     public void sync(LivingEntity le) {
         UUID uuid = le.getUniqueId();
-        Level minLevel = LevelDataManager.getMinLevel((Player) le);
+        Level minLevel = KarRefinementAPI.getService(LevelDataManager.class).getMinLevel((Player) le);
         playerScriptSituation.putIfAbsent(uuid, true);
         if (minLevel != null && minLevel.suitEffect != null && playerScriptSituation.get(uuid)) {
             try {

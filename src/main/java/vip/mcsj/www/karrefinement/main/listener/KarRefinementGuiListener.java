@@ -9,6 +9,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import vip.mcsj.www.karrefinement.api.KarRefinementAPI;
 import vip.mcsj.www.karrefinement.datamanager.EquipmentDataManager;
 import vip.mcsj.www.karrefinement.datamanager.Message;
 import vip.mcsj.www.karrefinement.datamanager.StoneDataManager;
@@ -42,7 +43,7 @@ public class KarRefinementGuiListener implements Listener {
                 NBTItem nbtItem1 = new NBTItem(item1);
                 NBTItem nbtItem2 = new NBTItem(item2);
                 if(nbtItem1.hasTag("refinementstone")){
-                    Stone stone = StoneDataManager.getStone(item1);
+                    Stone stone = KarRefinementAPI.getService(StoneDataManager.class).get(item1);
                     int level = EquipmentDataManager.carifyEquipmentLevel(item2);
 //                    System.out.println(level);
                     if(level == stone.getProbability().size()){

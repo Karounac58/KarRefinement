@@ -3,6 +3,7 @@ package vip.mcsj.www.karrefinement.datamanager;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
+import vip.mcsj.www.karrefinement.api.model.IPlayerStats;
 import vip.mcsj.www.karrefinement.core.Service;
 import vip.mcsj.www.karrefinement.main.KarRefinement;
 
@@ -25,7 +26,7 @@ public class PlayerStatsDataManager implements Service {
     /**
      * 玩家统计数据对象
      */
-    public static class PlayerStats {
+    public static class PlayerStats implements IPlayerStats {
         private final UUID playerUUID;
         private int totalAttempts;      // 总尝试次数
         private int highestLevel;       // 最高淬炼等级

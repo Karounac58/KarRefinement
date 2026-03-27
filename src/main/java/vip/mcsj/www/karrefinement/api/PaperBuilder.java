@@ -46,8 +46,7 @@ public class PaperBuilder {
      * 构建 ItemStack
      */
     public ItemStack build() {
-        PaperDataManager pdm = new PaperDataManager(paperName);
-        ItemStack item = pdm.createProtectedPaper();
+        ItemStack item = KarRefinementAPI.createPaper(paperName);
         if (item == null) return null;
 
         item.setAmount(amount);

@@ -9,6 +9,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import vip.mcsj.www.karrefinement.core.Service;
 import vip.mcsj.www.karrefinement.object.DirectUpgradePaper;
+import vip.mcsj.www.karrefinement.service.EquipmentService;
 import vip.mcsj.www.karrefinement.utils.FileUtil;
 import vip.mcsj.www.karrefinement.utils.ReflectionUtils;
 
@@ -46,7 +47,8 @@ public class DUPaperDataManager implements Service {
         }
     }
 
-    public static ItemStack createDUPaper(String identifier){
+    @Override
+    public ItemStack create(String identifier){
         DirectUpgradePaper duPaper = duPapers.get(identifier);
         ItemStack duPaperItem = new ItemStack(duPaper.getMaterial(), 1, (short) duPaper.getData());
         ItemMeta im = duPaperItem.getItemMeta();
@@ -60,7 +62,8 @@ public class DUPaperDataManager implements Service {
         return duPaperItem;
     }
 
-    public static boolean duPaperUp(ItemStack itemUpPaper, ItemStack equipmentItem, Player p){
+    @Override
+    public boolean up(ItemStack itemUpPaper, ItemStack equipmentItem){
         int refinementLevel = new NBTItem(equipmentItem).getInteger("refinement");
         int upLevel = new NBTItem(itemUpPaper).getInteger("dulevel");
         if(refinementLevel == 0){
@@ -75,13 +78,14 @@ public class DUPaperDataManager implements Service {
         }
         int num = upLevel - refinementLevel;
         for (int i = 0; i < num; i++) {
-            EquipmentDataManager manager = new EquipmentDataManager(equipmentItem,p);
+            EquipmentService manager = new EquipmentService(equipmentItem);
             manager.injuryUpStar();
         }
         return true;
     }
 
-    public static boolean isDUPaperLegal(ItemStack duPaperItem){
+    @Override
+    public boolean isLegal(ItemStack duPaperItem){
         if(duPaperItem == null || duPaperItem.getType() == Material.AIR){
             return false;
         }

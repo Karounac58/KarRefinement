@@ -1,13 +1,11 @@
 package vip.mcsj.www.karrefinement.gui;
 
 import de.tr7zw.nbtapi.NBTItem;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Listener;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -233,7 +231,6 @@ public class KarCompoundStoneGui{
                 }
             }
             if(com.getHigherStoneKey() != null) {
-                StoneDataManager sdm = new StoneDataManager(com.getHigherStoneKey());
                 
                 Sound runSound = SoundDataManager.getSound("KarCompoundStoneGui", "Run");
                 if(runSound != null){
@@ -244,7 +241,7 @@ public class KarCompoundStoneGui{
                 inv.setItem(16,subtractItemAmount(inv.getItem(16)));
                 inv.setItem(34,subtractItemAmount(inv.getItem(34)));
                 ItemStack item = inv.getItem(19);
-                ItemStack stone = sdm.createStone();
+                ItemStack stone = KarRefinementAPI.createStone(com.getHigherStoneKey());
                 if(item != null && item.isSimilar(stone)){
                     stone.setAmount(item.getAmount() + 1);
                 }

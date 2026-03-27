@@ -8,21 +8,22 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import vip.mcsj.www.karrefinement.api.gui.GuiSlotRegistry;
 import vip.mcsj.www.karrefinement.api.gui.GuiType;
+import vip.mcsj.www.karrefinement.api.model.*;
 import vip.mcsj.www.karrefinement.api.placeholder.PlaceholderRegistry;
+import vip.mcsj.www.karrefinement.core.Service;
 import vip.mcsj.www.karrefinement.datamanager.*;
 import vip.mcsj.www.karrefinement.gui.*;
 import vip.mcsj.www.karrefinement.gui.holder.KarCompoundStoneInvHolder;
 import vip.mcsj.www.karrefinement.gui.holder.KarRefinementInvHolder;
 import vip.mcsj.www.karrefinement.main.KarRefinement;
-import vip.mcsj.www.karrefinement.object.EquipmentMaterial;
 import vip.mcsj.www.karrefinement.object.Level;
 import vip.mcsj.www.karrefinement.object.Stone;
+import vip.mcsj.www.karrefinement.service.EquipmentRepository;
 import vip.mcsj.www.karrefinement.service.EquipmentService;
 import vip.mcsj.www.karrefinement.service.gui.DefaultGuiSlotRegistry;
 import vip.mcsj.www.karrefinement.service.placeholder.DefaultPlaceholderRegistry;
-import vip.mcsj.www.karrefinement.service.refinement.RefinementResult;
 import vip.mcsj.www.karrefinement.service.refinement.RefinementService;
-import vip.mcsj.www.karrefinement.service.refinement.RefinementStrategy;
+import vip.mcsj.www.karrefinement.api.model.IRefinementStrategy;
 
 import java.util.*;
 
@@ -42,7 +43,7 @@ public class KarRefinementAPI {
     private final RefinementService refinementService;
 
     // ========= 自定义淬炼策略 =========
-    private final Map<String, RefinementStrategy> customStrategies = new HashMap<>();
+    private final Map<String, IRefinementStrategy> customStrategies = new HashMap<>();
 
     public KarRefinementAPI() {
         this.guiSlotRegistry = new DefaultGuiSlotRegistry();
@@ -90,6 +91,10 @@ public class KarRefinementAPI {
         return placeholderRegistry;
     }
 
+    public RefinementService getRefinementService() {
+        return refinementService;
+    }
+
     // ========= 暴露 ServiceRegistry =========
 
     /**
@@ -115,18 +120,28 @@ public class KarRefinementAPI {
      */
     public static int getProtectPaperLevel(ItemStack item) {
         PaperDataManager pdm = new PaperDataManager(item);
-        return pdm.getPaperLevel();
+        return pdm.getLevel();
+    }
+
+    /**
+     * 注册自定义淬炼策略
+     * 第三方插件在 OnEnable 时调用此方法即可无缝接管或增强淬炼逻辑
+     */
+    public static void registerRefinementStrategy(IRefinementStrategy strategy) {
+        instance.refinementService.getStrategyRegistry().register(strategy);
     }
 
     /**
      * 获取淬炼石信息
      * @return 石头信息，如果物品不是淬炼石则返回空
      */
-    public static Optional<Stone> getStoneInfo(ItemStack item) {
-        if (!StoneDataManager.isStoneLegal(item)) {
+    public static Optional<IStone> getStoneInfo(ItemStack item) {
+        Service service = getService(StoneDataManager.class);
+        if (!service.isLegal(item)) {
             return Optional.empty();
         }
-        return Optional.ofNullable(StoneDataManager.getStone(item));
+        //记录不加(IStone)就报错的原因
+        return Optional.of((IStone) service.get(item));
     }
 
     /**
@@ -134,7 +149,7 @@ public class KarRefinementAPI {
      * @param level 淬炼等级（从1开始）
      * @return 等级配置，如果等级不存在则返回空
      */
-    public static Optional<Level> getLevelConfig(int level) {
+    public static Optional<ILevel> getLevelConfig(int level) {
         if (level < 1 || level > LevelDataManager.levels.size()) {
             return Optional.empty();
         }
@@ -151,14 +166,14 @@ public class KarRefinementAPI {
     /**
      * 获取所有已注册的装备类型
      */
-    public static List<EquipmentMaterial> getEquipmentTypes() {
+    public static List<IEquipmentMaterial> getEquipmentTypes() {
         return Collections.unmodifiableList(KarRefinement.types);
     }
 
     /**
      * 获取玩家统计数据
      */
-    public static PlayerStatsDataManager.PlayerStats getPlayerStats(UUID uuid) {
+    public static IPlayerStats getPlayerStats(UUID uuid) {
         return PlayerStatsDataManager.getPlayerStats(uuid);
     }
 
@@ -167,7 +182,7 @@ public class KarRefinementAPI {
     /**
      * 以编程方式执行淬炼（触发事件）
      */
-    public static RefinementResult performRefinement(OfflinePlayer player, ItemStack equipment, Stone stone, double extraBonus) {
+    public static IRefinementResult performRefinement(OfflinePlayer player, ItemStack equipment, Stone stone, double extraBonus) {
         return instance.refinementService.refine(player, equipment, stone, extraBonus);
     }
 
@@ -218,23 +233,18 @@ public class KarRefinementAPI {
     /**
      * 注册自定义淬炼策略
      */
-    public static void registerRefinementStrategy(String id, RefinementStrategy strategy) {
+    public static void registerRefinementStrategy(String id, IRefinementStrategy strategy) {
         instance.customStrategies.put(id, strategy);
     }
 
     /**
      * 获取自定义淬炼策略
      */
-    public static RefinementStrategy getRefinementStrategy(String id) {
+    public static IRefinementStrategy getRefinementStrategy(String id) {
         return instance.customStrategies.get(id);
     }
 
-    /**
-     * 注册自定义装备类型（使非原版物品可淬炼）
-     */
-    public static void registerEquipmentType(EquipmentMaterial material) {
-        KarRefinement.types.add(material);
-    }
+
 
     // ========= Builder 模式物品创建 =========
 
@@ -256,10 +266,8 @@ public class KarRefinementAPI {
 
     // ========= 保留原有的静态便捷方法（向后兼容）=========
 
-    public static void setItemLevel(ItemStack item, int level) {
-        if (EquipmentDataManager.isEquipmentLegal(item)) {
-            new EquipmentDataManager(item).setRefinementLevel(level);
-        }
+    public static void setEquipmentLevel(ItemStack item, int level) {
+        new EquipmentService(item).setRefinementLevel(level);
     }
 
     public static boolean canRefinement(ItemStack item) {
@@ -267,52 +275,55 @@ public class KarRefinementAPI {
     }
 
     public static boolean addProtectPaper(ItemStack itemPaper, ItemStack item) {
-        return PaperDataManager.protectorPaperUp(itemPaper, item);
+        return getService(PaperDataManager.class).up(itemPaper, item);
     }
 
-    public static Level getMinLevel(Player p) {
-        return LevelDataManager.getMinLevel(p);
+    public static ILevel getMinLevel(Player p) {
+        return getService(LevelDataManager.class).getMinLevel(p);
     }
 
-    public static ItemStack createStone(String stoneName) {
-        StoneDataManager sdm = new StoneDataManager(stoneName);
-        return sdm.createStone();
+    public static ItemStack createStone(String stoneNbt) {
+        return getService(StoneDataManager.class).create(stoneNbt);
     }
 
     public static ItemStack createPaper(String paperName) {
         PaperDataManager pdm = new PaperDataManager(paperName);
-        return pdm.createProtectedPaper();
+        return getService(PaperDataManager.class).create(paperName);
     }
 
     public static ItemStack createSpeStone(String speStoneName) {
-        SpecialStoneDataManager ssdm = new SpecialStoneDataManager(speStoneName);
-        return ssdm.createSpeStone();
+        return getService(SpecialStoneDataManager.class).create(speStoneName);
     }
 
     public static ItemStack createSoul(String soulName) {
-        InfiniteSoulManager ism = new InfiniteSoulManager(soulName);
-        return ism.createInfiniteSoul();
+        return getService(InfiniteSoulManager.class).create(soulName);
     }
 
     public static ItemStack createDUPaper(String dupaperName) {
-        return DUPaperDataManager.createDUPaper(dupaperName);
+        return getService(DUPaperDataManager.class).create(dupaperName);
     }
 
+    @SuppressWarnings("deprecated")
     public static ItemStack createDetachItem() {
         return DetachDataManager.createPaperDetachItem();
     }
 
+    @SuppressWarnings("deprecated")
     public static ItemStack createDetachItemPiece(String pieceName) {
         DetachDataManager ddm = new DetachDataManager(pieceName);
         return ddm.createPaperPiece();
     }
 
     public static ItemStack createPotion(String potionName) {
-        PotionDataManager pdm = new PotionDataManager(potionName);
-        return pdm.createPotion();
+        return getService(PotionDataManager.class).create(potionName);
     }
 
     public static ItemStack createAdhesive(String adhesiveName) {
-        return AdhesiveDataManager.createAdhesiveItem(adhesiveName);
+        return getService(AdhesiveDataManager.class).create(adhesiveName);
+//        return AdhesiveDataManager.create(adhesiveName);
+    }
+
+    public static ItemStack createFurnace(String furnaceName){
+        return getService(FurnaceDataManager.class).create(furnaceName);
     }
 }

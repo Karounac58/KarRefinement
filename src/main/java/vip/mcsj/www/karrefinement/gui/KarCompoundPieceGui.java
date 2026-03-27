@@ -7,16 +7,13 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import vip.mcsj.www.karrefinement.api.KarRefinementAPI;
 import vip.mcsj.www.karrefinement.api.gui.GuiSlot;
 import vip.mcsj.www.karrefinement.api.gui.GuiSlotRegistry;
 import vip.mcsj.www.karrefinement.api.gui.GuiType;
 import vip.mcsj.www.karrefinement.datamanager.DetachDataManager;
-import vip.mcsj.www.karrefinement.datamanager.EquipmentDataManager;
 import vip.mcsj.www.karrefinement.datamanager.PaperDataManager;
 import vip.mcsj.www.karrefinement.datamanager.SpecialStoneDataManager;
-import vip.mcsj.www.karrefinement.main.KarRefinement;
 import vip.mcsj.www.karrefinement.object.Detach;
 import vip.mcsj.www.karrefinement.object.InvItem;
 import vip.mcsj.www.karrefinement.service.gui.SimpleGuiContext;
@@ -113,7 +110,7 @@ public class KarCompoundPieceGui {
 
         int level = DetachDataManager.getPaperPieceLevel(itemPieces);
 
-        String paperIdentifier = PaperDataManager.getPaperIdentifier(level);
+        String paperIdentifier = PaperDataManager.getIdentifier(level);
 
         Detach detach = DetachDataManager.paperDetachs.get(paperIdentifier);
 
@@ -130,14 +127,13 @@ public class KarCompoundPieceGui {
     public static ItemStack karCompoundPieceMethod(ItemStack itemPieces, Player p){
         int level = DetachDataManager.getPaperPieceLevel(itemPieces);
 
-        String paperIdentifier = PaperDataManager.getPaperIdentifier(level);
+        String paperIdentifier = PaperDataManager.getIdentifier(level);
 
         Detach detach = DetachDataManager.paperDetachs.get(paperIdentifier);
 
         int compound = detach.getCompound();
         KarUtils.removeItemRefinement(itemPieces, compound);
-        PaperDataManager pdm = new PaperDataManager(paperIdentifier);
-        return pdm.createProtectedPaper();
+        return KarRefinementAPI.createPaper(paperIdentifier);
     }
 
     //宝石碎片判断
@@ -174,8 +170,7 @@ public class KarCompoundPieceGui {
 
         int compound = detach.getCompound();
         KarUtils.removeItemRefinement(itemPieces, compound);
-        SpecialStoneDataManager ssdm = new SpecialStoneDataManager(speStoneIdentifier);
-        return ssdm.createSpeStone();
+        return KarRefinementAPI.createSpeStone(speStoneIdentifier);
     }
 
     public static class KarCompoundPieceGuiInvHolder implements InventoryHolder {

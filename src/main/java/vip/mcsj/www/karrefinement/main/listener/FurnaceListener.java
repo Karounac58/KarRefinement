@@ -1,9 +1,7 @@
 package vip.mcsj.www.karrefinement.main.listener;
 
 import de.tr7zw.nbtapi.NBTBlock;
-import de.tr7zw.nbtapi.NBTCompound;
 import de.tr7zw.nbtapi.NBTItem;
-import de.tr7zw.nbtapi.NBTTileEntity;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -22,9 +20,9 @@ import org.bukkit.event.inventory.FurnaceSmeltEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.inventory.FurnaceInventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
+import vip.mcsj.www.karrefinement.api.KarRefinementAPI;
 import vip.mcsj.www.karrefinement.datamanager.EquipmentDataManager;
 import vip.mcsj.www.karrefinement.datamanager.FurnaceDataManager;
 import vip.mcsj.www.karrefinement.datamanager.StoneDataManager;
@@ -33,9 +31,7 @@ import vip.mcsj.www.karrefinement.main.KarRefinement;
 import vip.mcsj.www.karrefinement.object.Stone;
 import vip.mcsj.www.karrefinement.utils.KarUtils;
 
-import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 
 
 public class FurnaceListener implements Listener {
@@ -60,8 +56,7 @@ public class FurnaceListener implements Listener {
         Furnace furnace = (Furnace) e.getBlock().getState();
         ItemStack fuel = e.getFuel().clone();
         ItemStack smelt = furnace.getInventory().getSmelting();
-        Stone stone = StoneDataManager.getStone(fuel);
-
+        Stone stone = KarRefinementAPI.getService(StoneDataManager.class).get(fuel);
         if (EquipmentDataManager.isEquipmentLegal(smelt)) {
             if (stone != null) {
                 furnace.setMetadata("FurnaceFuel", new FixedMetadataValue(KarRefinement.instance, fuel));
@@ -98,7 +93,7 @@ public class FurnaceListener implements Listener {
             String uuid = furnace.hasMetadata("FurnaceOwner") ? furnace.getMetadata("FurnaceOwner").get(0).asString() : "";
             OfflinePlayer p = Bukkit.getOfflinePlayer(UUID.fromString(uuid));
             smelt.setAmount(1);
-            Stone stone = StoneDataManager.getStone(stoneItem);
+            Stone stone = KarRefinementAPI.getService(StoneDataManager.class).get(stoneItem);
             if(KarRefinementGui.KarRefinementMethod(p,smelt,stone,addSuccess)){
                 KarUtils.removeItemRefinement(stoneItem);
             }
@@ -169,7 +164,7 @@ public class FurnaceListener implements Listener {
         if(nbtBlock.getData().hasTag("karfurnace")){
             String karfurnace = nbtBlock.getData().getString("karfurnace");
             e.setDropItems(false);
-            e.getPlayer().getInventory().addItem(FurnaceDataManager.createFurnace(karfurnace));
+            e.getPlayer().getInventory().addItem(KarRefinementAPI.createFurnace(karfurnace));
             nbtBlock.getData().removeKey("karfurnace");
         }
     }

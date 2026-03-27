@@ -1,11 +1,13 @@
 package vip.mcsj.www.karrefinement.object;
 
 import org.bukkit.Material;
+import vip.mcsj.www.karrefinement.api.model.IStone;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 
-public class Stone {
+public class Stone implements IStone {
     //命令用的标识符
     private String identifier;
 
@@ -55,6 +57,7 @@ public class Stone {
         this.customModelData = customModelData;
     }
 
+    @Override
     public String getIdentifier() {
         return identifier;
     }
@@ -63,6 +66,7 @@ public class Stone {
         this.identifier = identifier;
     }
 
+    @Override
     public String getName() {
         return name;
     }
@@ -71,6 +75,7 @@ public class Stone {
         this.name = name;
     }
 
+    @Override
     public List<String> getLore() {
         return lore;
     }
@@ -78,7 +83,7 @@ public class Stone {
     public void setLore(List<String> lore) {
         this.lore = lore;
     }
-
+    @Override
     public List<Double> getProbability() {
         return probability;
     }
@@ -86,7 +91,7 @@ public class Stone {
     public void setProbability(List<Double> probability) {
         this.probability = probability;
     }
-
+    @Override
     public Material getType() {
         return type;
     }
@@ -94,7 +99,7 @@ public class Stone {
     public void setType(Material type) {
         this.type = type;
     }
-
+    @Override
     public int[] getDownLevels() {
         return downLevels;
     }
@@ -102,7 +107,7 @@ public class Stone {
     public void setDownLevels(int[] downLevels) {
         this.downLevels = downLevels;
     }
-
+    @Override
     public int getData() {
         return data;
     }
@@ -110,7 +115,7 @@ public class Stone {
     public void setData(int data) {
         this.data = data;
     }
-
+    @Override
     public String getNbt() {
         return nbt;
     }

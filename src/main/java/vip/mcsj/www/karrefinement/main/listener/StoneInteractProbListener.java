@@ -5,6 +5,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
+import vip.mcsj.www.karrefinement.api.KarRefinementAPI;
 import vip.mcsj.www.karrefinement.datamanager.Message;
 import vip.mcsj.www.karrefinement.datamanager.StoneDataManager;
 import vip.mcsj.www.karrefinement.object.Stone;
@@ -30,9 +31,9 @@ public class StoneInteractProbListener implements Listener {
             return;
         }
 
-        if(StoneDataManager.isStoneLegal(e.getPlayer().getInventory().getItemInMainHand())){
+        if(KarRefinementAPI.getService(StoneDataManager.class).isLegal(e.getPlayer().getInventory().getItemInMainHand())){
             e.setCancelled(true);
-            Stone stone = StoneDataManager.getStone(e.getPlayer().getInventory().getItemInMainHand());
+            Stone stone = KarRefinementAPI.getService(StoneDataManager.class).get(e.getPlayer().getInventory().getItemInMainHand());
             List<Double> stoneChance = stone.getProbability();
             List<String> stoneChanceString = new ArrayList<>();
             String formatter = Message.messages.get("stone_interact_chance_formatter");

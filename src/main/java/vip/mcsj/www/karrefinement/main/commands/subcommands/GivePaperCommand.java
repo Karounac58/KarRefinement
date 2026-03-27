@@ -2,6 +2,7 @@ package vip.mcsj.www.karrefinement.main.commands.subcommands;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import vip.mcsj.www.karrefinement.api.KarRefinementAPI;
 import vip.mcsj.www.karrefinement.datamanager.PaperDataManager;
 import vip.mcsj.www.karrefinement.main.commands.KarAbstractGiveCommand;
 
@@ -25,8 +26,7 @@ public class GivePaperCommand extends KarAbstractGiveCommand {
             sender.sendMessage( "§c§l找不到这个玩家！");
             return true;
         }
-        PaperDataManager paperDataManager = new PaperDataManager(args[1]);
-        p.getInventory().addItem(paperDataManager.createProtectedPaper());
+        p.getInventory().addItem(KarRefinementAPI.createPaper(args[1]));
         return true;
     }
 }

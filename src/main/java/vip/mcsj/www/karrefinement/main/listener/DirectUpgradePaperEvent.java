@@ -6,6 +6,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
+import vip.mcsj.www.karrefinement.api.KarRefinementAPI;
+import vip.mcsj.www.karrefinement.core.Service;
 import vip.mcsj.www.karrefinement.datamanager.DUPaperDataManager;
 import vip.mcsj.www.karrefinement.datamanager.EquipmentDataManager;
 import vip.mcsj.www.karrefinement.datamanager.Message;
@@ -25,10 +27,12 @@ public class DirectUpgradePaperEvent implements Listener {
             }
             itemDUPaper = e.getCursor();
             itemEquipment = e.getCurrentItem();
-            if(DUPaperDataManager.isDUPaperLegal(itemDUPaper)){
+            Service service = KarRefinementAPI.getService(DUPaperDataManager.class);
+            if(service.isLegal(itemDUPaper)){
                 if(EquipmentDataManager.isEquipmentLegal(itemEquipment)){
                     Player p = (Player) e.getWhoClicked();
-                    if(DUPaperDataManager.duPaperUp(itemDUPaper,itemEquipment,p)){
+                    //待实现：无限耐久精魂破碎时提示玩家。
+                    if(service.up(itemDUPaper,itemEquipment)){
                         p.sendMessage(Message.messages.get("dupaper_up"));
                         p.playSound(p.getLocation(), KarRefinement.cs.getSounds().get(0),1,1);
                         KarUtils.removeItemRefinement(itemDUPaper);

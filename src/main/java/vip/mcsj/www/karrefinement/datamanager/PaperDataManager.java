@@ -92,8 +92,9 @@ public class PaperDataManager implements Service {
         }
     }
 
-    public ItemStack createProtectedPaper(){
-        ProtectPaper paper = papers.get(this.paperName);
+    @Override
+    public ItemStack create(String paperName){
+        ProtectPaper paper = papers.get(paperName);
         ItemStack paperItem = new ItemStack(paper.getType(),1, (short) paper.getData());
         ItemMeta im = paperItem.getItemMeta();
         im.setDisplayName(paper.getName());
@@ -113,13 +114,14 @@ public class PaperDataManager implements Service {
      * @param equipmentItem
      * @return
      */
-    public static boolean protectorPaperUp(ItemStack itemPaper,ItemStack equipmentItem){
+    @Override
+    public boolean up(ItemStack itemPaper, ItemStack equipmentItem){
         ItemMeta paperMeta = itemPaper.getItemMeta();
         ItemMeta equipmentMeta = equipmentItem.getItemMeta();
         int refinementLevel = new NBTItem(equipmentItem).getInteger("refinement");
         int nowLevel = new NBTItem(equipmentItem).getInteger("protector");
         int willLevel = new NBTItem(itemPaper).getInteger("protector");
-        String paperIdentifier = getPaperIdentifier(itemPaper);
+        String paperIdentifier = getIdentifier(itemPaper);
         List<String> lores = new ArrayList<>();
         //如果淬炼等级为0
         if(refinementLevel <= 0) {
@@ -243,7 +245,8 @@ public class PaperDataManager implements Service {
         }
     }
 
-    public static boolean isPaperLegal(ItemStack paperItem){
+    @Override
+    public boolean isLegal(ItemStack paperItem){
         if(paperItem == null || paperItem.getType() == Material.AIR){
             return false;
         }
@@ -260,7 +263,7 @@ public class PaperDataManager implements Service {
         return false;
     }
 
-    public static String getPaperIdentifier(int level){
+    public static String getIdentifier(int level){
         for (String s : papers.keySet()) {
             if(papers.get(s).getLevel() == level){
                 return s;
@@ -269,9 +272,9 @@ public class PaperDataManager implements Service {
         return null;
     }
 
-    public static String getPaperIdentifier(ItemStack item){
+    public static String getIdentifier(ItemStack item){
         int paperLevel = new NBTItem(item).getInteger("protector");
-        return getPaperIdentifier(paperLevel);
+        return getIdentifier(paperLevel);
     }
 
     /**
@@ -279,12 +282,12 @@ public class PaperDataManager implements Service {
      * @param equipmentItem 装备
      * @return 是否为单次使用保护符
      */
-    public static boolean isSingleUsePaper(ItemStack equipmentItem){
+    public static boolean isSingleUse(ItemStack equipmentItem){
         int paperLevel = new NBTItem(equipmentItem).getInteger("protector");
         if(paperLevel <= 0){
             return false;
         }
-        String identifier = getPaperIdentifier(paperLevel);
+        String identifier = getIdentifier(paperLevel);
         if(identifier == null){
             return false;
         }
@@ -299,7 +302,7 @@ public class PaperDataManager implements Service {
      * 移除装备上的保护符
      * @param equipmentItem 装备
      */
-    public static void removeProtectPaper(ItemStack equipmentItem){
+    public static void remove(ItemStack equipmentItem){
         ItemMeta equipmentMeta = equipmentItem.getItemMeta();
         if(equipmentMeta == null || !equipmentMeta.hasLore()){
             return;
@@ -310,7 +313,7 @@ public class PaperDataManager implements Service {
             return;
         }
         
-        String identifier = getPaperIdentifier(paperLevel);
+        String identifier = getIdentifier(paperLevel);
         if(identifier == null){
             return;
         }
@@ -333,7 +336,7 @@ public class PaperDataManager implements Service {
     }
 
 
-    public int getPaperLevel(){
+    public int getLevel(){
 //        return NBT.get(this.equipmentItem,nbt -> nbt.getInteger("protector"));
         return new NBTItem(this.equipmentItem).getInteger("protector");
     }

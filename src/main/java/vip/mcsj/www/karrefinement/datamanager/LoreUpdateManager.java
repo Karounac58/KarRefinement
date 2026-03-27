@@ -5,7 +5,6 @@ import de.tr7zw.nbtapi.NBTItem;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.scheduler.BukkitRunnable;
 import vip.mcsj.www.karrefinement.core.Service;
 import vip.mcsj.www.karrefinement.main.KarRefinement;
 import vip.mcsj.www.karrefinement.object.InfiniteSoul;
@@ -338,7 +337,7 @@ public class LoreUpdateManager implements Service {
 
                 case "{paper}":
                     if (paperLevel > 0) {
-                        String paperIdentifier = PaperDataManager.getPaperIdentifier(paperLevel);
+                        String paperIdentifier = PaperDataManager.getIdentifier(paperLevel);
                         if (paperIdentifier != null && PaperDataManager.papers.containsKey(paperIdentifier)) {
                             ProtectPaper paper = PaperDataManager.papers.get(paperIdentifier);
                             if (paper != null && paper.getName() != null) {
@@ -350,7 +349,7 @@ public class LoreUpdateManager implements Service {
 
                 case "{soul}":
                     if (soulLevel > 0) {
-                        String soulName = InfiniteSoulManager.getSoulName(item);
+                        String soulName = InfiniteSoulManager.getName(item);
                         if (soulName != null) {
                             newLore.add(soulName);
                         }
@@ -412,7 +411,7 @@ public class LoreUpdateManager implements Service {
      */
     private static boolean isPaperLore(String line, int paperLevel) {
         if (paperLevel <= 0) return false;
-        String paperIdentifier = PaperDataManager.getPaperIdentifier(paperLevel);
+        String paperIdentifier = PaperDataManager.getIdentifier(paperLevel);
         if (paperIdentifier == null) return false;
         ProtectPaper paper = PaperDataManager.papers.get(paperIdentifier);
         if (paper == null) return false;
@@ -424,7 +423,7 @@ public class LoreUpdateManager implements Service {
      */
     private static boolean isSoulLore(String line, int soulLevel, ItemStack item) {
         if (soulLevel <= 0) return false;
-        String soulName = InfiniteSoulManager.getSoulName(item);
+        String soulName = InfiniteSoulManager.getName(item);
         if (soulName == null) return false;
         return line.equals(soulName);
     }

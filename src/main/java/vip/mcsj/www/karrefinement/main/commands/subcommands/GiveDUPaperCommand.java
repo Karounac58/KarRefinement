@@ -2,9 +2,9 @@ package vip.mcsj.www.karrefinement.main.commands.subcommands;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import vip.mcsj.www.karrefinement.api.KarRefinementAPI;
 import vip.mcsj.www.karrefinement.datamanager.DUPaperDataManager;
 import vip.mcsj.www.karrefinement.main.commands.KarAbstractGiveCommand;
-import vip.mcsj.www.karrefinement.main.commands.KarCommand;
 
 public class GiveDUPaperCommand extends KarAbstractGiveCommand {
 
@@ -27,7 +27,7 @@ public class GiveDUPaperCommand extends KarAbstractGiveCommand {
             sender.sendMessage( "§c§l找不到这个玩家！");
             return true;
         }
-        p.getInventory().addItem(DUPaperDataManager.createDUPaper(args[1]));
+        p.getInventory().addItem(KarRefinementAPI.createDUPaper(args[1]));
         return true;
     }
 }

@@ -1,11 +1,12 @@
 package vip.mcsj.www.karrefinement.service.refinement;
 
+import vip.mcsj.www.karrefinement.api.model.IRefinementResult;
 import vip.mcsj.www.karrefinement.datamanager.LevelDataManager;
 
 /**
  * 淬炼结果
  */
-public class RefinementResult {
+public class RefinementResult implements IRefinementResult {
     private final boolean success;
     private final int oldLevel;
     private final int newLevel;
@@ -47,33 +48,36 @@ public class RefinementResult {
         return new RefinementResult(false, -1, -1, 0, false);
     }
 
+
     /**
      * 是否被取消
      */
+    @Override
     public boolean isCancelled() {
         return oldLevel == -1 && newLevel == -1;
     }
 
+    @Override
     public boolean isSuccess() {
         return success;
     }
-
+    @Override
     public int getOldLevel() {
         return oldLevel;
     }
-
+    @Override
     public int getNewLevel() {
         return newLevel;
     }
-
+    @Override
     public int getDownLevels() {
         return downLevels;
     }
-
+    @Override
     public boolean isMaxLevel() {
         return oldLevel == LevelDataManager.levels.size();
     }
-
+    @Override
     public boolean isProtectorWorked() {
         return protectorWorked;
     }

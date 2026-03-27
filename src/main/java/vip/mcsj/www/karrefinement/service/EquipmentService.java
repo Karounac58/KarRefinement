@@ -27,11 +27,6 @@ public class EquipmentService {
         this.loreBuilder = new LoreBuilder(equipmentItem);
     }
 
-    public EquipmentService(ItemStack equipmentItem, Player player) {
-        this.equipmentItem = equipmentItem;
-        this.loreBuilder = new LoreBuilder(equipmentItem);
-    }
-
     /**
      * 获取装备淬炼等级 (NBT)
      */

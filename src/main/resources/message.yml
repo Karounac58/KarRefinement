@@ -37,7 +37,7 @@ transform_moneycost: "§a§l成功花费金币{money}移星"
 transform_success: "§a§l移星成功！"
 
 detach_success: "§a完美卸下道具!"
-detach_failed: "§c在卸下道具的过程中出现了意外！你得到了保护符碎片."
+detach_failed: "§c在卸下道具的过程中出现了意外！你得到了道具碎片."
 detach_disable: "§c此装备无道具或道具不可被拆卸!"
 
 adhesive_maxlevel: "§c§l无法合成更高级的宝石"

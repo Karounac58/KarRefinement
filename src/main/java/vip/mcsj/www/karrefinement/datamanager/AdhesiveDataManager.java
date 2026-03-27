@@ -45,7 +45,8 @@ public class AdhesiveDataManager implements Service {
         }
     }
 
-    public static ItemStack createAdhesiveItem(String identifier){
+    @Override
+    public ItemStack create(String identifier){
         Adhesive adhesive = adhesives.get(identifier);
         if(adhesive == null){
             return null;
@@ -63,7 +64,8 @@ public class AdhesiveDataManager implements Service {
         return item;
     }
 
-    public static Adhesive getAdehesive(ItemStack item){
+    @Override
+    public Adhesive get(ItemStack item){
         return adhesives.get(new NBTItem(item).getString("adhesive"));
     }
 }

@@ -4,6 +4,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.bukkit.inventory.ItemStack;
+import vip.mcsj.www.karrefinement.api.model.IRefinementResult;
 import vip.mcsj.www.karrefinement.service.refinement.RefinementResult;
 
 /**
@@ -16,9 +17,9 @@ public class PostRefinementEvent extends Event {
 
     private final OfflinePlayer player;
     private final ItemStack equipment;
-    private final RefinementResult result;
+    private final IRefinementResult result;
 
-    public PostRefinementEvent(OfflinePlayer player, ItemStack equipment, RefinementResult result) {
+    public PostRefinementEvent(OfflinePlayer player, ItemStack equipment, IRefinementResult result) {
         this.player = player;
         this.equipment = equipment;
         this.result = result;
@@ -32,7 +33,7 @@ public class PostRefinementEvent extends Event {
         return equipment;
     }
 
-    public RefinementResult getResult() {
+    public IRefinementResult getResult() {
         return result;
     }
 

@@ -17,6 +17,7 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.entity.Player;
 import org.serverct.ersha.api.AttributeAPI;
 import org.serverct.ersha.attribute.data.AttributeData;
+import vip.mcsj.www.karrefinement.api.KarRefinementAPI;
 import vip.mcsj.www.karrefinement.datamanager.LevelDataManager;
 import vip.mcsj.www.karrefinement.datamanager.Message;
 import vip.mcsj.www.karrefinement.main.KarRefinement;
@@ -39,7 +40,7 @@ public class SyncEffectRunnable implements Runnable {
     }
 
     public void sync(LivingEntity le) throws ClassNotFoundException {
-        Level minLevel = LevelDataManager.getMinLevel((Player) le);
+        Level minLevel = KarRefinementAPI.getService(LevelDataManager.class).getMinLevel((Player) le);
         if (minLevel != null && minLevel.suitEffect != null) {
             for (String potionStr : minLevel.suitEffect.potionEffect) {
                 String[] args = potionStr.split(" ");

@@ -10,6 +10,7 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import vip.mcsj.www.karrefinement.api.KarRefinementAPI;
+import vip.mcsj.www.karrefinement.api.model.IRefinementService;
 import vip.mcsj.www.karrefinement.core.PluginContext;
 import vip.mcsj.www.karrefinement.core.ServiceRegistry;
 import vip.mcsj.www.karrefinement.datamanager.*;
@@ -27,6 +28,7 @@ import vip.mcsj.www.karrefinement.object.Stone;
 import vip.mcsj.www.karrefinement.service.ConfigurationService;
 import vip.mcsj.www.karrefinement.service.EquipmentRepository;
 import vip.mcsj.www.karrefinement.service.SoundDataManager;
+import vip.mcsj.www.karrefinement.service.refinement.RefinementService;
 import vip.mcsj.www.karrefinement.utils.FileUtil;
 import vip.mcsj.www.karrefinement.utils.ReflectionUtils;
 import vip.mcsj.www.karrefinement.version.CustomMaterial;
@@ -71,6 +73,8 @@ public class KarRefinement extends JavaPlugin {
     public static boolean ap3Enable = false;
     public static boolean sxv3Enable = false;
     public static boolean caEnabled = false;
+    public static KarRefinementAPI api;
+
     @Override
     public void onEnable() {
         instance = this;
@@ -196,7 +200,7 @@ public class KarRefinement extends JavaPlugin {
         registry.initializeAll();
 
         // 初始化 API 门面
-        new KarRefinementAPI();
+        api = new KarRefinementAPI();
 
         if(getConfig().getBoolean("settings.enablefurnace")) {
             setRecipe();

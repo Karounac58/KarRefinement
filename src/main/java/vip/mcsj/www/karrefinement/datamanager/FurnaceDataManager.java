@@ -46,7 +46,8 @@ public class FurnaceDataManager implements Service {
         }
     }
 
-    public static ItemStack createFurnace(String key){
+    @Override
+    public ItemStack create(String key){
         Furnace f = furnaces.get(key);
         if(f == null){
             return null;

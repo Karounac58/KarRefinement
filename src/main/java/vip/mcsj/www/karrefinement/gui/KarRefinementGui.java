@@ -4,7 +4,6 @@ import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.*;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -14,13 +13,13 @@ import vip.mcsj.www.karrefinement.api.KarRefinementAPI;
 import vip.mcsj.www.karrefinement.api.gui.GuiSlot;
 import vip.mcsj.www.karrefinement.api.gui.GuiSlotRegistry;
 import vip.mcsj.www.karrefinement.api.gui.GuiType;
+import vip.mcsj.www.karrefinement.api.model.IRefinementResult;
 import vip.mcsj.www.karrefinement.datamanager.*;
 import vip.mcsj.www.karrefinement.main.KarRefinement;
 import vip.mcsj.www.karrefinement.main.listener.KarEventListener;
 import vip.mcsj.www.karrefinement.object.InvItem;
 import vip.mcsj.www.karrefinement.object.MCVersions;
 import vip.mcsj.www.karrefinement.object.Stone;
-import vip.mcsj.www.karrefinement.service.EquipmentService;
 import vip.mcsj.www.karrefinement.service.gui.RefinementGuiContext;
 import vip.mcsj.www.karrefinement.service.refinement.RefinementResult;
 import vip.mcsj.www.karrefinement.service.refinement.RefinementService;
@@ -184,7 +183,7 @@ public class KarRefinementGui {
                     return;
                 }
                 if(index >= size) {
-                    if(KarRefinementMethod(p, itemEquipment, StoneDataManager.getStone(itemStone),0)){
+                    if(KarRefinementMethod(p, itemEquipment, KarRefinementAPI.getService(StoneDataManager.class).get(itemStone),0)){
                         KarUtils.removeItemRefinement(itemStone);
                     }
                     setInvInitial(inv, p);
@@ -222,7 +221,7 @@ public class KarRefinementGui {
         if (itemStone == null || itemEquipment == null) {
             return false;
         }
-        if (!StoneDataManager.isStoneLegal(itemStone)) {
+        if (!KarRefinementAPI.getService(StoneDataManager.class).isLegal(itemStone)) {
             return false;
         }
         if (!EquipmentDataManager.isEquipmentLegal(itemEquipment)) {
@@ -242,7 +241,7 @@ public class KarRefinementGui {
         Random rand = new Random();
 
         //如果石头不合法，返回
-        if (!StoneDataManager.isStoneLegal(itemStone)) {
+        if (!KarRefinementAPI.getService(StoneDataManager.class).isLegal(itemStone)) {
             return;
         }
         //如果装备没在可淬炼装备列表里，返回
@@ -251,14 +250,14 @@ public class KarRefinementGui {
         }
 
         String equipmentIdentifier = EquipmentDataManager.getEquipmentIdentifier(itemEquipment);
-        Stone stone = StoneDataManager.getStone(itemStone);
+        Stone stone = KarRefinementAPI.getService(StoneDataManager.class).get(itemStone);
         EquipmentDataManager equipmentManager = new EquipmentDataManager(itemEquipment,p);
         PaperDataManager paperDataManager = new PaperDataManager(itemEquipment);
 
         //判断装备星级
         int refinementLevel = equipmentManager.carifyEquipmentLevel();
         //装备保护符等级
-        int protectPaperLevel = paperDataManager.getPaperLevel();
+        int protectPaperLevel = paperDataManager.getLevel();
         if(refinementLevel == LevelDataManager.levels.size()){
             p.sendMessage(Message.messages.get("refinement_maxlevel"));
             return;
@@ -313,7 +312,7 @@ public class KarRefinementGui {
                     KarUtils.removeItemRefinement(itemStone);
                     return;
                 }
-                int downLevel = equipmentManager.injuryDownStar(paperDataManager.getPaperLevel(), stone);
+                int downLevel = equipmentManager.injuryDownStar(paperDataManager.getLevel(), stone);
                 
                 // 记录淬炼失败
                 PlayerStatsDataManager.recordFailure(p);
@@ -368,7 +367,7 @@ public class KarRefinementGui {
                 KarUtils.removeItemRefinement(itemStone);
                 return;
             }
-            int downLevel = equipmentManager.injuryDownStar(paperDataManager.getPaperLevel(), stone);
+            int downLevel = equipmentManager.injuryDownStar(paperDataManager.getLevel(), stone);
             
             // 记录淬炼失败
             PlayerStatsDataManager.recordFailure(p);
@@ -389,7 +388,7 @@ public class KarRefinementGui {
      * @return 是否有淬炼
      */
     public static Boolean KarRefinementMethod(OfflinePlayer player,ItemStack itemEquipment,Stone stone,double extraBonus){
-        RefinementResult result = new RefinementService().refine(player, itemEquipment, stone, extraBonus);
+        IRefinementResult result = KarRefinement.api.getRefinementService().refine(player, itemEquipment, stone, extraBonus);
         if(result.isMaxLevel()){
             if(player.isOnline()) {
                 player.getPlayer().sendMessage(Message.messages.get("refinement_maxlevel"));
@@ -436,8 +435,8 @@ public class KarRefinementGui {
             }
             
             // 如果保护符生效且是单次使用，移除保护符
-            if(result.isProtectorWorked() && PaperDataManager.isSingleUsePaper(itemEquipment)){
-                PaperDataManager.removeProtectPaper(itemEquipment);
+            if(result.isProtectorWorked() && PaperDataManager.isSingleUse(itemEquipment)){
+                PaperDataManager.remove(itemEquipment);
                 if(player.isOnline()) {
                     player.getPlayer().sendMessage(Message.messages.get("paper_singleuse_consume"));
                 }

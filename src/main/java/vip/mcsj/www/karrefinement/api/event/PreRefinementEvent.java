@@ -5,6 +5,7 @@ import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.bukkit.inventory.ItemStack;
+import vip.mcsj.www.karrefinement.api.model.IStone;
 import vip.mcsj.www.karrefinement.object.Stone;
 
 /**
@@ -17,11 +18,11 @@ public class PreRefinementEvent extends Event implements Cancellable {
 
     private final OfflinePlayer player;
     private final ItemStack equipment;
-    private final Stone stone;
+    private final IStone stone;
     private double successRate;
     private boolean cancelled = false;
 
-    public PreRefinementEvent(OfflinePlayer player, ItemStack equipment, Stone stone, double successRate) {
+    public PreRefinementEvent(OfflinePlayer player, ItemStack equipment, IStone stone, double successRate) {
         this.player = player;
         this.equipment = equipment;
         this.stone = stone;
@@ -36,7 +37,7 @@ public class PreRefinementEvent extends Event implements Cancellable {
         return equipment;
     }
 
-    public Stone getStone() {
+    public IStone getStone() {
         return stone;
     }
 

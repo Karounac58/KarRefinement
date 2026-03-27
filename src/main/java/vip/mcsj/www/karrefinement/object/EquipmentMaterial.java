@@ -3,11 +3,12 @@ package vip.mcsj.www.karrefinement.object;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import vip.mcsj.www.karrefinement.api.model.IEquipmentMaterial;
 
 import java.lang.reflect.Constructor;
 import java.util.logging.Logger;
 
-public class EquipmentMaterial {
+public class EquipmentMaterial implements IEquipmentMaterial {
 
     private static final Logger log = Logger.getLogger("Minecraft");
 
@@ -255,6 +256,11 @@ public class EquipmentMaterial {
 
     public short getData() {
         return data;
+    }
+
+    @Override
+    public ItemStack getCachedItem() {
+        return cachedItem;
     }
 
     public String getRawType() {

@@ -68,7 +68,8 @@ public class PotionDataManager implements Service {
         }
     }
 
-    public ItemStack createPotion(){
+    @Override
+    public ItemStack create(String identifier){
         RPotion rPotion = potions.get(identifier);
         if(rPotion == null){
             return null;
@@ -86,19 +87,21 @@ public class PotionDataManager implements Service {
     }
 
     public void drinkPotion(){
-        RPotion rPotion = getPotionFromItemStack(itemPotion);
+        RPotion rPotion = get(itemPotion);
         if(rPotion == null){
             return;
         }
         changePlayerPotionInfo(p, rPotion.getSuccess(), rPotion.getDuration());
     }
 
-    public static RPotion getPotionFromItemStack(ItemStack itemPotion){
+    @Override
+    public RPotion get(ItemStack itemPotion){
         NBTItem nbtItem = new NBTItem(itemPotion);
         return potions.get(nbtItem.getString("refinementpotion"));
     }
 
-    public static boolean isPotionLegal(ItemStack itemPotion){
+    @Override
+    public boolean isLegal(ItemStack itemPotion){
         NBTItem nbtItem = new NBTItem(itemPotion);
         return nbtItem.hasKey("refinementpotion");
     }

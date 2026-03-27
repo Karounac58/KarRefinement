@@ -2,6 +2,7 @@ package vip.mcsj.www.karrefinement.main.commands.subcommands;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import vip.mcsj.www.karrefinement.api.KarRefinementAPI;
 import vip.mcsj.www.karrefinement.datamanager.SpecialStoneDataManager;
 import vip.mcsj.www.karrefinement.main.commands.KarAbstractGiveCommand;
 
@@ -26,8 +27,7 @@ public class GiveSpeStoneCommand extends KarAbstractGiveCommand {
             return true;
         }
 
-        SpecialStoneDataManager speStoneManager = new SpecialStoneDataManager(args[1]);
-        p.getInventory().addItem(speStoneManager.createSpeStone());
+        p.getInventory().addItem(KarRefinementAPI.createSpeStone(args[1]));
 
         return true;
     }

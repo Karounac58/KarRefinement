@@ -1,24 +1,26 @@
 package vip.mcsj.www.karrefinement.service.refinement;
 
 import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import vip.mcsj.www.karrefinement.api.model.IRefinementStrategy;
+import vip.mcsj.www.karrefinement.api.model.IStone;
 import vip.mcsj.www.karrefinement.datamanager.LevelDataManager;
 import vip.mcsj.www.karrefinement.datamanager.PaperDataManager;
 import vip.mcsj.www.karrefinement.main.KarRefinement;
 import vip.mcsj.www.karrefinement.object.Stone;
 import vip.mcsj.www.karrefinement.service.EquipmentService;
+import vip.mcsj.www.karrefinement.service.ProbabilityCalculator;
 
 import java.util.List;
 
 /**
- * 暗改淬炼策略
- * 根据暗改数据决定成功/失败，不进行随机掷骰
+ * 普通淬炼策略
+ * 从 KarRefinementGui.KarRefinementMethod 提取核心业务逻辑
  */
-public class DarkChangeRefinementStrategy implements RefinementStrategy {
+public class NormalIRefinementStrategy implements IRefinementStrategy {
 
     @Override
-    public RefinementResult execute(OfflinePlayer player, ItemStack equipment, Stone stone,double extraBonus) {
+    public RefinementResult execute(OfflinePlayer player, ItemStack equipment, IStone stone, double extraBonus) {
         EquipmentService service = new EquipmentService(equipment);
         int currentLevel = service.getLevel();
 
@@ -27,38 +29,53 @@ public class DarkChangeRefinementStrategy implements RefinementStrategy {
             return RefinementResult.maxLevel(currentLevel);
         }
 
-        // 查询暗改数据
-        List<Object> darkChangeData = KarRefinement.dcdm.getPlayerDarkChangeData(player);
-        if (darkChangeData == null) {
-            // 无暗改数据，不应使用此策略
-            return RefinementResult.failure(currentLevel, currentLevel, 0, false);
+        // 获取基础成功率
+        double baseChance = stone.getProbability().get(currentLevel);
+
+        // 获取药水加成
+        double potionBonus = 0;
+        List<Object> potionInfo = KarRefinement.pdm.queryPlayerPotionInfoCache(player);
+        if (potionInfo != null) {
+            potionBonus = (double) potionInfo.get(1) * 100;
         }
 
-        boolean isSuccess = (boolean) darkChangeData.get(1);
-        int count = (int) darkChangeData.get(2);
-
-        // 更新暗改计数
-        KarRefinement.dcdm.updatePlayerDarkChangeData(player, isSuccess, count - 1);
-
-        if (isSuccess) {
+        // 掷骰判定
+        if (ProbabilityCalculator.rollSuccess(baseChance, potionBonus, extraBonus)) {
+            // 成功
             if (service.injuryUpStar()) {
                 return RefinementResult.success(currentLevel, service.getLevel());
             }
             return RefinementResult.maxLevel(currentLevel);
         } else {
+            // 失败
             if (currentLevel == 0) {
                 return RefinementResult.failure(currentLevel, 0, 0, false);
             }
             PaperDataManager paperManager = new PaperDataManager(equipment);
-            int paperLevel = paperManager.getPaperLevel();
+            int paperLevel = paperManager.getLevel();
             
             // 使用带结果返回的降星方法
-            EquipmentService.DownStarResult downResult = service.injuryDownStarWithResult(paperLevel, stone);
+            EquipmentService.DownStarResult downResult = service.injuryDownStarWithResult(paperLevel,(Stone) stone);
             int downLevel = downResult.getDownLevel();
             boolean protectorWorked = downResult.isProtectorWorked();
             int newLevel = service.getLevel();
             
             return RefinementResult.failure(currentLevel, newLevel, downLevel, protectorWorked);
         }
+    }
+
+    @Override
+    public String getId() {
+        return "refinement_strategy:normal";
+    }
+
+    @Override
+    public int getPriority() {
+        return 1;
+    }
+
+    @Override
+    public boolean canHandle(OfflinePlayer player, ItemStack equipment, IStone stone) {
+        return true;
     }
 }

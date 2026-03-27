@@ -19,13 +19,13 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 import vip.mcsj.www.karrefinement.api.KarRefinementAPI;
-import vip.mcsj.www.karrefinement.api.event.KarGuiClickEvent;
 import vip.mcsj.www.karrefinement.api.event.KarGuiOpenEvent;
 import vip.mcsj.www.karrefinement.api.event.ProtectPaperApplyEvent;
 import vip.mcsj.www.karrefinement.api.gui.GuiContext;
 import vip.mcsj.www.karrefinement.api.gui.GuiSlot;
 import vip.mcsj.www.karrefinement.api.gui.GuiSlotRegistry;
 import vip.mcsj.www.karrefinement.api.gui.GuiType;
+import vip.mcsj.www.karrefinement.core.Service;
 import vip.mcsj.www.karrefinement.datamanager.*;
 import vip.mcsj.www.karrefinement.gui.KarForgeGui;
 import vip.mcsj.www.karrefinement.gui.KarForgeInvHolder;
@@ -87,7 +87,8 @@ public class KarEventListener implements Listener {
             itemPaper = e.getCursor();
             //获取点击前在所点击格子上的物品(待强化装备)
             itemEquipment = e.getCurrentItem();
-            if(PaperDataManager.isPaperLegal(itemPaper)){
+            Service service = KarRefinementAPI.getService(PaperDataManager.class);
+            if(service.isLegal(itemPaper)){
                 if(EquipmentDataManager.isEquipmentLegal(itemEquipment)){
                     // 触发 ProtectPaperApplyEvent
                     ProtectPaperApplyEvent paperEvent = new ProtectPaperApplyEvent(p1, itemPaper, itemEquipment);
@@ -95,7 +96,7 @@ public class KarEventListener implements Listener {
                     if (paperEvent.isCancelled()) {
                         return;
                     }
-                    if(PaperDataManager.protectorPaperUp(itemPaper,itemEquipment)) {
+                    if(service.up(itemPaper,itemEquipment)) {
                         Player p = (Player)e.getWhoClicked();
                         p.sendMessage(Message.messages.get("paper_up"));
                         p.playSound(p.getLocation(), KarRefinement.cs.getSounds().get(0),1,1);
@@ -119,12 +120,13 @@ public class KarEventListener implements Listener {
             }
             itemStone = e.getCursor();
             itemEquipment = e.getCurrentItem();
+            Service service = KarRefinementAPI.getService(SpecialStoneDataManager.class);
             //宝石是否可用
-            if(SpecialStoneDataManager.isSpeStoneLegal(itemStone)){
-                SpeStone speStone = SpecialStoneDataManager.getSpeStone(itemStone);
+            if(service.isLegal(itemStone)){
+                SpeStone speStone = (SpeStone) service.get(itemStone);
                 //装备是否可用
                 if(SpecialStoneDataManager.isEquipmentLegal(speStone,itemEquipment)){
-                    if(SpecialStoneDataManager.specialStoneUp(itemStone,itemEquipment)){
+                    if(service.up(itemStone,itemEquipment)){
                         Player p = (Player)e.getWhoClicked();
                         p.sendMessage(Message.messages.get("spestone_up"));
                         p.playSound(p.getLocation(), KarRefinement.cs.getSounds().get(0),1,1);
@@ -148,9 +150,10 @@ public class KarEventListener implements Listener {
             itemSoul = e.getCursor();
             itemEquipment = e.getCurrentItem();
             //精魂是否可用
-            if(InfiniteSoulManager.isInfiniteSoulLegal(itemSoul)){
+            Service service = KarRefinementAPI.getService(InfiniteSoulManager.class);
+            if(service.isLegal(itemSoul)){
                 if(EquipmentDataManager.isEquipmentLegal(itemEquipment)){
-                    if(InfiniteSoulManager.infiniteSoulUp(itemSoul,itemEquipment)) {
+                    if(service.up(itemSoul,itemEquipment)) {
                         Player p = (Player)e.getWhoClicked();
                         p.sendMessage(Message.messages.get("soul_up"));
                         p.playSound(p.getLocation(), KarRefinement.cs.getSounds().get(0),1,1);
@@ -240,7 +243,7 @@ public class KarEventListener implements Listener {
 
             if (KarRefinementGui.judgeInventoryClickMethod(itemStone,itemEquipment,p1)) {
 //                KarRefinementGui.KarRefinementMethod(itemStone,itemEquipment,p1,0.0);
-                if(KarRefinementGui.KarRefinementMethod(p1,itemEquipment,StoneDataManager.getStone(itemStone),0)){
+                if(KarRefinementGui.KarRefinementMethod(p1,itemEquipment,KarRefinementAPI.getService(StoneDataManager.class).get(itemStone),0)){
                     KarUtils.removeItemRefinement(itemStone);
                 }
                 closeItems.put(p1,new ItemStack[]{itemStone,itemEquipment});

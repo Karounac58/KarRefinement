@@ -13,7 +13,6 @@ import vip.mcsj.www.karrefinement.utils.KarUtils;
 import vip.mcsj.www.karrefinement.utils.ReflectionUtils;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class SpecialStoneDataManager implements Service {
 
@@ -69,8 +68,9 @@ public class SpecialStoneDataManager implements Service {
         this.speStoneName = speStoneName;
     }
 
-    public ItemStack createSpeStone(){
-        SpeStone speStone = speStones.get(this.speStoneName);
+    @Override
+    public ItemStack create(String speStoneName){
+        SpeStone speStone = speStones.get(speStoneName);
         if(speStone == null){
             return null;
         }
@@ -86,7 +86,8 @@ public class SpecialStoneDataManager implements Service {
         return speStoneItem;
     }
 
-    public static boolean isSpeStoneLegal(ItemStack speStoneItem){
+    @Override
+    public boolean isLegal(ItemStack speStoneItem){
         if(speStoneItem == null || speStoneItem.getType() == Material.AIR){
             return false;
         }
@@ -113,7 +114,8 @@ public class SpecialStoneDataManager implements Service {
      * @param speStoneItem
      * @return
      */
-    public static SpeStone getSpeStone(ItemStack speStoneItem){
+    @Override
+    public SpeStone get(ItemStack speStoneItem){
         NBTItem nbtItem = new NBTItem(speStoneItem);
         for (String s : speStones.keySet()) {
             SpeStone speStone = speStones.get(s);
@@ -155,7 +157,7 @@ public class SpecialStoneDataManager implements Service {
      * @param value
      * @return
      */
-    public static SpeStone getSpeStone(String key,int value){
+    public static SpeStone get(String key, int value){
         for (String s : speStones.keySet()) {
             SpeStone speStone = speStones.get(s);
             if(speStone.getNbtKey().equals(key)){
@@ -166,12 +168,13 @@ public class SpecialStoneDataManager implements Service {
         }
         return null;
     }
-    public static boolean specialStoneUp(ItemStack speStoneItem,ItemStack equipmentItem){
+    @Override
+    public boolean up(ItemStack speStoneItem, ItemStack equipmentItem){
 //        speStones.forEach((k,v) -> System.out.println(k+":"+v));
         ItemMeta stoneMeta = speStoneItem.getItemMeta();
         ItemMeta equipmentMeta = equipmentItem.getItemMeta();
         //将要镶嵌的宝石
-        SpeStone speStone = getSpeStone(speStoneItem);
+        SpeStone speStone = get(speStoneItem);
 
         //装备上有的宝石
         List<SpeStone> speStoneList = new ArrayList<>();
@@ -183,7 +186,7 @@ public class SpecialStoneDataManager implements Service {
             NBTItem equipmentNBTItem = new NBTItem(equipmentItem);
             if(equipmentNBTItem.hasTag(nbtKey)){
                 int NBTValue = equipmentNBTItem.getInteger(nbtKey);
-                speStoneList.add(getSpeStone(nbtKey, NBTValue));
+                speStoneList.add(get(nbtKey, NBTValue));
                 //如果现有同类宝石等级比将要镶嵌的宝石等级低，不加入
                 if(nbtKey.equals(speStone.getNbtKey()) && NBTValue < speStone.getLevel()){
                     lowerThenNewStone = true;
@@ -192,7 +195,7 @@ public class SpecialStoneDataManager implements Service {
                 if(nbtKey.equals(speStone.getNbtKey())){
                     continue;
                 }
-                speStoneList2.add(getSpeStone(nbtKey,NBTValue));
+                speStoneList2.add(get(nbtKey,NBTValue));
             }
         }
 
