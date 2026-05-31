@@ -12,11 +12,24 @@ import java.util.Arrays;
 
 public class ReflectionUtils {
     private static int[] getSpigotVersion(){
-        return Arrays.stream(Bukkit.getBukkitVersion().split("-")[0].split("\\.")).mapToInt(Integer::parseInt).toArray();
+        return Arrays.stream(Bukkit.getBukkitVersion().split("-")[0].split("\\.")).filter( s ->{
+                try{
+                    Integer.parseInt(s);
+                    return true;
+                }catch (Exception e){
+                    return false;
+                }
+            }
+        ).mapToInt(Integer::parseInt).toArray();
     }
 
     public static MCVersions judgeVersion(){
         int[] spigotVersion = getSpigotVersion();
+
+        if(spigotVersion[0] == 26){
+            return MCVersions.v121;
+        }
+
         if(spigotVersion[1] > 20){
             return MCVersions.v121;
         }else if(spigotVersion[1] < 13){
