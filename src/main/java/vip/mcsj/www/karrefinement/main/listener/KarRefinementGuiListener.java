@@ -37,8 +37,8 @@ public class KarRefinementGuiListener implements Listener {
         //29 31
         Bukkit.getScheduler().runTaskLater(KarRefinement.instance,() -> {
             Inventory inv = e.getClickedInventory();
-            ItemStack item1 = inv.getItem(29);
-            ItemStack item2 = inv.getItem(33);
+            ItemStack item1 = inv.getItem(KarRefinementGui.stoneSlot);
+            ItemStack item2 = inv.getItem(KarRefinementGui.equipmentSlot);
             if(item1 != null && item2 != null){
                 NBTItem nbtItem1 = new NBTItem(item1);
                 NBTItem nbtItem2 = new NBTItem(item2);

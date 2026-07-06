@@ -52,10 +52,6 @@ public class KarEventListener implements Listener {
     //判断是否正在锻造
     public static ConcurrentHashMap<Player,Integer> judgeInvForgeOrNot = new ConcurrentHashMap<>();
 
-    public static ConcurrentHashMap<Player,Integer> judgeTransformInvCloseOrNot = new ConcurrentHashMap<>();
-
-    public static ConcurrentHashMap<Player,Integer> judgeInvTransformOrNot = new ConcurrentHashMap<>();
-
     //用于在锻造时关闭菜单后恢复菜单状态
     public static ConcurrentHashMap<Player,Inventory> forgeInvs = new ConcurrentHashMap<>();
 
@@ -200,7 +196,7 @@ public class KarEventListener implements Listener {
             e.setCancelled(true);
             return;
         }
-        if(!(e.getSlot() == 29 || e.getSlot() == 33)){
+        if(!(e.getSlot() == KarRefinementGui.stoneSlot || e.getSlot() == KarRefinementGui.equipmentSlot)){
             // 检查是否为自定义槽位
             if (KarRefinementAPI.getInstance() != null) {
                 GuiSlotRegistry registry = KarRefinementAPI.getGuiSlotRegistry();
@@ -217,28 +213,30 @@ public class KarEventListener implements Listener {
             //System.out.println("2");
             e.setCancelled(true);
         }
-        if(e.getSlot() == 8){
-            Inventory forgeInv = Bukkit.createInventory(new KarForgeInvHolder(),45, PlaceholderAPI.setPlaceholders((Player) e.getWhoClicked(),KarForgeGui.title));
-            KarForgeGui.initInv(forgeInv,(Player) e.getWhoClicked());
-            e.getWhoClicked().openInventory(forgeInv);
+        if(KarRefinementGui.rItems.get("ForgeButton") != null) {
+            if (KarRefinementGui.rItems.get("ForgeButton").getSlots().contains(e.getSlot())) {
+                Inventory forgeInv = Bukkit.createInventory(new KarForgeInvHolder(), 45, PlaceholderAPI.setPlaceholders((Player) e.getWhoClicked(), KarForgeGui.title));
+                KarForgeGui.initInv(forgeInv, (Player) e.getWhoClicked());
+                e.getWhoClicked().openInventory(forgeInv);
+            }
         }
-        if(e.getSlot() == 49 && e.getClick().equals(ClickType.LEFT)){
-            ItemStack itemStone = inv.getItem(29);
-            ItemStack itemEquipment = inv.getItem(33);
+        if(KarRefinementGui.rItems.get("ConfirmButton").getSlots().contains(e.getSlot()) && e.getClick().equals(ClickType.LEFT)){
+            ItemStack itemStone = inv.getItem(KarRefinementGui.stoneSlot);
+            ItemStack itemEquipment = inv.getItem(KarRefinementGui.equipmentSlot);
             Player p1 = (Player)e.getWhoClicked();
 
             if (KarRefinementGui.judgeInventoryClickMethod(itemStone,itemEquipment,p1)) {
                 KarRefinementGui.playInvVideo(e.getInventory(),itemStone,itemEquipment,p1);
                 closeItems.put(p1,new ItemStack[]{itemStone,itemEquipment});
             }
-        }else if(e.getSlot() == 49 && e.getClick().equals(ClickType.RIGHT)){
+        }else if(KarRefinementGui.rItems.get("ConfirmButton").getSlots().contains(e.getSlot()) && e.getClick().equals(ClickType.RIGHT)){
             Player p1 = (Player)e.getWhoClicked();
             if(!KarRefinementGui.enableFastRefine){
                 p1.sendMessage(Message.messages.get("refinement_fast_off"));
                 return;
             }
-            ItemStack itemStone = inv.getItem(29);
-            ItemStack itemEquipment = inv.getItem(33);
+            ItemStack itemStone = inv.getItem(KarRefinementGui.stoneSlot);
+            ItemStack itemEquipment = inv.getItem(KarRefinementGui.equipmentSlot);
 
 
             if (KarRefinementGui.judgeInventoryClickMethod(itemStone,itemEquipment,p1)) {
@@ -249,44 +247,6 @@ public class KarEventListener implements Listener {
                 closeItems.put(p1,new ItemStack[]{itemStone,itemEquipment});
             }
             KarRefinementGui.renderCustomSlots(inv, p1, GuiType.REFINEMENT);
-        }
-    }
-
-
-    @EventHandler
-    public void onPlayerDamageOtherEvent(EntityDamageByEntityEvent e){
-        if (e.getDamager() instanceof Player && e.getEntity() instanceof Player) {
-            Player attacker = (Player) e.getDamager();
-            Player victim = (Player) e.getEntity();
-            if(attacker.getInventory().getItemInMainHand().getType() == Material.AIR){
-                return;
-            }
-            ItemStack itemInUse = attacker.getInventory().getItemInMainHand();
-            if(!canRefinementEquipment.get("Hand").contains(itemInUse.getType().name().toUpperCase())){
-                return;
-            }
-            NBTItem nbtItem = new NBTItem(itemInUse);
-            if(!nbtItem.hasTag("lfs")){
-                return;
-            }
-            int i = nbtItem.getInteger("lfs");
-            switch (i){
-                case 1:
-                    victim.setFireTicks(10*20);
-                    break;
-                case 2:
-                    victim.setFireTicks(20*20);
-                    break;
-                case 3:
-                    victim.setFireTicks(30*20);
-                    break;
-                case 4:
-                    victim.setFireTicks(40*20);
-                    break;
-                case 5:
-                    victim.setFireTicks(50*20);
-                    break;
-            }
         }
     }
 
@@ -331,9 +291,9 @@ public class KarEventListener implements Listener {
                 Bukkit.getScheduler().runTaskLater(KarRefinement.instance,()-> e.getPlayer().openInventory(invs.get(e.getPlayer())),1L);
                 return;
             }
-            ItemStack itemStone = e.getInventory().getItem(29);
+            ItemStack itemStone = e.getInventory().getItem(KarRefinementGui.stoneSlot);
 //            e.getInventory().setItem(29,null);
-            ItemStack itemEquipment = e.getInventory().getItem(33);
+            ItemStack itemEquipment = e.getInventory().getItem(KarRefinementGui.equipmentSlot);
 //            e.getInventory().setItem(33,null);
             Player p = (Player) e.getPlayer();
             if(itemStone != null) {
@@ -436,7 +396,7 @@ public class KarEventListener implements Listener {
             e.setCancelled(true);
             return;
         }
-        if(!(e.getSlot() == 19 || e.getSlot() == 25)){
+        if(!(e.getSlot() == KarForgeGui.mainSlot || e.getSlot() == KarForgeGui.deputySlot)){
             // 检查是否为自定义槽位
             if (KarRefinementAPI.getInstance() != null) {
                 GuiSlotRegistry registry = KarRefinementAPI.getGuiSlotRegistry();
@@ -453,9 +413,9 @@ public class KarEventListener implements Listener {
             //System.out.println("2");
             e.setCancelled(true);
         }
-        if(e.getSlot() == 4 && e.getClick().equals(ClickType.LEFT)){
-            ItemStack itemEquipment1 = inv.getItem(19);
-            ItemStack itemEquipment2 = inv.getItem(25);
+        if(KarForgeGui.fItems.get("InfoButton").getSlots().contains(e.getSlot()) && e.getClick().equals(ClickType.LEFT)){
+            ItemStack itemEquipment1 = inv.getItem(KarForgeGui.mainSlot);
+            ItemStack itemEquipment2 = inv.getItem(KarForgeGui.deputySlot);
             if(itemEquipment1 == null || itemEquipment2 == null){
                 e.getWhoClicked().sendMessage(Message.messages.get("forge_needitem"));
                 return;
@@ -473,14 +433,18 @@ public class KarEventListener implements Listener {
                 e.getWhoClicked().sendMessage(Message.messages.get("forge_disablelevel"));
                 return;
             }
-            ItemStack item = inv.getItem(4);
-            ItemMeta itemMeta = item.getItemMeta();
-            itemMeta.setLore(Arrays.asList(Message.messages.get("forge_success").replace("{success}",success+"")));
-            item.setItemMeta(itemMeta);
+
+            for (Integer slot : KarForgeGui.fItems.get("InfoButton").getSlots()) {
+                ItemStack item = inv.getItem(slot);
+                ItemMeta itemMeta = item.getItemMeta();
+                itemMeta.setLore(Arrays.asList(Message.messages.get("forge_success").replace("{success}",success+"")));
+                item.setItemMeta(itemMeta);
+            }
+
         }
-        if(e.getSlot() == 22 && e.getClick().equals(ClickType.LEFT)){
-            ItemStack itemEquipment1 = inv.getItem(19);
-            ItemStack itemEquipment2 = inv.getItem(25);
+        if(KarForgeGui.fItems.get("ConfirmButton").getSlots().contains(e.getSlot()) && e.getClick().equals(ClickType.LEFT)){
+            ItemStack itemEquipment1 = inv.getItem(KarForgeGui.mainSlot);
+            ItemStack itemEquipment2 = inv.getItem(KarForgeGui.deputySlot);
             Player p1 = (Player)e.getWhoClicked();
 
             if (KarForgeGui.judgeInventoryClickMethod(itemEquipment1,itemEquipment2,p1)) {
@@ -502,9 +466,9 @@ public class KarEventListener implements Listener {
                 Bukkit.getScheduler().runTaskLater(KarRefinement.instance,()-> e.getPlayer().openInventory(forgeInvs.get(e.getPlayer())),1L);
                 return;
             }
-            ItemStack itemEquipment1 = e.getInventory().getItem(19);
+            ItemStack itemEquipment1 = e.getInventory().getItem(KarForgeGui.mainSlot);
 //            e.getInventory().setItem(29,null);
-            ItemStack itemEquipment2 = e.getInventory().getItem(25);
+            ItemStack itemEquipment2 = e.getInventory().getItem(KarForgeGui.deputySlot);
 //            e.getInventory().setItem(33,null);
             Player p = (Player) e.getPlayer();
             if(itemEquipment1 != null) {

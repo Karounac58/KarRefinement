@@ -17,6 +17,7 @@ import vip.mcsj.www.karrefinement.api.model.IRefinementResult;
 import vip.mcsj.www.karrefinement.datamanager.*;
 import vip.mcsj.www.karrefinement.main.KarRefinement;
 import vip.mcsj.www.karrefinement.main.listener.KarEventListener;
+import vip.mcsj.www.karrefinement.object.AnimationType;
 import vip.mcsj.www.karrefinement.object.InvItem;
 import vip.mcsj.www.karrefinement.object.MCVersions;
 import vip.mcsj.www.karrefinement.object.Stone;
@@ -40,7 +41,13 @@ public class KarRefinementGui {
 
     public static Boolean enableFastRefine = true;
 
+    public static List<Integer> amSlots;
 
+    public static AnimationType playType;
+
+    public static int stoneSlot;
+
+    public static int equipmentSlot;
     public static void init(){
         if(!rItems.isEmpty()){
             rItems.clear();
@@ -52,53 +59,89 @@ public class KarRefinementGui {
         for (String key : keys) {
             String name = fileCS.getString(key + ".Name");
             Material material = Material.valueOf(fileCS.getString(key + ".Material"));
+            List<Integer> slots = new ArrayList<>();
+            if(!key.equals("VideoItem")){
+                slots = fileCS.getIntegerList(key+".Slots");
+            }
             int data = fileCS.getInt(key + ".Data");
             int customModelData = fileCS.getInt(key + ".CustomModelData");
             List<String> lore = fileCS.getStringList(key + ".Lore");
-            rItems.put(key,new InvItem(name, material, data, customModelData, lore));
+            if(slots.isEmpty()) {
+                rItems.put(key, new InvItem(name, material, data, customModelData, lore));
+            }else{
+                rItems.put(key, new InvItem(name, material, slots, data, customModelData, lore));
+            }
         }
 
         enableFastRefine = KarRefinement.instance.getConfig().getBoolean("settings.enablefastrefine");
+        amSlots = file.getIntegerList("Animation.Slots");
+        playType = AnimationType.valueOf(file.getString("Animation.PlayType"));
+
+        stoneSlot = file.getInt("Slot1");
+        equipmentSlot = file.getInt("Slot2");
     }
     public static void setInvInitial(Inventory inv,Player p) {
-        List<Integer> indexs = Arrays.asList(0, 1, 2, 3, 4, 5, 6, 7, 45, 46, 47, 48, 50, 51, 52, 53);
-        for (int i = 0; i < 54; i++) {
-            if (i == 29 || i == 33) {
+//        List<Integer> indexs = Arrays.asList(0, 1, 2, 3, 4, 5, 6, 7, 45, 46, 47, 48, 50, 51, 52, 53);
+//        for (int i = 0; i < 54; i++) {
+//            if (i == 29 || i == 33) {
+//                continue;
+//            }
+//            if(i == 8){
+//                InvItem forgeButton = rItems.get("ForgeButton");
+//                ItemStack invItem = createInvItem(forgeButton,p);
+//                inv.setItem(8, invItem);
+//            }
+//            else if (i == 20) {
+//                InvItem stoneInfo = rItems.get("StoneInfo");
+//                ItemStack invItem = createInvItem(stoneInfo,p);
+//                inv.setItem(20, invItem);
+//            } else if (i == 24) {
+//                InvItem equipmentinfo = rItems.get("Equipmentinfo");
+//                ItemStack invItem = createInvItem(equipmentinfo,p);
+//                inv.setItem(24, invItem);
+//            } else if (i == 49) {
+//                InvItem confirmButton = rItems.get("ConfirmButton");
+//                ItemStack invItem = createInvItem(confirmButton,p);
+//                ItemMeta im = invItem.getItemMeta();
+//                List<String> lore = im.getLore();
+//                lore = lore.stream().map(s -> s.replace("{chance}",Message.messages.get("refinement_gui_chance_msg")))
+//                        .collect(Collectors.toList());
+//                im.setLore(lore);
+//                invItem.setItemMeta(im);
+//                inv.setItem(49, invItem);
+//            } else if (indexs.contains(i)) {
+//                InvItem barrier = rItems.get("Barrier");
+//                ItemStack invItem = createInvItem(barrier,p);
+//                inv.setItem(i,invItem);
+//            } else {
+//                InvItem barrier2 = rItems.get("Barrier2");
+//                ItemStack invItem = createInvItem(barrier2,p);
+//                inv.setItem(i, invItem);
+//            }
+//        }
+        Set<String> keys = rItems.keySet();
+        for (String key : keys) {
+            if(key.equals("VideoItem")){
                 continue;
             }
-            if(i == 8){
-                InvItem forgeButton = rItems.get("ForgeButton");
-                ItemStack invItem = createInvItem(forgeButton,p);
-                inv.setItem(8, invItem);
-            }
-            else if (i == 20) {
-                InvItem stoneInfo = rItems.get("StoneInfo");
-                ItemStack invItem = createInvItem(stoneInfo,p);
-                inv.setItem(20, invItem);
-            } else if (i == 24) {
-                InvItem equipmentinfo = rItems.get("Equipmentinfo");
-                ItemStack invItem = createInvItem(equipmentinfo,p);
-                inv.setItem(24, invItem);
-            } else if (i == 49) {
-                InvItem confirmButton = rItems.get("ConfirmButton");
-                ItemStack invItem = createInvItem(confirmButton,p);
-                ItemMeta im = invItem.getItemMeta();
+
+            InvItem invItem = rItems.get(key);
+            ItemStack invItem1 = createInvItem(invItem, p);
+
+            if(key.equals("ConfirmButton")){
+                ItemMeta im = invItem1.getItemMeta();
                 List<String> lore = im.getLore();
                 lore = lore.stream().map(s -> s.replace("{chance}",Message.messages.get("refinement_gui_chance_msg")))
                         .collect(Collectors.toList());
                 im.setLore(lore);
-                invItem.setItemMeta(im);
-                inv.setItem(49, invItem);
-            } else if (indexs.contains(i)) {
-                InvItem barrier = rItems.get("Barrier");
-                ItemStack invItem = createInvItem(barrier,p);
-                inv.setItem(i,invItem);
-            } else {
-                InvItem barrier2 = rItems.get("Barrier2");
-                ItemStack invItem = createInvItem(barrier2,p);
-                inv.setItem(i, invItem);
+                invItem1.setItemMeta(im);
+            }
+
+            for (Integer slot : invItem.getSlots()) {
+                inv.setItem(slot,invItem1);
             }
         }
+
 
         // === 渲染自定义槽位 ===
         renderCustomSlots(inv, p, GuiType.REFINEMENT);
@@ -143,35 +186,36 @@ public class KarRefinementGui {
      * @param p
      */
     public static void playInvVideo(Inventory inv, ItemStack itemStone, ItemStack itemEquipment, Player p) {
-        List<Integer> lists = new ArrayList<>();
-        List<Integer> removeIndex = new ArrayList<>();
-        for (int i = 0; i < 54; i++) {
-            lists.add(i);
-        }
-        for (int i = 0; i < 9; i++) {
-            lists.remove(Integer.valueOf(i));
-            removeIndex.add(i);
-        }
-        for (int i = 45; i < 54; i++) {
-            lists.remove(Integer.valueOf(i));
-            removeIndex.add(i);
-        }
-        lists.remove(Integer.valueOf(29));
-        lists.remove(Integer.valueOf(33));
-        lists.remove(Integer.valueOf(49));
-        lists.remove(Integer.valueOf(20));
-        lists.remove(Integer.valueOf(24));
-        int size = lists.size();
-        removeIndex.add(29);
-        removeIndex.add(33);
-        removeIndex.add(49);
-        removeIndex.add(20);
-        removeIndex.add(24);
+//        List<Integer> lists = new ArrayList<>();
+//        List<Integer> removeIndex = new ArrayList<>();
+//        for (int i = 0; i < 54; i++) {
+//            lists.add(i);
+//        }
+//        for (int i = 0; i < 9; i++) {
+//            lists.remove(Integer.valueOf(i));
+//            removeIndex.add(i);
+//        }
+//        for (int i = 45; i < 54; i++) {
+//            lists.remove(Integer.valueOf(i));
+//            removeIndex.add(i);
+//        }
+//        lists.remove(Integer.valueOf(29));
+//        lists.remove(Integer.valueOf(33));
+//        lists.remove(Integer.valueOf(49));
+//        lists.remove(Integer.valueOf(20));
+//        lists.remove(Integer.valueOf(24));
+//        int size = lists.size();
+//        removeIndex.add(29);
+//        removeIndex.add(33);
+//        removeIndex.add(49);
+//        removeIndex.add(20);
+//        removeIndex.add(24);
+        int size = amSlots.size();
         InvItem videoItem = rItems.get("VideoItem");
         ItemStack invItem = createInvItem(videoItem,p);
         new BukkitRunnable() {
             int index = 0;
-            final List<Integer> remainingSlots = new ArrayList<>(lists);
+            final List<Integer> remainingSlots = new ArrayList<>(amSlots);
             @Override
             public void run() {
                 if(index == 0) {
@@ -191,8 +235,14 @@ public class KarRefinementGui {
                     this.cancel();
                     return;
                 }
-                int randIdx = ThreadLocalRandom.current().nextInt(remainingSlots.size());
-                int h = remainingSlots.remove(randIdx);
+                int randIdx = 0;
+                int h = 0;
+                if(playType == AnimationType.Random) {
+                     randIdx = ThreadLocalRandom.current().nextInt(remainingSlots.size());
+                     h = remainingSlots.remove(randIdx);
+                }else if(playType == AnimationType.Turn){
+                    h = remainingSlots.get(index);
+                }
                 inv.setItem(h, invItem);
                 p.updateInventory();
                 KarEventListener.invs.put(p, inv);

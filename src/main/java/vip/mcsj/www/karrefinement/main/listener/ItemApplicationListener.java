@@ -115,31 +115,31 @@ public class ItemApplicationListener implements Listener {
         }
     }
 
-    /**
-     * PvP 着火效果事件
-     */
-    @EventHandler
-    public void onPlayerDamageOtherEvent(EntityDamageByEntityEvent e) {
-        if (!(e.getDamager() instanceof Player) || !(e.getEntity() instanceof Player)) {
-            return;
-        }
-        Player attacker = (Player) e.getDamager();
-        Player victim = (Player) e.getEntity();
-        if (attacker.getInventory().getItemInMainHand().getType() == Material.AIR) {
-            return;
-        }
-        ItemStack itemInUse = attacker.getInventory().getItemInMainHand();
-        if (!EquipmentDataManager.canRefinementEquipment.containsKey("Hand") ||
-                !EquipmentDataManager.canRefinementEquipment.get("Hand").contains(itemInUse.getType().name().toUpperCase())) {
-            return;
-        }
-        NBTItem nbtItem = new NBTItem(itemInUse);
-        if (!nbtItem.hasTag("lfs")) {
-            return;
-        }
-        int lfs = nbtItem.getInteger("lfs");
-        if (lfs >= 1 && lfs <= 5) {
-            victim.setFireTicks(lfs * 10 * 20);
-        }
-    }
+//    /**
+//     * PvP 着火效果事件
+//     */
+//    @EventHandler
+//    public void onPlayerDamageOtherEvent(EntityDamageByEntityEvent e) {
+//        if (!(e.getDamager() instanceof Player) || !(e.getEntity() instanceof Player)) {
+//            return;
+//        }
+//        Player attacker = (Player) e.getDamager();
+//        Player victim = (Player) e.getEntity();
+//        if (attacker.getInventory().getItemInMainHand().getType() == Material.AIR) {
+//            return;
+//        }
+//        ItemStack itemInUse = attacker.getInventory().getItemInMainHand();
+//        if (!EquipmentDataManager.canRefinementEquipment.containsKey("Hand") ||
+//                !EquipmentDataManager.canRefinementEquipment.get("Hand").contains(itemInUse.getType().name().toUpperCase())) {
+//            return;
+//        }
+//        NBTItem nbtItem = new NBTItem(itemInUse);
+//        if (!nbtItem.hasTag("lfs")) {
+//            return;
+//        }
+//        int lfs = nbtItem.getInteger("lfs");
+//        if (lfs >= 1 && lfs <= 5) {
+//            victim.setFireTicks(lfs * 10 * 20);
+//        }
+//    }
 }

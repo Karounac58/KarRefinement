@@ -16,6 +16,8 @@ import vip.mcsj.www.karrefinement.api.gui.GuiType;
 import vip.mcsj.www.karrefinement.datamanager.Message;
 import vip.mcsj.www.karrefinement.datamanager.StoneDataManager;
 import vip.mcsj.www.karrefinement.main.KarRefinement;
+import vip.mcsj.www.karrefinement.main.listener.KarEventListener;
+import vip.mcsj.www.karrefinement.object.AnimationType;
 import vip.mcsj.www.karrefinement.object.Compound;
 import vip.mcsj.www.karrefinement.object.InvItem;
 import vip.mcsj.www.karrefinement.service.gui.SimpleGuiContext;
@@ -38,6 +40,16 @@ public class KarCompoundStoneGui{
     public static Map<String, InvItem> cItems = new HashMap<>();
     public static String title = "";
 
+    public static List<Integer> amSlots;
+
+    public static AnimationType playType;
+
+    public static int originSlot1;
+
+    public static int originSlot2;
+
+    public static int resultSlot;
+
     public static void init(){
         if(!cItems.isEmpty()){
             cItems.clear();
@@ -49,11 +61,29 @@ public class KarCompoundStoneGui{
         for (String key : keys) {
             String name = fileCS.getString(key + ".Name");
             Material material = Material.valueOf(fileCS.getString(key + ".Material"));
+            List<Integer> slots = new ArrayList<>();
+            if(!key.equals("VideoItem")){
+                slots = fileCS.getIntegerList(key+".Slots");
+            }
             int data = fileCS.getInt(key + ".Data");
             int customModelData = fileCS.getInt(key + ".CustomModelData");
             List<String> lore = fileCS.getStringList(key + ".Lore");
-            cItems.put(key,new InvItem(name, material, data, customModelData, lore));
+            if(slots.isEmpty()){
+                cItems.put(key,new InvItem(name, material, data, customModelData, lore));
+            }else{
+                cItems.put(key,new InvItem(name,material,slots,data,customModelData,lore));
+            }
+
         }
+
+        amSlots = file.getIntegerList("Animation.Slots");
+
+        playType = AnimationType.valueOf(file.getString("Animation.PlayType"));
+
+        originSlot1 = file.getInt("Slot1");
+        originSlot2 = file.getInt("Slot2");
+        resultSlot = file.getInt("Slot3");
+
         initCompoundData();
     }
 
@@ -75,23 +105,35 @@ public class KarCompoundStoneGui{
     }
 
     public static void initial(Inventory inv,Player p) {
-        List<Integer> redIndexs = Arrays.asList(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 17, 18, 26, 27, 35, 36, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53);
-        List<Integer> greenIndexs = Arrays.asList(37,38,39,40,41,42,43);
+        InvItem redPaneInvItem = cItems.get("Barrier");
+        InvItem whitePaneInvItem = cItems.get("Barrier2");
+        InvItem confirmInvItem = cItems.get("ConfirmButton");
+        ItemStack redBarrier = KarRefinementGui.createInvItem(redPaneInvItem,p);
+        ItemStack whiteBarrier = KarRefinementGui.createInvItem(whitePaneInvItem,p);
+        ItemStack confirmButton =  KarRefinementGui.createInvItem(confirmInvItem,p);
+//        for (int i = 0; i < 54; i++) {
+//            if (i == 16 || i == 34 || i == 19) {
+//                continue;
+//            }
+//            if (redIndexs.contains(i)) {
+//                inv.setItem(i, redBarrier);
+//            } else if(greenIndexs.contains(i)){
+//                inv.setItem(i, confirmButton);
+//            }else{
+//                inv.setItem(i, whiteBarrier);
+//            }
+//        }
 
-        ItemStack redBarrier = KarRefinementGui.createInvItem(cItems.get("Barrier"),p);
-        ItemStack whiteBarrier = KarRefinementGui.createInvItem(cItems.get("Barrier2"),p);
-        ItemStack confirmButton =  KarRefinementGui.createInvItem(cItems.get("ConfirmButton"),p);
-        for (int i = 0; i < 54; i++) {
-            if (i == 16 || i == 34 || i == 19) {
-                continue;
-            }
-            if (redIndexs.contains(i)) {
-                inv.setItem(i, redBarrier);
-            } else if(greenIndexs.contains(i)){
-                inv.setItem(i, confirmButton);
-            }else{
-                inv.setItem(i, whiteBarrier);
-            }
+        for (Integer slot : redPaneInvItem.getSlots()) {
+            inv.setItem(slot,redBarrier);
+        }
+
+        for (Integer slot : whitePaneInvItem.getSlots()) {
+            inv.setItem(slot,whiteBarrier);
+        }
+
+        for (Integer slot : confirmInvItem.getSlots()) {
+            inv.setItem(slot,confirmButton);
         }
 
         // === 渲染自定义槽位 ===
@@ -111,9 +153,9 @@ public class KarCompoundStoneGui{
     }
 
     public static void startCompound(Inventory inv,Player p,Boolean b){
-        ItemStack first = inv.getItem(16);
-        ItemStack second = inv.getItem(34);
-        if(inv.getItem(16) == null || inv.getItem(34) == null){
+        ItemStack first = inv.getItem(originSlot1);
+        ItemStack second = inv.getItem(originSlot2);
+        if(inv.getItem(originSlot1) == null || inv.getItem(originSlot2) == null){
             p.closeInventory();
             p.sendMessage(Message.messages.get("compound_confilctstone"));
             return;
@@ -191,14 +233,13 @@ public class KarCompoundStoneGui{
     }
 
     public static void playInvVideo(Inventory inv,Player p) {
-        List<Integer> indexs = Arrays.asList(25,24,23,22,21);
+        List<Integer> indexs = new ArrayList<>(amSlots);
         ItemStack videoItem = KarRefinementGui.createInvItem(cItems.get("VideoItem"),p);
         new BukkitRunnable() {
             @Override
             public void run() {
                 for (int i = 0; i < indexs.size(); i++) {
                     inv.setItem(indexs.get(i), videoItem);
-                    
                     Sound runSound = SoundDataManager.getSound("KarCompoundStoneGui", "Run");
                     if(runSound != null){
                         p.playSound(p.getLocation(), runSound, 1, 1);
@@ -212,6 +253,7 @@ public class KarCompoundStoneGui{
                         e.printStackTrace();
                     }
                 }
+
             }
         }.runTaskAsynchronously(KarRefinement.instance);
 

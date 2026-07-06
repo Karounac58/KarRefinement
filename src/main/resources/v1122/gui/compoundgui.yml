@@ -1,14 +1,27 @@
 Title: "§c§l宝石合成界面"
+Animation:
+  # 动画播放的格数
+  Slots: [25,24,23,22,21,20]
+  # 动画播放的形式：Random或Turn，Random从上面格数中随机播放;Turn按顺序播放，例如从25到24，再到23，以此类推(Random暂未实现)
+  PlayType: Turn
+# 合石原料槽位1
+Slot1: 16
+# 合石原料槽位2
+Slot2: 34
+# 合石结果槽位
+Slot3: 19
 Item:
   Barrier:
     Name: ""
     Material: STAINED_GLASS_PANE
+    Slots: [0,1,2,3,4,5,6,7,8,9,17,18,26,27,35,36,44,45,46,47,48,49,50,51,52,53]
     Data: 14
     CustomModelData: 0
     Lore: []
   Barrier2:
     Name: ""
     Material: STAINED_GLASS_PANE
+    Slots: [10,11,12,13,14,15,20,21,22,23,24,25,28,29,30,31,32,33]
     Data: 0
     CustomModelData: 0
     Lore: []
@@ -21,6 +34,7 @@ Item:
   ConfirmButton:
     Name: "§6点击开始合成"
     Material: STAINED_GLASS_PANE
+    Slots: [37,38,39,40,41,42,43]
     Data: 13
     CustomModelData: 0
     Lore:

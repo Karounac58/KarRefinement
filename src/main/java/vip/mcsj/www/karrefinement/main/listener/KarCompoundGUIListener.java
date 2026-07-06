@@ -39,9 +39,9 @@ public class KarCompoundGUIListener implements Listener {
             });
             return;
         } else {
-            ItemStack stone1 = e.getInventory().getItem(16);
-            ItemStack stone2 = e.getInventory().getItem(34);
-            ItemStack stone3 = e.getInventory().getItem(19);
+            ItemStack stone1 = e.getInventory().getItem(KarCompoundStoneGui.originSlot1);
+            ItemStack stone2 = e.getInventory().getItem(KarCompoundStoneGui.originSlot2);
+            ItemStack stone3 = e.getInventory().getItem(KarCompoundStoneGui.resultSlot);
             if (stone1 != null) {
                 p.getInventory().addItem(stone1);
             }
@@ -70,8 +70,12 @@ public class KarCompoundGUIListener implements Listener {
             e.setCancelled(true);
             return;
         }
-        List<Integer> buttonIndex = Arrays.asList(37, 38, 39, 40, 41, 42, 43);
-        List<Integer> putIndex = Arrays.asList(16, 19, 34);
+        List<Integer> buttonIndex = KarCompoundStoneGui.cItems.get("ConfirmButton").getSlots();
+        List<Integer> putIndex = Arrays.asList(
+                KarCompoundStoneGui.originSlot1,
+                KarCompoundStoneGui.originSlot2,
+                KarCompoundStoneGui.resultSlot
+        );
         if (!putIndex.contains(e.getSlot())) {
             // 检查是否为自定义槽位
             if (KarRefinementAPI.getInstance() != null) {
@@ -108,7 +112,7 @@ public class KarCompoundGUIListener implements Listener {
             return;
         }
         Bukkit.getScheduler().runTaskLater(KarRefinement.instance, () -> {
-            if(e.getClickedInventory().getItem(16) != null && e.getClickedInventory().getItem(34) != null ){
+            if(e.getClickedInventory().getItem(KarCompoundStoneGui.originSlot1) != null && e.getClickedInventory().getItem(KarCompoundStoneGui.originSlot2) != null ){
                 NBTItem firstNBT = new NBTItem(e.getClickedInventory().getItem(16));
                 NBTItem secondNBT = new NBTItem(e.getClickedInventory().getItem(34));
                 if(firstNBT.getString("refinementstone").equals(secondNBT.getString("refinementstone"))){

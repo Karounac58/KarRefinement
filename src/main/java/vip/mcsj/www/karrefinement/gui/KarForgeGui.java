@@ -20,6 +20,7 @@ import vip.mcsj.www.karrefinement.datamanager.EquipmentDataManager;
 import vip.mcsj.www.karrefinement.datamanager.Message;
 import vip.mcsj.www.karrefinement.main.KarRefinement;
 import vip.mcsj.www.karrefinement.main.listener.KarEventListener;
+import vip.mcsj.www.karrefinement.object.AnimationType;
 import vip.mcsj.www.karrefinement.object.InvItem;
 import vip.mcsj.www.karrefinement.service.gui.ForgeGuiContext;
 import vip.mcsj.www.karrefinement.service.SoundDataManager;
@@ -30,13 +31,20 @@ import vip.mcsj.www.karrefinement.utils.ReflectionUtils;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 
 import static vip.mcsj.www.karrefinement.gui.KarRefinementGui.createInvItem;
 
 public class KarForgeGui {
     public static Map<String, InvItem> fItems = new HashMap<>();
     public static String title = "";
+    public static List<Integer> amSlots;
 
+    public static AnimationType playType;
+
+    public static int mainSlot;
+
+    public static int deputySlot;
     public static void init(){
         if(!fItems.isEmpty()){
             fItems.clear();
@@ -48,37 +56,61 @@ public class KarForgeGui {
         for (String key : keys) {
             String name = fileCS.getString(key + ".Name");
             Material material = Material.valueOf(fileCS.getString(key + ".Material"));
+            List<Integer> slots = new ArrayList<>();
+            if(!key.equals("VideoItem")){
+                slots = fileCS.getIntegerList(key+".Slots");
+            }
             int data = fileCS.getInt(key + ".Data");
             int customModelData = fileCS.getInt(key + ".CustomModelData");
             List<String> lore = fileCS.getStringList(key + ".Lore");
-            fItems.put(key,new InvItem(name, material, data, customModelData, lore));
+            if(slots.isEmpty()) {
+                fItems.put(key, new InvItem(name, material, data, customModelData, lore));
+            }else{
+                fItems.put(key,new InvItem(name,material,slots,data,customModelData,lore));
+            }
         }
+
+        amSlots = file.getIntegerList("Animation.Slots");
+        playType = AnimationType.valueOf(file.getString("Animation.PlayType"));
+        mainSlot = file.getInt("Slot1");
+        deputySlot = file.getInt("Slot2");
     }
     public static void initInv(Inventory inv,Player p) {
-        List<Integer> other = Arrays.asList(0,1,2,3,5,6,7,8,36,37,38,39,40,41,42,43,44);
-        List<Integer> greenPanes = Arrays.asList(9,10,11,18,20,27,28,29);
-        List<Integer> blackPanes = Arrays.asList(12,13,14,21,23,30,31,32);
-        List<Integer> bluePanes = Arrays.asList(15,16,17,24,26,33,34,35);
-        ItemStack redPaneItem = createInvItem(fItems.get("Barrier2"),p);
-        ItemStack blackPaneItem = createInvItem(fItems.get("Barrier3"),p);
-        ItemStack bluePaneItem = createInvItem(fItems.get("Barrier4"),p);
-        ItemStack whitePaneItem = createInvItem(fItems.get("Barrier"),p);
-        ItemStack redStone = createInvItem(fItems.get("ConfirmButton"),p);
-        ItemStack oak_sign = createInvItem(fItems.get("InfoButton"),p);
-        for (Integer index : other) {
+//        List<Integer> other = Arrays.asList(0,1,2,3,5,6,7,8,36,37,38,39,40,41,42,43,44);
+//        List<Integer> greenPanes = Arrays.asList(9,10,11,18,20,27,28,29);
+//        List<Integer> blackPanes = Arrays.asList(12,13,14,21,23,30,31,32);
+//        List<Integer> bluePanes = Arrays.asList(15,16,17,24,26,33,34,35);
+        InvItem redPaneInvItem = fItems.get("Barrier2");
+        InvItem blackPaneInvItem = fItems.get("Barrier3");
+        InvItem bluePaneInvItem = fItems.get("Barrier4");
+        InvItem whitePaneInvItem = fItems.get("Barrier");
+        InvItem confirmInvItem = fItems.get("ConfirmButton");
+        InvItem infoInvItem = fItems.get("InfoButton");
+        ItemStack redPaneItem = createInvItem(redPaneInvItem,p);
+        ItemStack blackPaneItem = createInvItem(blackPaneInvItem,p);
+        ItemStack bluePaneItem = createInvItem(bluePaneInvItem,p);
+        ItemStack whitePaneItem = createInvItem(whitePaneInvItem,p);
+        ItemStack redStone = createInvItem(confirmInvItem,p);
+        ItemStack oak_sign = createInvItem(infoInvItem,p);
+        for (Integer index : whitePaneInvItem.getSlots()) {
             inv.setItem(index,whitePaneItem);
         }
-        for (Integer index : greenPanes) {
+        for (Integer index : redPaneInvItem.getSlots()) {
             inv.setItem(index,redPaneItem);
         }
-        for (Integer index : blackPanes) {
+        for (Integer index : blackPaneInvItem.getSlots()) {
             inv.setItem(index,blackPaneItem);
         }
-        for (Integer index : bluePanes) {
+        for (Integer index : bluePaneInvItem.getSlots()) {
             inv.setItem(index,bluePaneItem);
         }
-        inv.setItem(22,redStone);
-        inv.setItem(4,oak_sign);
+        for (Integer index : infoInvItem.getSlots()) {
+            inv.setItem(index,oak_sign);
+        }
+
+        for (Integer index : confirmInvItem.getSlots()) {
+            inv.setItem(index,redStone);
+        }
 
         // === 渲染自定义槽位 ===
         if (KarRefinementAPI.getInstance() != null) {
@@ -179,7 +211,8 @@ public class KarForgeGui {
      * @param p
      */
     public static void playInvVideo(Inventory inv, ItemStack itemEquipment1, ItemStack itemEquipment2, Player p) {
-        List<Integer> indexs = Arrays.asList(12,13,14,23,32,31,30,21);
+        List<Integer> indexs = new ArrayList<>(amSlots);
+        int size = indexs.size();
         ItemStack videoItem = createInvItem(fItems.get("VideoItem"),p);
         new BukkitRunnable() {
             int index = 0;
@@ -193,14 +226,23 @@ public class KarForgeGui {
                     this.cancel();
                     return;
                 }
-                if(index >= indexs.size()) {
+                if(index >= size) {
                     KarForgeMethod(itemEquipment1, itemEquipment2, p);
                     initInv(inv, p);
                     KarEventListener.judgeInvForgeOrNot.put(p, 0);
                     this.cancel();
                     return;
                 }
-                inv.setItem(indexs.get(index), videoItem);
+
+                int h = 0;
+                if(playType == AnimationType.Turn) {
+                    h = indexs.get(index);
+                }else if(playType == AnimationType.Random){
+                    int randIdx = ThreadLocalRandom.current().nextInt(indexs.size());
+                    h = indexs.remove(randIdx);
+                }
+
+                inv.setItem(h,videoItem);
                 p.updateInventory();
                 KarEventListener.forgeInvs.put(p, inv);
                 

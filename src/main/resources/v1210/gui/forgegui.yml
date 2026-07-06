@@ -1,38 +1,53 @@
 Title: "§c§l锻造界面"
+Animation:
+  # 动画播放的格数
+  Slots: [12,13,14,23,32,31,30,21]
+  # 动画播放的形式：Random或Turn，Random从上面格数中随机播放;Turn按顺序播放，例如从12到13，再到14，以此类推
+  PlayType: Random
+# 主装备槽
+Slot1: 19
+# 副装备槽(消耗品)
+Slot2: 25
 Item:
   InfoButton:
     Name: "§c§l点击查看/刷新成功率"
     Material: OAK_SIGN
+    Slots: [4]
     Data: 0
     CustomModelData: 0
     Lore: []
   ConfirmButton:
     Name: "§c§l点击开始锻造"
     Material: RED_SANDSTONE
+    Slots: [22]
     Data: 0
     CustomModelData: 0
     Lore: []
   Barrier:
     Name: ""
     Material: WHITE_STAINED_GLASS_PANE
+    Slots: [0,1,2,3,5,6,7,8,36,37,38,39,40,41,42,43,44]
     Data: 0
     CustomModelData: 0
     Lore: []
   Barrier2:
     Name: ""
     Material: RED_STAINED_GLASS_PANE
+    Slots: [9,10,11,18,20,27,28,29]
     Data: 0
     CustomModelData: 0
     Lore: []
   Barrier3:
     Name: ""
     Material: BLACK_STAINED_GLASS_PANE
+    Slots: [12,13,14,21,23,30,31,32]
     Data: 0
     CustomModelData: 0
     Lore: []
   Barrier4:
     Name: ""
     Material: BLUE_STAINED_GLASS_PANE
+    Slots: [15,16,17,24,26,33,34,35]
     Data: 0
     CustomModelData: 0
     Lore: []

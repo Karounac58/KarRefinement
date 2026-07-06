@@ -1,20 +1,33 @@
 Title: "§c§l淬炼界面"
+# 淬炼界面动画选项
+Animation:
+  # 动画播放的格数
+  Slots: [9,10,11,12,13,14,15,16,17,18,19,21,22,23,25,26,27,28,30,31,32,34,35,36,37,38,39,40,41,42,43,44]
+  # 动画播放的形式：Random或Turn，Random从上面格数中随机播放;Turn按顺序播放，例如从9到10，再到11，以此类推
+  PlayType: Random
+# 淬炼石槽位
+Slot1: 29
+# 淬炼装备槽位
+Slot2: 33
 Item:
   StoneInfo:
     Name: "§c§l☼§d§l淬炼石§c§l☼"
     Material: FURNACE
+    Slots: [20]
     Data: 0
     CustomModelData: 0
     Lore: []
   Equipmentinfo:
     Name: "§c§l☼§6§l淬炼装备§c§l☼"
     Material: IRON_SWORD
+    Slots: [24]
     Data: 0
     CustomModelData: 0
     Lore: []
   ConfirmButton:
     Name: "§6左键进行淬炼 §f| §b右键快速淬炼"
     Material: GLOWSTONE_DUST
+    Slots: [49]
     Data: 0
     CustomModelData: 0
     Lore:
@@ -22,21 +35,25 @@ Item:
       - "§e- §a进行淬炼时请§c不要退出界面或拿出物品，"
       - "§e- §a否则有概率会造成淬炼石或装备丢失！"
       - "§e- 成功率: {chance}"
+  # 可删除
   ForgeButton:
     Name: "§c锻造界面"
     Material: ANVIL
+    Slots: [8]
     Data: 0
     CustomModelData: 0
     Lore: []
   Barrier:
     Name: ""
     Material: BLACK_STAINED_GLASS_PANE
+    Slots: [0, 1, 2, 3, 4, 5, 6, 7, 45, 46, 47, 48, 50, 51, 52, 53]
     Data: 0
     CustomModelData: 0
     Lore: []
   Barrier2:
     Name: ""
     Material: WHITE_STAINED_GLASS_PANE
+    Slots: [9,10,11,12,13,14,15,16,17,18,19,21,22,23,25,26,27,28,30,31,32,34,35,36,37,38,39,40,41,42,43,44]
     Data: 0
     CustomModelData: 0
     Lore: []
